@@ -64,10 +64,11 @@ RUN addgroup --gid 1001 nodejs && \
     mkdir -p /var/lib/outline/data && \
     chown -R nodejs:nodejs /var/lib/outline
 
-# Install runtime dependencies
+# Install runtime dependencies and enable corepack for Yarn 4
 RUN apt-get update && \
     apt-get install -y wget curl && \
-    rm -rf /var/lib/apt/lists/*
+    rm -rf /var/lib/apt/lists/* && \
+    corepack enable
 
 # Copy built application from builder stage
 COPY --from=builder --chown=nodejs:nodejs $APP_PATH/build ./build
@@ -76,6 +77,7 @@ COPY --from=builder --chown=nodejs:nodejs $APP_PATH/public ./public
 COPY --from=builder --chown=nodejs:nodejs $APP_PATH/.sequelizerc ./.sequelizerc
 COPY --from=builder --chown=nodejs:nodejs $APP_PATH/node_modules ./node_modules
 COPY --from=builder --chown=nodejs:nodejs $APP_PATH/package.json ./package.json
+COPY --from=builder --chown=nodejs:nodejs $APP_PATH/.yarnrc.yml ./.yarnrc.yml
 
 # Set file storage directory
 ENV FILE_STORAGE_LOCAL_ROOT_DIR=/var/lib/outline/data
@@ -97,3 +99,4 @@ EXPOSE 3000
 
 # Start command - run migrations then start server
 CMD ["sh", "-c", "yarn db:migrate && yarn start"]
+
