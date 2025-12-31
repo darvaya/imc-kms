@@ -1,0 +1,35 @@
+{
+    "presets": [
+        "@babel/preset-typescript",
+        [
+            "@babel/preset-env",
+            {
+                "targets": {
+                    "node": "20"
+                }
+            }
+        ],
+        [
+            "@babel/preset-react",
+            {
+                "runtime": "automatic"
+            }
+        ]
+    ],
+    "plugins": [
+        [
+            "@babel/plugin-proposal-decorators",
+            {
+                "legacy": true
+            }
+        ],
+        [
+            "@babel/plugin-transform-class-properties",
+            {
+                "loose": true
+            }
+        ],
+        "babel-plugin-transform-typescript-metadata",
+        "babel-plugin-tsconfig-paths-module-resolver"
+    ]
+}
