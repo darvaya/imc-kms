@@ -20,8 +20,8 @@ RUN apt-get update && apt-get install -y \
     build-essential \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy package files
-COPY ./package.json ./yarn.lock ./
+# Copy package files and yarn config
+COPY ./package.json ./yarn.lock ./.yarnrc.yml ./
 COPY ./patches ./patches
 
 # Enable corepack for yarn
@@ -30,7 +30,7 @@ RUN corepack enable
 # Set memory limit for build
 ENV NODE_OPTIONS="--max-old-space-size=4096"
 
-# Install dependencies
+# Install dependencies (using node-modules linker as per .yarnrc.yml)
 RUN yarn install --immutable --network-timeout 1000000
 
 # Copy source files
@@ -42,7 +42,7 @@ RUN yarn build
 
 # Remove dev dependencies for production
 RUN rm -rf node_modules && \
-    yarn workspaces focus --production && \
+    yarn install --immutable --network-timeout 1000000 && \
     yarn cache clean
 
 # ═══════════════════════════════════════════════════════════════════════════════
