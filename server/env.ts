@@ -578,9 +578,12 @@ export class Environment {
 
   /**
    * The name of the AWS S3 region to use.
+   * Supports Railway Bucket's AWS_DEFAULT_REGION as fallback.
    */
   @IsOptional()
-  public AWS_REGION = this.toOptionalString(environment.AWS_REGION);
+  public AWS_REGION = this.toOptionalString(
+    environment.AWS_REGION ?? environment.AWS_DEFAULT_REGION
+  );
 
   /**
    * Optional AWS S3 endpoint URL for file attachments.
@@ -594,14 +597,16 @@ export class Environment {
    */
   @Public
   @IsOptional()
-  public AWS_S3_UPLOAD_BUCKET_URL = environment.AWS_S3_UPLOAD_BUCKET_URL ?? "";
+  public AWS_S3_UPLOAD_BUCKET_URL = environment.AWS_S3_UPLOAD_BUCKET_URL ??
+    environment.AWS_ENDPOINT_URL ?? "";
 
   /**
    * The bucket name to store file attachments in.
+   * Supports Railway Bucket's AWS_S3_BUCKET_NAME as fallback.
    */
   @IsOptional()
   public AWS_S3_UPLOAD_BUCKET_NAME = this.toOptionalString(
-    environment.AWS_S3_UPLOAD_BUCKET_NAME
+    environment.AWS_S3_UPLOAD_BUCKET_NAME ?? environment.AWS_S3_BUCKET_NAME
   );
 
   /**
