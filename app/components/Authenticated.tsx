@@ -31,7 +31,9 @@ const Authenticated = ({ children }: Props) => {
     return <LoadingIndicator />;
   }
 
-  void auth.logout({ savePath: true });
+  // Token is already invalid (that's why auth.authenticated is false),
+  // so skip the server revocation request to avoid 401 errors
+  void auth.logout({ savePath: true, revokeToken: false });
 
   if (auth.logoutRedirectUri) {
     window.location.href = auth.logoutRedirectUri;
