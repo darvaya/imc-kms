@@ -5,6 +5,7 @@ import { Redirect } from "react-router-dom";
 import useCurrentUser from "~/hooks/useCurrentUser";
 import useStores from "~/hooks/useStores";
 import { changeLanguage } from "~/utils/language";
+import { logoutPath } from "~/utils/routeHelpers";
 import LoadingIndicator from "./LoadingIndicator";
 
 type Props = {
@@ -39,7 +40,8 @@ const Authenticated = ({ children }: Props) => {
     window.location.href = auth.logoutRedirectUri;
     return null;
   }
-  return <Redirect to="/" />;
+  // Use logoutPath() to include ?logout=true, preventing OIDC auto-redirect
+  return <Redirect to={logoutPath()} />;
 };
 
 export default observer(Authenticated);
