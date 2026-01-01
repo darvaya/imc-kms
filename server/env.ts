@@ -763,7 +763,7 @@ export class Environment {
    * The product name
    */
   @Public
-  public APP_NAME = "Outline";
+  public APP_NAME = "IMC Pelita Logistik KMS";
 
   /**
    * Gravity constant for time decay in popularity scoring. Higher values cause

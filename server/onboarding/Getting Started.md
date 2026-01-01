@@ -1,17 +1,17 @@
-Some ideas to get you and your team started with learning the basics of Outline, feel free to check them off as you go!
+Beberapa ide untuk membantu Anda dan tim memulai dengan dasar-dasar IMC KMS. Silakan centang seiring Anda menyelesaikannya!
 
-## Learn the basics
+## Pelajari Dasar-dasar
 
-- [x] Create an Outline account
-- [ ] **Create a collection** from the left sidebar
-- [ ] **Create a new doc** from the top right of home or any collection
-- [ ] Try drag and drop to nest and move documents
-- [ ] Share a document
-- [ ] Invite a co-worker 👋
+- [x] Buat akun IMC KMS
+- [ ] **Buat collection** dari sidebar kiri
+- [ ] **Buat dokumen baru** dari tombol kanan atas di home atau collection manapun
+- [ ] Coba drag and drop untuk menyusun dan memindahkan dokumen
+- [ ] Bagikan dokumen ke rekan kerja
+- [ ] Undang rekan kerja 👋
 
-## More to try
+## Lebih Lanjut
 
-- [ ] Setup the [Slack integration](/settings/integrations/slack)
-- [ ] **Create a template** to share a writing structure with your team
-- [ ] Create a check list to track tasks
-- [ ] Try embedding a supported [integration](https://www.getoutline.com/integrations)
+- [ ] **Buat template** untuk berbagi struktur penulisan dengan tim Anda
+- [ ] Buat checklist untuk melacak tugas
+- [ ] Pelajari fitur pencarian dengan `CMD+K`
+- [ ] Eksplorasi pengaturan notifikasi di Settings

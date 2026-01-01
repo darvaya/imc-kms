@@ -38,9 +38,9 @@ export default () =>
       fs:
         environment.NODE_ENV === "development"
           ? {
-              // Allow serving files from one level up to the project root
-              allow: [".."],
-            }
+            // Allow serving files from one level up to the project root
+            allow: [".."],
+          }
           : { strict: true },
     },
     plugins: [
@@ -92,8 +92,8 @@ export default () =>
           ],
         },
         manifest: {
-          name: "Outline",
-          short_name: "Outline",
+          name: "IMC Pelita Logistik KMS",
+          short_name: "IMC KMS",
           theme_color: "#fff",
           background_color: "#fff",
           start_url: "/",

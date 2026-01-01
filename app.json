@@ -1,9 +1,15 @@
 {
-  "name": "Outline",
-  "description": "Open source wiki and knowledge base for growing teams",
+  "name": "IMC Pelita Logistik KMS",
+  "description": "Internal knowledge management system for IMC Pelita Logistik",
   "website": "https://www.getoutline.com/",
   "repository": "https://github.com/outline/outline",
-  "keywords": ["wiki", "team", "node", "markdown", "slack"],
+  "keywords": [
+    "wiki",
+    "team",
+    "node",
+    "markdown",
+    "slack"
+  ],
   "success_url": "/",
   "formation": {
     "web": {
