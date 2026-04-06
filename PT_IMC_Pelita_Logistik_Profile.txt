@@ -1,0 +1,325 @@
+Comprehensive Strategic and Operational Analysis of PT IMC Pelita Logistik Tbk: Institutional Resilience, Market Dynamics, and Future Trajectory
+Executive Summary
+The maritime logistics sector serves as the circulatory system of the Indonesian economy, a sprawling archipelago nation heavily reliant on the extraction and export of natural resources. Within this complex and high-stakes environment, PT IMC Pelita Logistik Tbk (IDX: PSSI) has emerged not merely as a participant but as a bellwether for the industry's evolution from commoditized shipping to integrated industrial logistics. Formerly known as PT Pelita Samudera Shipping Tbk, the company’s strategic metamorphosis in 2023 into "IMC Pelita Logistik" signaled a profound shift in corporate identity, operational philosophy, and market positioning, aligning it more closely with its parent entity, the global conglomerate IMC Industrial Group.
+This comprehensive research report offers an exhaustive examination of PSSI’s corporate lifecycle, operational footprint, financial health, and strategic outlook as of late 2025. The analysis is grounded in a deep review of financial statements, corporate disclosures, market data, and industry benchmarks.
+Key findings include:
+	•	Strategic Pivot: The rebranding to IMC Pelita Logistik was a calculated strategic maneuver to leverage the "red diamond" brand equity of the IMC Group, facilitating access to broader international markets and diversifying beyond pure-play coal transportation.
+	•	Financial Turbulence & Resilience: While the commodity super-cycle of 2022 propelled the company to record profitability, the subsequent normalization in 2024 and 2025 has tested its financial resilience. As of the third quarter of 2025, the company faces significant headwinds, with net profits contracting sharply by approximately 88% year-on-year due to softening freight rates and reduced spot market activity. However, a fortress balance sheet characterized by low leverage (0.16x Debt-to-Equity) and substantial cash reserves provides a critical buffer.
+	•	Operational Divergence: A comparative analysis with key peer PT Mitrabahtera Segara Sejati Tbk (MBSS) reveals a divergence in performance during the 2025 downturn. While MBSS managed to grow profitability through aggressive fleet optimization and cost rationalization despite revenue pressures, PSSI struggled to defend its margins, highlighting potential areas for operational efficiency improvements.
+	•	Capital Allocation Strategy: PSSI has adopted an aggressive shareholder return policy, utilizing its cash-rich position to fund consistent dividends (yielding ~9-10%) and executing strategic share buybacks during market fluctuations in 2025. This indicates management’s conviction that the stock is undervalued relative to its intrinsic asset base.
+	•	Sustainability Imperative: The company is actively institutionalizing ESG frameworks, maintaining ISO 14001 and ISO 45001 certifications, and navigating the global decarbonization trend which poses a long-term existential risk to its core thermal coal cargo base.
+The following report dissects these themes across nine detailed chapters, providing institutional investors, industry analysts, and stakeholders with the nuanced insights required to understand PSSI's trajectory in a volatile global energy market.
+1. Corporate Identity, History, and Strategic Rebranding
+1.1 Origins and the Era of Pelita Samudera
+Founded in 2007, the entity now known as PT IMC Pelita Logistik Tbk began its journey as PT Pelita Samudera Shipping Tbk. For over a decade, the company built its reputation as a reliable logistics partner for Indonesia’s booming coal mining sector.1 The initial business model was asset-centric, focused on acquiring and operating a fleet of tugboats and barges to navigate the shallow, winding rivers of Kalimantan where the bulk of Indonesia’s thermal coal is mined.
+During its foundational years, the company established critical relationships with top-tier miners such as PT Adaro Indonesia. The operational mandate was clear: provide reliable transshipment services—moving coal from river jetties to open-sea anchorage points—and ensure zero contamination of cargo.2 This period was characterized by rapid fleet expansion and the establishment of the "Pelita" brand as a synonym for domestic coal transport efficiency.
+1.2 The 2023 Strategic Rebranding: The "Red Diamond" Integration
+In a landmark corporate action ratified by shareholders on December 8, 2022, and legally formalized on February 14, 2023, the company officially changed its name to PT IMC Pelita Logistik Tbk.3 This was not a superficial cosmetic change but a fundamental strategic realignment.
+The Rationale:
+The rebranding was driven by the necessity to reflect the company's evolution from a simple shipping operator to a broader logistics solutions provider. Furthermore, it aimed to explicitly visually and operationally integrate with the majority shareholder, the IMC Industrial Group.2 The IMC Group is a global maritime and industrial powerhouse, and associating PSSI directly with this lineage was intended to unlock new commercial doors, particularly in international markets where the IMC brand carries significant weight.
+Visual Identity Architecture:
+The rebranding process was executed with high strategic intent. The new visual identity centers on the iconic "red diamond" of the IMC Shipping Management group. The design challenge was to merge this legacy symbol with the concept of modern logistics. The resulting logo features cryptic lines that form a diamond shape, with red lines traversing a bold red ring from left to right.4
+	•	Symbolism: The ring represents the holistic, end-to-end nature of logistics. The traversing lines symbolize movement, speed, and the seamless transfer of goods.
+	•	Market Impact: The rebranding was positioned to project stability and "strategic mindset," one of the core cultural values of the firm. It served as a signal to the market that PSSI possesses the backing and governance standards of a multinational conglomerate.4
+1.3 Organizational Culture: The COMPASS Framework
+To support its transition into a diversified logistics player, PSSI institutionalized a robust corporate culture framework known as COMPASS. This framework is designed to guide employee behavior and decision-making in a decentralized, high-risk operational environment.2
+Value
+Description
+Strategic Implication
+C - Collaboration
+Thinking and working together; expressing different ideas to reach agreements.
+Critical for coordinating complex transshipment operations involving multiple stakeholders (miners, port authorities, crew).
+O - Mindfulness
+Consistently considering the impact of decisions and behaviors on others and the environment.
+Directly addresses ESG concerns and safety (HSSE), ensuring operations do not harm the delicate river ecosystems.
+M - Prudence
+Taking responsibility for actions, learning from mistakes, and managing resources (financial, time, space) effectively.
+Essential for cost control in a capital-intensive industry with thin margins during downturns.
+P - Add Value
+Abandoning old ways of thinking to adopt novel solutions; intrinsic motivation driven by challenge.
+Encourages innovation in logistics planning, moving beyond "business as usual" to optimize client supply chains.
+S - Strategic Mindset
+Proactively adjusting actions in response to changing needs; deploying resources effectively.
+enables the company to pivot assets between routes (e.g., from coal to nickel) as market dynamics shift.
+S - Stewardship
+Serving with dedication and protecting the company's assets and reputation.
+Reinforces the fiduciary duty of employees toward shareholders and the maintenance of high-value fleet assets.
+1.4 Governance Structure and Leadership
+The governance of PSSI adheres to the dual-board system mandated by Indonesian corporate law, comprising a Board of Commissioners (BoC) for oversight and a Board of Directors (BoD) for executive management. The composition of these boards reflects a blend of IMC Group veterans, local industry experts, and independent professionals.5
+1.4.1 Board of Commissioners (BoC)
+	•	Loh Niap Juan (President Commissioner): A Singaporean national and Chartered Accountant (ICAEW), Loh serves as the Group Chief Corporate Officer for the IMC Group. His appointment ensures strict alignment between PSSI’s strategic direction and the parent group’s investment portfolio. His background in steering strategic business groups (SBGs) brings a high-level corporate strategy perspective to the Indonesian entity.5
+	•	Lilis Halim (Independent Commissioner): Serving since 2019, Halim chairs the Nomination and Remuneration Committee. Her background with Towers Watson gives her deep expertise in human capital and compensation governance, ensuring that executive incentives are aligned with shareholder interests.5
+	•	Adi Harsono (Commissioner): A seasoned executive with a background in Nuclear Physics and extensive ties to Indonesia-China business associations. His role is likely pivotal in maintaining relationships with key export markets in China, which are the primary consumers of Indonesian coal. Notably, he is affiliated with major shareholders, ensuring their voice is heard in strategic deliberations.5
+	•	Mosfly Ang (Independent Commissioner): Appointed in May 2024, Ang brings over 25 years of experience in the plantation and audit sectors (ex-Arthur Andersen affiliate). His audit background strengthens the board's oversight of financial reporting and internal controls.5
+1.4.2 Board of Directors (BoD)
+	•	Yolanda Watulo (President Director): As the top executive, Watulo holds the dual responsibility of President Director and Finance Director. This consolidation of roles places financial discipline at the very heart of the company’s strategy. Her background in commerce from the University of Toronto and previous CFO roles equips her to navigate the capital-intensive nature of the shipping industry.5
+	•	Harry Tjhen (Director of Operation & Commercial): Responsible for the revenue-generating engine of the company. His remit covers fleet deployment, client acquisition, and contract negotiation.7
+	•	Bruno Lorenzon (Director): An Australian citizen and CFA charter holder, Lorenzon represents the IMC Group's investment interests directly on the BoD. His expertise in strategy and M&A is crucial for identifying inorganic growth opportunities.5
+	•	Titto Devianto (Director): Appointed in 2024, Devianto brings expertise in Human Resources and operational management from previous roles at Chevron and Sinarmas. His focus is likely on operational efficiency and workforce stability.5
+	•	New Appointments (2025): The AGMS in May 2025 saw the appointment of Achmad Basari and Basuki Setiogroho. Basari brings deep operational continuity, having served as Operations Director previously. Setiogroho, a CPA with 25 years in energy finance, bolsters the financial management team, crucial for navigating the current earnings downturn.5
+2. Operational Asset Analysis and Business Segments
+PSSI’s business model is built upon three distinct but integrated operational pillars. This diversification allows the company to capture value at different stages of the logistics chain, from the narrow tributaries of Kalimantan to the open ocean.
+2.1 Floating Loading Facilities (FLF)
+The FLF segment represents the highest value-add component of PSSI’s domestic operations. In the shallow waters of Indonesia's coal-producing regions, large mother vessels cannot dock directly at mine jetties.
+	•	The Mechanism: FLFs act as floating terminals. They are anchored offshore and equipped with high-capacity conveyor belts and cranes. Barges transport coal from the river to the FLF, which then transfers the cargo at high speed into the mother vessel.
+	•	Fleet Profile: PSSI operates 2 Floating Loading Facilities. Historically, the company also operated Floating Cranes (FC), but recent fleet rationalization in Q2 2024 involved the sale of one FC to optimize asset yield and generate liquidity.2
+	•	Strategic Advantage: FLFs command higher margins than standard barging because they are critical infrastructure bottlenecks. A miner cannot export without efficient transshipment. By controlling this node, PSSI secures long-term, sticky relationships with major miners like Adaro.9
+2.2 Tug and Barge (T&B)
+This segment is the workhorse of the Indonesian maritime logistics system.
+	•	Fleet Profile: The company commands a massive fleet of 31 tugboats and 26 barges.1 These assets are versatile, capable of navigating shallow rivers and coastal waters.
+	•	Operational Modes:
+	•	Transshipment Support: Moving coal from mine jetties to the FLF or mother vessels anchored offshore.
+	•	Inter-Island Trade: Transporting coal directly to domestic end-users, primarily cement plants and PLN (state electricity) power stations across Java and Sumatra.1
+	•	Market Sensitivity: This segment is highly sensitive to the domestic coal production index and weather conditions. In 2024, this segment faced severe headwinds, with revenue declining by over 36% in the first half of the year due to reduced spot rates and lower volumes.9 The "commoditized" nature of barging makes it a price-taker market, heavily influenced by supply-demand dynamics of available tonnage in the region.
+2.3 Motor Vessels (MV) / Bulk Carriers
+The MV segment elevates PSSI from a local operator to an international shipping player.
+	•	Fleet Profile: PSSI owns and operates 5 Bulk Carrier Mother Vessels.2 These are typically Supramax or Handymax class vessels, designed to enter varied ports while carrying significant tonnage (50,000+ DWT).
+	•	Strategic Function: These vessels service the export market, transporting coal, nickel, clinker, and iron sand to key destinations in China, India, the Philippines, and Vietnam.1
+	•	Resilience Factor: Data from 2024 indicates that the MV segment displayed greater resilience than the T&B segment during market downturns. While river logistics suffered from local oversupply, the international freight market provided a hedge, with MV revenue experiencing a less severe contraction.9 This vindicates the strategy of fleet diversification.
+2.4 Maintenance and Safety (HSSE)
+Operating a fleet of over 60 vessels requires rigorous maintenance to ensure seaworthiness and safety. PSSI prioritizes the HSSE (Health, Safety, Security, Environment) program.
+	•	Vendor Management: The company maintains a strict vendor selection policy for critical components such as wire ropes, spare parts, and safety equipment.10
+	•	Certification: The fleet operations are governed by ISM Code standards and ISO certifications, ensuring that vessels meet the stringent vetting requirements of international buyers and insurers.10
+3. Financial Performance: A Deep Dive (2022-2025)
+The financial analysis of PSSI reveals a company navigating the classic boom-and-bust cycle inherent to the commodities sector. After a peak in 2022, the company is currently managing a period of normalization and contraction.
+3.1 The 2022-2023 Peak
+	•	2022: Fueled by the global energy crisis and post-pandemic demand surge, PSSI recorded revenue of $119.3 million and a net profit of $42.3 million. Profit margins were exceptional, with ROE reaching 29% and ROA at 23.6%.11
+	•	2023: As markets began to cool, revenue moderated to $102.4 million, and net profit remained robust at $40.9 million. The company effectively managed costs, keeping the net profit margin high.11
+3.2 The 2024 Correction
+The fiscal year 2024 signaled the end of the super-cycle for PSSI.
+	•	Revenue: Declined to $81.2 million, a 20.7% drop year-over-year.11
+	•	Profitability: Net profit fell sharply to $14.3 million, a 65% decline from 2023.
+	•	Margins: The net profit margin compressed from ~40% in 2023 to ~17.6% in 2024. This compression highlights the high operating leverage of the shipping business; when revenue falls, fixed costs (crew, depreciation, insurance) remain constant, eating directly into the bottom line.11
+3.3 2025 Performance: Navigating Headwinds (9M25 Analysis)
+The first nine months of 2025 (9M25) have been particularly challenging, reflecting a deepening of the cyclical downturn.
+	•	Top Line Pressure: Revenue for 9M25 stood at IDR 742.3 billion (~$48 million), representing a 21.4% year-on-year decline compared to 9M24.12 This suggests that the difficult conditions of late 2024 have persisted.
+	•	Bottom Line Impact: Net profit for 9M25 collapsed to IDR 25.5 billion, a precipitous 88% drop from the IDR 212.8 billion recorded in 9M24.12
+	•	Quarterly Volatility: Despite the grim year-to-date numbers, Q3 2025 showed signs of a sequential pulse. Q3 revenue was IDR 249.2 billion, up 23.4% quarter-on-quarter. This indicates that the market may have found a bottom in Q2 2025.12
+	•	EBITDA: EBITDA for 9M25 was IDR 166.8 billion, down 54% YoY. The EBITDA margin, a proxy for operating cash flow efficiency, fell to 22.5%.12
+3.4 Balance Sheet Strength
+Despite the earnings erosion, PSSI’s balance sheet remains a fortress, providing strategic optionality.
+	•	Cash Position: As of Q3 2025, the company held a massive IDR 793.3 billion in cash and cash equivalents. This represents nearly 26% of the company's total assets of IDR 3.0 trillion.12
+	•	Leverage: The company is incredibly under-leveraged. The Debt-to-Equity ratio is a mere 0.16x (or 0.19x in dollar terms for FY24). This is significantly lower than industry peers who often run D/E ratios above 0.5x or 1.0x. This low leverage protects the company from insolvency risks during prolonged downturns and high-interest-rate environments.11
+	•	Asset Base: Total equity stands at IDR 2.58 trillion, providing a solid book value floor for the stock.12
+3.5 Financial Ratio Summary Table
+Metric
+FY 2022 (USD)
+FY 2023 (USD)
+FY 2024 (USD)
+9M 2025 (IDR)
+Trend Analysis
+Revenue
+119.3 M
+102.4 M
+81.2 M
+742.3 B
+Declining: Post-cycle normalization.
+Net Profit
+42.3 M
+40.9 M
+14.3 M
+25.5 B
+Sharp Contraction: High operating leverage impact.
+Gross Margin
+~36%
+~37%
+~26%
+12.0%
+Erosion: Pricing power has weakened.
+ROE
+29%
+24.2%
+9.0%
+~1.0%
+Low: Return on capital is currently sub-optimal.
+Current Ratio
+2.22x
+4.07x
+6.43x
+High
+Strong: Excellent short-term liquidity.
+Debt/Equity
+0.05x
+0.21x
+0.19x
+0.16x
+Conservative: Very low financial risk.
+4. Competitive Landscape and Peer Benchmarking
+To understand PSSI's relative performance, it is crucial to benchmark it against its closest competitors in the Indonesian coal logistics sector: PT Mitrabahtera Segara Sejati Tbk (MBSS) and PT Trans Power Marine Tbk (TPMA).
+4.1 Peer Performance Comparison (2025)
+PT Mitrabahtera Segara Sejati Tbk (MBSS):
+MBSS is the closest direct peer, operating a similar mix of barging and floating cranes.
+	•	Revenue: MBSS recorded revenue of IDR 663.1 billion in 9M25, which is slightly lower than PSSI’s IDR 742.3 billion.
+	•	Net Profit: Here, the divergence is stark. MBSS reported a net profit of IDR 307.2 billion for 9M25, a massive increase compared to PSSI’s IDR 25.5 billion.13
+	•	Analysis: How did MBSS achieve 12x the profit of PSSI on similar revenue? The answer lies in fleet optimization and cost structure. MBSS reported a 19.2% increase in transported volume despite operating a reduced fleet (down to 39 sets from 48). They aggressively cut capex (down 60.2%) and optimized operational efficiency. PSSI, by contrast, appears to be struggling with higher fixed costs or less efficient fleet utilization in the current market environment.13
+PT Trans Power Marine Tbk (TPMA):
+	•	Revenue: TPMA reported $29.7 million (approx. IDR 460 billion) in revenue for Q3 2025 alone. On a TTM basis, their revenue is growing ($113.58M).14
+	•	Profitability: TPMA has maintained strong margins, with a net profit margin of roughly 21.5% compared to PSSI's 3.4% in 9M25.15
+	•	Valuation: TPMA trades at a significantly lower P/E ratio (approx. 5.5x) compared to PSSI's inflated P/E (due to low earnings) of ~76x.15
+4.2 Market Share and Strategic Positioning
+	•	Fleet Size: PSSI has a larger total fleet count compared to MBSS’s optimized active fleet, but MBSS is extracting more value per vessel.
+	•	Market Perception: Analyst reports categorize PSSI as "expensive" based on earnings (P/E ~64x) but "undervalued" based on assets (P/B ~0.7x). Conversely, peers like TPMA are seen as "Buy" candidates due to stronger earnings growth resilience.16
+	•	Key Takeaway: PSSI is currently underperforming its peers in terms of operational efficiency. The strategic imperative for 2026 must be to replicate the efficiency gains seen at MBSS—cutting idle capacity and optimizing route planning.
+5. Capital Markets, Shareholder Returns, and Corporate Actions
+PSSI is an active participant in the capital markets, utilizing a variety of tools to manage shareholder value during this earnings trough.
+5.1 Dividend Policy: A Yield Play
+PSSI has established itself as a reliable dividend payer, often distributing interim and final dividends.
+	•	Track Record:
+	•	2023: Payout ratio of ~40%, total payout IDR 251 billion.
+	•	2024: The company paid an interim dividend of IDR 28 and a final dividend of IDR 8, totaling IDR 36 per share. This represents a payout ratio of nearly 78%.8
+	•	Yield: At a share price of ~IDR 360-400, this translates to a dividend yield of approximately 9-10%. This high yield is the primary attraction for investors currently, compensating for the lack of capital appreciation.19
+5.2 Share Buyback Program (2025)
+Recognizing the disconnect between its share price and book value, PSSI launched a share buyback program in mid-2025.
+	•	The Plan: Authorized repurchase of up to 200 million shares (3.7% of paid-up capital) with a budget of IDR 100 billion.20
+	•	Regulatory Context: The buyback was executed under OJK Regulation No. 13/2023, which permits buybacks without a General Meeting of Shareholders (GMS) during "significantly fluctuating market conditions." This indicates that management viewed the stock's decline as a market anomaly rather than a fundamental valuation reset.20
+	•	Impact: Buybacks serve two purposes: they support the share price by creating artificial demand, and they increase Earnings Per Share (EPS) for remaining shareholders by reducing the denominator (outstanding shares).
+5.3 Stock Performance Analysis
+	•	Price Trend: The stock has been in a downtrend from its 2022 highs (>IDR 800) to a range of IDR 360 - 376 in late 2025.21
+	•	Technical Indicators: In December 2025, the stock showed signs of technical life, rising above its 50-day and 200-day moving averages (IDR 364), suggesting potential accumulation by smart money anticipating a turnaround.21
+	•	Valuation: With a P/B ratio of 0.76x, the stock is trading at a discount to the liquidation value of its fleet. However, the high P/E ratio warns that earnings recovery is priced in; if earnings do not recover, the stock could be a "value trap".12
+6. Macroeconomic Environment and Future Outlook
+6.1 The Macro Context: Indonesia 2025
+The operating environment for PSSI is shaped by broader Indonesian and global economic trends.
+	•	GDP Growth: Indonesia’s economy is projected to grow at c. 5.2% in FY25, driven by investment normalization and a lower interest rate environment (BI rate cuts expected to c. 4.75%).22 This creates a favorable backdrop for domestic energy consumption (cement, power), supporting the Inter-Island T&B segment.
+	•	Coal Market Structural Decline: The "elephant in the room" is the shifting energy policies of China and India. Both nations are aggressively increasing domestic coal production and renewable capacity to reduce import reliance.
+	•	Impact: Indonesia’s role as the primary supplier of Supramax/Panamax coal cargoes is under pressure. Seaborne demand is structurally weakening, which serves as a long-term threat to PSSI's MV segment.23
+	•	Signal: PSSI must diversify. The reliance on thermal coal is a strategic vulnerability over the next decade.
+6.2 Strategic Outlook and Risks
+Risks:
+	•	Commodity Price Volatility: A further drop in coal prices will force miners to squeeze logistics providers for lower rates.
+	•	Geopolitical Decoupling: Reduced Chinese imports could leave PSSI’s MV fleet underutilized.
+	•	Operational Aging: As the fleet ages, maintenance costs will rise. The sale of assets in 2024 suggests a need to refresh the fleet.
+Opportunities & Strategy:
+	•	Business Diversification: The May 2025 amendment to the Articles of Association to expand business activities is critical. PSSI is likely exploring logistics for critical minerals (nickel, copper, bauxite) which are essential for the EV transition and are abundant in Sulawesi and Maluku.8
+	•	Regional Integration: Leveraging the IMC Group’s network to secure contracts in Southeast Asia (Vietnam, Philippines) for non-coal commodities.
+	•	Operational Efficiency: Replicating the cost-optimization success of MBSS is the low-hanging fruit for restoring profitability in 2026.
+7. Sustainability and ESG Commitments
+In an era where capital is increasingly "green," PSSI has stepped up its ESG commitments to maintain its license to operate with global clients.
+7.1 Environmental Stewardship
+	•	Certifications: The company maintains ISO 14001:2015 (Environmental Management Systems), ensuring systematic control over environmental impacts.2
+	•	Decarbonization: Operations focus on reducing "bunker consumption" (fuel burn) through efficient route planning and hull maintenance. This directly lowers Scope 1 emissions.24
+	•	Waste Management: Strict protocols are in place to prevent coal contamination of river systems during transshipment, a critical requirement for clients like Adaro who have "zero contamination" policies.2
+7.2 Social Responsibility (CSR)
+	•	Community Engagement: PSSI invests in the communities where it operates. Notable projects include the construction of classroom buildings in Samarinda (Kalimantan), directly contributing to local education infrastructure.25
+	•	Employee Welfare: The company holds ISO 45001:2018 for Occupational Health and Safety. The culture of "Mindfulness" is operationalized through rigorous safety drills and protective equipment standards for crew members working in hazardous maritime environments.2
+7.3 Governance
+	•	Transparency: PSSI adheres to OJK regulations for material disclosures and maintains a "Whistleblowing System" to prevent fraud and corruption.
+	•	ASEAN Scorecard: The company participates in the ASEAN Corporate Governance Scorecard assessments to benchmark its practices against regional standards.2
+Conclusion
+PT IMC Pelita Logistik Tbk stands at a pivotal juncture in late 2025. The company has successfully shed its legacy skin, re-emerging as a modern, integrated logistics provider with the backing of a global industrial giant. However, the financial realities of the post-2022 commodity bust have been harsh, exposing vulnerabilities in its cost structure and market exposure compared to leaner peers like MBSS.
+The company's strengths lie in its massive cash pile, low leverage, and the strategic flexibility afforded by the IMC Group connection. Its weakness is the current erosion of core profitability and heavy reliance on the structurally challenged thermal coal trade.
+For investors, PSSI represents a classic "deep value" and "income" proposition. The stock is cheap relative to assets, and the dividend yield is attractive. The catalyst for a re-rating will not come from a rebound in coal prices alone, but from the successful execution of its diversification strategy into new mineral logistics and the rigorous implementation of operational efficiencies to restore margins. The management's aggressive buyback program suggests they believe the market has oversold the bad news, betting on their ability to navigate the vessel through the current storm.
+Appendix: Key Data Tables
+Table A: Financial Performance Summary (2022 - 9M 2025)
+Values in USD Millions unless otherwise stated. 2025 figures converted from IDR where necessary for comparison.
+Metric
+FY 2022
+FY 2023
+FY 2024
+9M 2025 (IDR Billions)
+YoY Change (9M)
+Revenue
+$119.3
+$102.4
+$81.2
+IDR 742.3
+-21.4%
+Cost of Revenue
+($75.9)
+($64.6)
+($59.9)
+N/A
+N/A
+Gross Profit
+$43.4
+$37.8
+$21.3
+IDR 88.8
+-66.7%
+Net Profit
+$42.3
+$40.9
+$14.3
+IDR 25.5
+-88.0%
+EBITDA
+N/A
+N/A
+N/A
+IDR 166.8
+-54.0%
+Total Assets
+$179.3
+$203.8
+$189.5
+IDR 3,001.3
++6.4%
+Total Equity
+$145.8
+$168.6
+$158.2
+IDR 2,581.5
++8.7%
+11
+Table B: Peer Comparison (9M 2025)
+Comparing PSSI with MBSS and TPMA.
+Metric
+PSSI (IMC Pelita)
+MBSS (Mitrabahtera)
+TPMA (Trans Power)
+Revenue (9M25)
+IDR 742.3 B
+IDR 663.1 B
+~$85 M (est 9M)
+Net Profit (9M25)
+IDR 25.5 B
+IDR 307.2 B
+~$21 M (est 9M)
+Net Profit Margin
+3.4%
+46.3%
+~21.5%
+Debt/Equity
+0.16x
+Low
+Moderate
+Valuation (P/E)
+~76x
+~10.8x
+~5.5x
+Valuation (P/B)
+0.76x
+~0.7-0.8x
+~0.9x
+Analyst Rating
+Hold/Neutral
+Buy
+Buy
+12
+Works cited
+	•	IMC Pelita Logistik (IDX:PSSI) Stock Price - Simply Wall St, accessed December 31, 2025, https://simplywall.st/stock/idx/pssi
+	•	About – PT IMC Pelita Logistik Tbk, accessed December 31, 2025, https://www.imcpelitalog.com/about/
+	•	information disclosure - PT IMC Pelita Logistik Tbk, accessed December 31, 2025, https://www.imcpelitalog.com/wp-content/uploads/2023/06/KI-Perubahan-Nama-Perseroan_-En.pdf
+	•	IMC Pelita Logistik Tbk - My Framer Site - ACME DESIGN iNTELLIGENT, accessed December 31, 2025, https://acmedesign.id/works/imc-pelita-logistik
+	•	Organization – PT IMC Pelita Logistik Tbk, accessed December 31, 2025, https://www.imcpelitalog.com/organization/
+	•	Company Profiles - IDX, accessed December 31, 2025, https://www.idx.co.id/en/listed-companies/company-profiles/PSSI
+	•	PT IMC Pelita Logistik Tbk (PSSI) Leadership & Management Team Analysis, accessed December 31, 2025, https://simplywall.st/stocks/id/transportation/idx-pssi/imc-pelita-logistik-shares/management
+	•	PSSI Declares Final Dividend and Refines Strategic Direction - PT IMC Pelita Logistik Tbk, accessed December 31, 2025, https://www.imcpelitalog.com/pssi-declares-final-dividend-and-refines-strategic-direction-2/
+	•	IMC PELITA LOGISTIK - Stockbit, accessed December 31, 2025, https://stream-asset.stockbit.com/d5f03804-ad26-4e2c-82be-01ec1ec68991_stream.pdf
+	•	Governance - PT IMC Pelita Logistik Tbk, accessed December 31, 2025, https://www.imcpelitalog.com/governance/
+	•	Financial - PT IMC Pelita Logistik Tbk, accessed December 31, 2025, https://www.imcpelitalog.com/financial/
+	•	Financial Statements 3Q 2025 of PSSI - Indo Premier Sekuritas, accessed December 31, 2025, https://www.indopremier.com/ipotnews/newsDetail.php?jdl=Financial_Statements_3Q_2025_of_PSSI&news_id=477893&group_news=RESEARCHNEWS&news_date=&taging_subtype=RESULT&name=&search=y_general&q=Financial%20Statements&halaman=1
+	•	PT MITRABAHTERA SEGARA SEJATI TBK, accessed December 31, 2025, https://www.mbss.co.id/wp-content/uploads/2025/12/MBSS-9M25-News-Release.pdf
+	•	PT Trans Power Marine Tbk (IDX:TPMA) Revenue - Stock Analysis, accessed December 31, 2025, https://stockanalysis.com/quote/idx/TPMA/revenue/
+	•	Trans Power Marine Tbk PT, TPMA:JKT profile - FT.com - Markets data, accessed December 31, 2025, https://markets.ft.com/data/equities/tearsheet/profile?s=TPMA:JKT
+	•	TPMA - Trans Power Marine - BCA Sekuritas, accessed December 31, 2025, https://bcasekuritas.co.id/api/pdf?path=file%2Fpost%2FTPMA+-+Dragged+by+Softer+Prices.pdf
+	•	IMC Pelita Logistik (IDX:PSSI) Stock Valuation, Peer Comparison & Price Targets, accessed December 31, 2025, https://simplywall.st/stocks/id/transportation/idx-pssi/imc-pelita-logistik-shares/valuation
+	•	Investors – PT IMC Pelita Logistik Tbk, accessed December 31, 2025, https://www.imcpelitalog.com/id/investors/
+	•	PSSI Stock Price and Chart — IDX:PSSI - TradingView, accessed December 31, 2025, https://www.tradingview.com/symbols/IDX-PSSI/
+	•	PT IMC PELITA LOGISTIK TBK (“Perseroan”) Domiciled in Jakarta, Indonesia Business Activities Shipping Head Office Menara Ast - IDX, accessed December 31, 2025, https://www.idx.co.id/StaticData/NewsAndAnnouncement/ANNOUNCEMENTSTOCK/From_EREP/202506/b1e49c4911_1b691d8d2d.pdf
+	•	IMC Pelita Logistik Tbk PT, PSSI:JKT summary - FT.com - Markets data, accessed December 31, 2025, https://markets.ft.com/data/equities/tearsheet/summary?s=PSSI:JKT
+	•	Macro - 2025 economic outlook: a hopeful year for the new Government, accessed December 31, 2025, https://www.indopremier.com/ipotnews/newsDetail.php?jdl=Macro___2025_economic_outlook__a_hopeful_year_for_the_new_Government&news_id=187688&group_news=IPOTNEWS&news_date=&taging_subtype=IPEKONOMI&name=&search=y_general&q=MacroInsight,%20GDP%20growth,%20BI%20rate,%20fiscal%20policy,%20fiscal%20deficit,&halaman=1
+	•	Special Focus: Supramax & Panamax Coal Cargo Flow Trends from Indonesia, accessed December 31, 2025, https://www.thesignalgroup.com/newsroom/special-focus-supramax-panamax-coal-cargo-flow-trends-from-indonesia
+	•	PT IMC Pelita Logistik Tbk dan entitas anaknya/and its subsidiaries, accessed December 31, 2025, https://www.imcpelitalog.com/wp-content/uploads/2024/03/Consol-FS-PSSI-2023-Audited.pdf
+	•	Press Release - PT IMC Pelita Logistik Tbk, accessed December 31, 2025, https://www.imcpelitalog.com/press-release/
+	•	Financial Statements Full Year 2023 of PSSI - IndoPremier, accessed December 31, 2025, https://www.indopremier.com/ipotnews/newsDetail.php?jdl=Financial_Statements_Full_Year_2023_of_PSSI&news_id=440570&group_news=RESEARCHNEWS&news_date=&taging_subtype=RESULT&name=&search=y_general&q=Financial%20Statements&halaman=1
