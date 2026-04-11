@@ -99,6 +99,7 @@ function Login({ children, onBack }: Props) {
     }
   }, [query]);
 
+
   if (auth.authenticated) {
     const postLoginPath = spendPostLoginPath();
     if (postLoginPath) {

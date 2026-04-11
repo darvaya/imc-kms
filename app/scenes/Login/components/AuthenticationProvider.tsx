@@ -17,6 +17,7 @@ type Props = React.ComponentProps<typeof ButtonLarge> & {
   isCreate: boolean;
   onEmailSuccess: (email: string) => void;
   preferOTP: boolean;
+  authType?: string;
 };
 
 type AuthState = "initial" | "email" | "code";
@@ -26,7 +27,7 @@ function AuthenticationProvider(props: Props) {
   const [authState, setAuthState] = React.useState<AuthState>("initial");
   const [isSubmitting, setSubmitting] = React.useState(false);
   const [email, setEmail] = React.useState("");
-  const { isCreate, id, name, authUrl, onEmailSuccess, ...rest } = props;
+  const { isCreate, id, name, authUrl, onEmailSuccess, authType: _authType, ...rest } = props;
   const clientType = Desktop.isElectron() ? Client.Desktop : Client.Web;
 
   const handleChangeEmail = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -99,9 +100,34 @@ function AuthenticationProvider(props: Props) {
     );
   }
 
+  const handleClick = async () => {
+    if (id === "microsoft-better-auth") {
+      try {
+        const response = await fetch("/api/better-auth/sign-in/social", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            provider: "microsoft",
+            callbackURL: "/auth/redirect",
+          }),
+          credentials: "include",
+        });
+        const data = await response.json();
+        if (data.url) {
+          window.location.href = data.url;
+        }
+      } catch {
+        // Fall back to direct navigation
+        window.location.href = href;
+      }
+    } else {
+      window.location.href = href;
+    }
+  };
+
   return (
     <ButtonLarge
-      onClick={() => (window.location.href = href)}
+      onClick={handleClick}
       icon={<PluginIcon id={id} />}
       fullwidth
       {...rest}

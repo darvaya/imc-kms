@@ -251,8 +251,19 @@ const isWebProcess =
   env.SERVICES.includes("api") ||
   env.SERVICES.includes("collaboration");
 
-void throng({
-  master,
-  worker: start,
-  count: isWebProcess ? webProcessCount : undefined,
-});
+const processCount = isWebProcess ? (webProcessCount ?? 1) : 1;
+
+// When running a single process, skip throng/cluster entirely to avoid
+// Node 24+ EPIPE errors with the cluster IPC channel.
+if (processCount <= 1) {
+  void (async () => {
+    await master();
+    await start(1, () => process.exit(0));
+  })();
+} else {
+  void throng({
+    master,
+    worker: start,
+    count: processCount,
+  });
+}

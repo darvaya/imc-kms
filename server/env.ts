@@ -759,6 +759,41 @@ export class Environment {
     environment.ALLOWED_PRIVATE_IP_ADDRESSES
   );
 
+  // Better Auth + Microsoft OIDC
+
+  /**
+   * The secret used by better-auth for signing session tokens.
+   * Generate with `openssl rand -base64 32`.
+   */
+  @IsOptional()
+  public BETTER_AUTH_SECRET = this.toOptionalString(
+    environment.BETTER_AUTH_SECRET
+  );
+
+  /**
+   * Microsoft Entra ID (Azure AD) OAuth client ID for better-auth.
+   */
+  @IsOptional()
+  public MICROSOFT_CLIENT_ID = this.toOptionalString(
+    environment.MICROSOFT_CLIENT_ID
+  );
+
+  /**
+   * Microsoft Entra ID (Azure AD) OAuth client secret for better-auth.
+   */
+  @IsOptional()
+  public MICROSOFT_CLIENT_SECRET = this.toOptionalString(
+    environment.MICROSOFT_CLIENT_SECRET
+  );
+
+  /**
+   * Microsoft Entra ID tenant ID. Used to construct the OIDC discovery URL.
+   */
+  @IsOptional()
+  public MICROSOFT_TENANT_ID = this.toOptionalString(
+    environment.MICROSOFT_TENANT_ID
+  );
+
   /**
    * The product name
    */

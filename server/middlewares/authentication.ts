@@ -2,6 +2,7 @@ import type { Next } from "koa";
 import capitalize from "lodash/capitalize";
 import type { UserRole } from "@shared/types";
 import { UserRoleHelper } from "@shared/utils/UserRoleHelper";
+import { validateBetterAuthSession } from "@server/auth/betterAuthSession";
 import tracer, {
   addTags,
   getRootSpanFromRequestContext,
@@ -144,6 +145,12 @@ async function validateAuthentication(
   ctx: AppContext,
   options: AuthenticationOptions
 ): Promise<{ user: User; token: string; type: AuthenticationType }> {
+  // Try better-auth session first (dual-mode: better-auth + legacy JWT)
+  const betterAuthResult = await validateBetterAuthSession(ctx);
+  if (betterAuthResult) {
+    return betterAuthResult;
+  }
+
   const { token, transport } = parseAuthentication(ctx);
 
   if (!token) {

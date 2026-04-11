@@ -25,6 +25,23 @@ import type * as T from "./schema";
 const router = new Router();
 
 router.post("auth.config", async (ctx: APIContext<T.AuthConfigReq>) => {
+  // Build list of better-auth providers to append to the config response
+  const betterAuthProviders: Array<{
+    id: string;
+    name: string;
+    authUrl: string;
+    authType: string;
+  }> = [];
+
+  if (env.MICROSOFT_CLIENT_ID) {
+    betterAuthProviders.push({
+      id: "microsoft-better-auth",
+      name: "Microsoft",
+      authUrl: "/api/better-auth/sign-in/social?provider=microsoft",
+      authType: "betterAuth",
+    });
+  }
+
   // If self hosted AND there is only one team then that team becomes the
   // brand for the knowledge base and it's guest signin option is used for the
   // root login page.
@@ -41,9 +58,12 @@ router.post("auth.config", async (ctx: APIContext<T.AuthConfigReq>) => {
           logo: team.getPreference(TeamPreference.PublicBranding)
             ? team.avatarUrl
             : undefined,
-          providers: AuthenticationHelper.providersForTeam(team).map(
-            presentProviderConfig
-          ),
+          providers: [
+            ...AuthenticationHelper.providersForTeam(team).map(
+              presentProviderConfig
+            ),
+            ...betterAuthProviders,
+          ],
         },
       };
       return;
@@ -68,9 +88,12 @@ router.post("auth.config", async (ctx: APIContext<T.AuthConfigReq>) => {
             ? team.avatarUrl
             : undefined,
           hostname: ctx.request.hostname,
-          providers: AuthenticationHelper.providersForTeam(team).map(
-            presentProviderConfig
-          ),
+          providers: [
+            ...AuthenticationHelper.providersForTeam(team).map(
+              presentProviderConfig
+            ),
+            ...betterAuthProviders,
+          ],
         },
       };
       return;
@@ -95,9 +118,12 @@ router.post("auth.config", async (ctx: APIContext<T.AuthConfigReq>) => {
             ? team.avatarUrl
             : undefined,
           hostname: ctx.request.hostname,
-          providers: AuthenticationHelper.providersForTeam(team).map(
-            presentProviderConfig
-          ),
+          providers: [
+            ...AuthenticationHelper.providersForTeam(team).map(
+              presentProviderConfig
+            ),
+            ...betterAuthProviders,
+          ],
         },
       };
       return;
@@ -107,9 +133,12 @@ router.post("auth.config", async (ctx: APIContext<T.AuthConfigReq>) => {
   // Otherwise, we're requesting from the standard root signin page
   ctx.body = {
     data: {
-      providers: AuthenticationHelper.providersForTeam().map(
-        presentProviderConfig
-      ),
+      providers: [
+        ...AuthenticationHelper.providersForTeam().map(
+          presentProviderConfig
+        ),
+        ...betterAuthProviders,
+      ],
     },
   };
 });
