@@ -1,4 +1,3 @@
-import passport from "@outlinewiki/koa-passport";
 import { addMonths } from "date-fns";
 import Koa from "koa";
 import bodyParser from "koa-body";
@@ -7,28 +6,11 @@ import { AuthenticationError } from "@server/errors";
 import authMiddleware from "@server/middlewares/authentication";
 import coalesceBody from "@server/middlewares/coaleseBody";
 import { Collection, Team, View } from "@server/models";
-import AuthenticationHelper from "@server/models/helpers/AuthenticationHelper";
 import type { AppState, AppContext, APIContext } from "@server/types";
 import { verifyCSRFToken } from "@server/middlewares/csrf";
 
 const app = new Koa<AppState, AppContext>();
 const router = new Router();
-
-router.use(passport.initialize());
-
-// dynamically register available authentication provider routes
-void (async () => {
-  for (const provider of AuthenticationHelper.providers) {
-    const resolvedRouter = await provider.value.router;
-    if (resolvedRouter) {
-      router.use(
-        "/",
-        authMiddleware({ optional: true }),
-        resolvedRouter.routes()
-      );
-    }
-  }
-})();
 
 router.get("/redirect", authMiddleware(), async (ctx: APIContext) => {
   const { user } = ctx.state.auth;

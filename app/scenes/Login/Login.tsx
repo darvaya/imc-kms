@@ -1,14 +1,12 @@
 import find from "lodash/find";
 import { observer } from "mobx-react";
-import { EmailIcon } from "outline-icons";
 import * as React from "react";
 import { Trans, useTranslation } from "react-i18next";
 import { useLocation, Link, Redirect } from "react-router-dom";
 import styled from "styled-components";
 import { getCookie, setCookie } from "tiny-cookie";
 import { s } from "@shared/styles";
-import { Client, UserPreference } from "@shared/types";
-import { isPWA } from "@shared/utils/browser";
+import { UserPreference } from "@shared/types";
 import { parseDomain } from "@shared/utils/domains";
 import type { Config } from "~/stores/AuthStore";
 import { AvatarSize } from "~/components/Avatar";
@@ -19,7 +17,6 @@ import Heading from "~/components/Heading";
 import OutlineIcon from "~/components/Icons/OutlineIcon";
 import Input from "~/components/Input";
 import LoadingIndicator from "~/components/LoadingIndicator";
-import { OneTimePasswordInput } from "~/components/OneTimePasswordInput";
 import PageTitle from "~/components/PageTitle";
 import TeamLogo from "~/components/TeamLogo";
 import Text from "~/components/Text";
@@ -40,7 +37,7 @@ import { BackButton } from "./components/BackButton";
 import { Background } from "./components/Background";
 import { Centered } from "./components/Centered";
 import { Notices } from "./components/Notices";
-import { getRedirectUrl, navigateToSubdomain } from "./urls";
+import { navigateToSubdomain } from "./urls";
 import lazyWithRetry from "~/utils/lazyWithRetry";
 
 const WorkspaceSetup = lazyWithRetry(
@@ -56,27 +53,18 @@ function Login({ children, onBack }: Props) {
   const location = useLocation();
   const query = useQuery();
   const notice = query.get("notice");
-  const forceOTP = query.get("forceOTP");
 
   const { t } = useTranslation();
   const user = useCurrentUser({ rejectOnEmpty: false });
   const { auth } = useStores();
   const { config } = auth;
   const [error, setError] = React.useState(null);
-  const [emailLinkSentTo, setEmailLinkSentTo] = React.useState("");
   const isCreate = location.pathname === "/create";
   const rememberLastPath = !!user?.getPreference(
     UserPreference.RememberLastPath
   );
   const [lastVisitedPath] = useLastVisitedPath();
   const [spendPostLoginPath] = usePostLoginPath();
-
-  const handleReset = React.useCallback(() => {
-    setEmailLinkSentTo("");
-  }, []);
-  const handleEmailSuccess = React.useCallback((email) => {
-    setEmailLinkSentTo(email);
-  }, []);
 
   const handleGoSubdomain = React.useCallback(async (event) => {
     event.preventDefault();
@@ -207,8 +195,6 @@ function Login({ children, onBack }: Props) {
     config.providers,
     (provider) => provider.id === auth.lastSignedIn && !isCreate
   );
-  const clientType = Desktop.isElectron() ? Client.Desktop : Client.Web;
-  const preferOTP = isPWA || !!forceOTP;
 
   if (firstRun) {
     return (
@@ -216,71 +202,6 @@ function Login({ children, onBack }: Props) {
         <WorkspaceSetup onBack={onBack} />
       </React.Suspense>
     );
-  }
-
-  if (emailLinkSentTo) {
-    return (
-      <Background>
-        <BackButton onBack={onBack} config={config} />
-        <Centered>
-          <PageTitle title={t("Check your email")} />
-          <CheckEmailIcon size={38} />
-          <Heading centered>{t("Check your email")}</Heading>
-          {preferOTP ? (
-            <>
-              <Note>
-                <Trans
-                  defaults="Enter the sign-in code sent to the email <em>{{ emailLinkSentTo }}</em>"
-                  values={{ emailLinkSentTo }}
-                  components={{ em: <em /> }}
-                />
-                .
-              </Note>
-              <Form
-                method="POST"
-                action="/auth/email.callback"
-                style={{ width: "100%" }}
-              >
-                <input type="hidden" name="email" value={emailLinkSentTo} />
-                <input type="hidden" name="client" value={clientType} />
-                <input type="hidden" name="follow" value="true" />
-                <OneTimePasswordInput name="code" />
-                <br />
-                <ButtonLarge type="submit" fullwidth>
-                  {t("Continue")}
-                </ButtonLarge>
-              </Form>
-            </>
-          ) : (
-            <>
-              <Note>
-                <Trans
-                  defaults="A magic sign-in link has been sent to the email <em>{{ emailLinkSentTo }}</em> if an account exists."
-                  values={{ emailLinkSentTo }}
-                  components={{ em: <em /> }}
-                />
-              </Note>
-              <br />
-            </>
-          )}
-          <ButtonLarge onClick={handleReset} fullwidth neutral>
-            {t("Back to login")}
-          </ButtonLarge>
-        </Centered>
-      </Background>
-    );
-  }
-
-  // If there is only one provider and it's OIDC, redirect immediately.
-  if (
-    config.providers.length === 1 &&
-    config.providers[0].id === "oidc" &&
-    !env.OIDC_DISABLE_REDIRECT &&
-    !query.get("notice") &&
-    !query.get("logout")
-  ) {
-    window.location.href = getRedirectUrl(config.providers[0].authUrl);
-    return null;
   }
 
   return (
@@ -325,8 +246,6 @@ function Login({ children, onBack }: Props) {
           <React.Fragment key={defaultProvider.id}>
             <AuthenticationProvider
               isCreate={isCreate}
-              onEmailSuccess={handleEmailSuccess}
-              preferOTP={preferOTP}
               {...defaultProvider}
             />
             {hasMultipleProviders && (
@@ -350,8 +269,6 @@ function Login({ children, onBack }: Props) {
             <AuthenticationProvider
               key={provider.id}
               isCreate={isCreate}
-              onEmailSuccess={handleEmailSuccess}
-              preferOTP={preferOTP}
               neutral={defaultProvider && hasMultipleProviders}
               {...provider}
             />
@@ -369,10 +286,6 @@ function Login({ children, onBack }: Props) {
   );
 }
 
-const Form = styled.form`
-  margin: 1em 0;
-`;
-
 const StyledHeading = styled(Heading)`
   margin: 0;
 `;
@@ -380,10 +293,6 @@ const StyledHeading = styled(Heading)`
 const Domain = styled.div`
   color: ${s("textSecondary")};
   padding: 0 8px 0 0;
-`;
-
-const CheckEmailIcon = styled(EmailIcon)`
-  margin-bottom: -1.5em;
 `;
 
 const Logo = styled.div`

@@ -346,8 +346,7 @@ export class Environment {
   /**
    * An optional comma separated list of allowed domains.
    */
-  public ALLOWED_DOMAINS =
-    environment.ALLOWED_DOMAINS ?? environment.GOOGLE_ALLOWED_DOMAINS;
+  public ALLOWED_DOMAINS = environment.ALLOWED_DOMAINS;
 
   // Third-party services
 

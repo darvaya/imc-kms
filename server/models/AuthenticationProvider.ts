@@ -24,13 +24,20 @@ import Team from "./Team";
 import UserAuthentication from "./UserAuthentication";
 import Fix from "./decorators/Fix";
 import Length from "./validators/Length";
-
-// TODO: Avoid this hardcoding of plugins
-import AzureClient from "plugins/azure/server/azure";
-import GoogleClient from "plugins/google/server/google";
-import OIDCClient from "plugins/oidc/server/oidc";
 import type { APIContext } from "@server/types";
 import type { DestroyOptions } from "sequelize";
+
+interface OAuthClientLike {
+  userInfo(accessToken: string): Promise<unknown>;
+  rotateToken(
+    accessToken: string,
+    refreshToken: string
+  ): Promise<{
+    accessToken: string;
+    refreshToken?: string;
+    expiresAt?: Date;
+  }>;
+}
 
 @Scopes(() => ({
   withUserAuthentication: (userId: string) => ({
@@ -100,19 +107,10 @@ class AuthenticationProvider extends Model<
   /**
    * Create an OAuthClient for this provider, if possible.
    *
-   * @returns A configured OAuthClient instance
+   * @returns A configured OAuthClient instance, or undefined
    */
-  get oauthClient() {
-    switch (this.name) {
-      case "google":
-        return new GoogleClient();
-      case "azure":
-        return new AzureClient();
-      case "oidc":
-        return new OIDCClient();
-      default:
-        return undefined;
-    }
+  get oauthClient(): OAuthClientLike | undefined {
+    return undefined;
   }
 
   /**

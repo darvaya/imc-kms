@@ -7,12 +7,10 @@ import env from "@server/env";
 import auth from "@server/middlewares/authentication";
 import { transaction } from "@server/middlewares/transaction";
 import { Event, Team } from "@server/models";
-import AuthenticationHelper from "@server/models/helpers/AuthenticationHelper";
 import {
   presentUser,
   presentTeam,
   presentPolicies,
-  presentProviderConfig,
   presentAvailableTeam,
   presentGroup,
   presentGroupUser,
@@ -58,12 +56,7 @@ router.post("auth.config", async (ctx: APIContext<T.AuthConfigReq>) => {
           logo: team.getPreference(TeamPreference.PublicBranding)
             ? team.avatarUrl
             : undefined,
-          providers: [
-            ...AuthenticationHelper.providersForTeam(team).map(
-              presentProviderConfig
-            ),
-            ...betterAuthProviders,
-          ],
+          providers: [...betterAuthProviders],
         },
       };
       return;
@@ -88,12 +81,7 @@ router.post("auth.config", async (ctx: APIContext<T.AuthConfigReq>) => {
             ? team.avatarUrl
             : undefined,
           hostname: ctx.request.hostname,
-          providers: [
-            ...AuthenticationHelper.providersForTeam(team).map(
-              presentProviderConfig
-            ),
-            ...betterAuthProviders,
-          ],
+          providers: [...betterAuthProviders],
         },
       };
       return;
@@ -118,12 +106,7 @@ router.post("auth.config", async (ctx: APIContext<T.AuthConfigReq>) => {
             ? team.avatarUrl
             : undefined,
           hostname: ctx.request.hostname,
-          providers: [
-            ...AuthenticationHelper.providersForTeam(team).map(
-              presentProviderConfig
-            ),
-            ...betterAuthProviders,
-          ],
+          providers: [...betterAuthProviders],
         },
       };
       return;
@@ -133,12 +116,7 @@ router.post("auth.config", async (ctx: APIContext<T.AuthConfigReq>) => {
   // Otherwise, we're requesting from the standard root signin page
   ctx.body = {
     data: {
-      providers: [
-        ...AuthenticationHelper.providersForTeam().map(
-          presentProviderConfig
-        ),
-        ...betterAuthProviders,
-      ],
+      providers: [...betterAuthProviders],
     },
   };
 });
