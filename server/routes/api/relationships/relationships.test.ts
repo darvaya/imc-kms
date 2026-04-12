@@ -1,5 +1,5 @@
 import { CollectionPermission } from "@shared/types";
-import type { Document, Relationship, User } from "@server/models";
+import type { Document, Relationship } from "@server/models";
 import { RelationshipType } from "@server/models/Relationship";
 import {
   buildAdmin,
@@ -7,15 +7,16 @@ import {
   buildDocument,
   buildRelationship,
   buildUser,
+  type TestUser,
 } from "@server/test/factories";
 import { getTestServer } from "@server/test/support";
 
 const server = getTestServer();
 
 describe("#relationships.info", () => {
-  let admin: User;
-  let user: User;
-  let anotherUser: User;
+  let admin: TestUser;
+  let user: TestUser;
+  let anotherUser: TestUser;
   let document: Document;
   let reverseDocument: Document;
   let relationship: Relationship;
@@ -57,7 +58,7 @@ describe("#relationships.info", () => {
   it("should fail with status 400 bad request when id is not supplied", async () => {
     const res = await server.post("/api/relationships.info", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
       },
     });
     const body = await res.json();
@@ -68,7 +69,7 @@ describe("#relationships.info", () => {
   it("should fail with status 400 bad request when id is not a valid UUID", async () => {
     const res = await server.post("/api/relationships.info", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: "invalid-uuid",
       },
     });
@@ -80,7 +81,7 @@ describe("#relationships.info", () => {
   it("should fail with status 404 not found when relationship does not exist", async () => {
     const res = await server.post("/api/relationships.info", {
       body: {
-        token: admin.getJwtToken(),
+        token: admin.sessionToken,
         id: "550e8400-e29b-41d4-a716-446655440000",
       },
     });
@@ -92,7 +93,7 @@ describe("#relationships.info", () => {
   it("should fail with status 403 forbidden when user cannot read the document", async () => {
     const res = await server.post("/api/relationships.info", {
       body: {
-        token: anotherUser.getJwtToken(),
+        token: anotherUser.sessionToken,
         id: relationship.id,
       },
     });
@@ -104,7 +105,7 @@ describe("#relationships.info", () => {
   it("should succeed with status 200 ok when user can read the document", async () => {
     const res = await server.post("/api/relationships.info", {
       body: {
-        token: admin.getJwtToken(),
+        token: admin.sessionToken,
         id: relationship.id,
       },
     });
@@ -143,7 +144,7 @@ describe("#relationships.info", () => {
 
     const res = await server.post("/api/relationships.info", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: userRelationship.id,
       },
     });
@@ -163,7 +164,7 @@ describe("#relationships.info", () => {
 
     const res = await server.post("/api/relationships.info", {
       body: {
-        token: teamUser.getJwtToken(),
+        token: teamUser.sessionToken,
         id: relationship.id,
       },
     });
@@ -177,9 +178,9 @@ describe("#relationships.info", () => {
 });
 
 describe("#relationships.list", () => {
-  let admin: User;
-  let user: User;
-  let anotherUser: User; // eslint-disable-line @typescript-eslint/no-unused-vars
+  let admin: TestUser;
+  let user: TestUser;
+  let anotherUser: TestUser; // eslint-disable-line @typescript-eslint/no-unused-vars
   let relationships: Relationship[]; // eslint-disable-line @typescript-eslint/no-unused-vars
   let documents: Document[];
 
@@ -239,7 +240,7 @@ describe("#relationships.list", () => {
   it("should succeed with status 200 ok returning all relationships", async () => {
     const res = await server.post("/api/relationships.list", {
       body: {
-        token: admin.getJwtToken(),
+        token: admin.sessionToken,
       },
     });
     const body = await res.json();
@@ -255,7 +256,7 @@ describe("#relationships.list", () => {
   it("should succeed with status 200 ok returning relationships filtered by type", async () => {
     const res = await server.post("/api/relationships.list", {
       body: {
-        token: admin.getJwtToken(),
+        token: admin.sessionToken,
         type: RelationshipType.Backlink,
       },
     });
@@ -273,7 +274,7 @@ describe("#relationships.list", () => {
   it("should succeed with status 200 ok returning relationships filtered by documentId", async () => {
     const res = await server.post("/api/relationships.list", {
       body: {
-        token: admin.getJwtToken(),
+        token: admin.sessionToken,
         documentId: documents[0].id,
       },
     });
@@ -291,7 +292,7 @@ describe("#relationships.list", () => {
   it("should succeed with status 200 ok returning relationships filtered by reverseDocumentId", async () => {
     const res = await server.post("/api/relationships.list", {
       body: {
-        token: admin.getJwtToken(),
+        token: admin.sessionToken,
         reverseDocumentId: documents[1].id,
       },
     });
@@ -309,7 +310,7 @@ describe("#relationships.list", () => {
   it("should succeed with status 200 ok returning relationships with multiple filters", async () => {
     const res = await server.post("/api/relationships.list", {
       body: {
-        token: admin.getJwtToken(),
+        token: admin.sessionToken,
         type: RelationshipType.Backlink,
         documentId: documents[0].id,
       },
@@ -329,7 +330,7 @@ describe("#relationships.list", () => {
   it("should fail with status 400 bad request when documentId is invalid", async () => {
     const res = await server.post("/api/relationships.list", {
       body: {
-        token: admin.getJwtToken(),
+        token: admin.sessionToken,
         documentId: "invalid-id",
       },
     });
@@ -339,7 +340,7 @@ describe("#relationships.list", () => {
   it("should fail with status 400 bad request when reverseDocumentId is invalid", async () => {
     const res = await server.post("/api/relationships.list", {
       body: {
-        token: admin.getJwtToken(),
+        token: admin.sessionToken,
         reverseDocumentId: "invalid-id",
       },
     });
@@ -351,7 +352,7 @@ describe("#relationships.list", () => {
   it("should respect pagination", async () => {
     const res = await server.post("/api/relationships.list", {
       body: {
-        token: admin.getJwtToken(),
+        token: admin.sessionToken,
         limit: 1,
         offset: 0,
       },
@@ -367,7 +368,7 @@ describe("#relationships.list", () => {
   it("should return empty results when no relationships match filters", async () => {
     const res = await server.post("/api/relationships.list", {
       body: {
-        token: admin.getJwtToken(),
+        token: admin.sessionToken,
         documentId: "550e8400-e29b-41d4-a716-446655440000",
       },
     });
@@ -405,7 +406,7 @@ describe("#relationships.list", () => {
 
     const res = await server.post("/api/relationships.list", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         documentId: userDocument.id,
       },
     });

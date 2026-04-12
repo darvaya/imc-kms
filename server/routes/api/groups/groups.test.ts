@@ -1,10 +1,11 @@
-import type { Group, User } from "@server/models";
+import type { Group } from "@server/models";
 import { Event } from "@server/models";
 import {
   buildUser,
   buildAdmin,
   buildGroup,
   buildGroupUser,
+  type TestUser,
 } from "@server/test/factories";
 import { getTestServer } from "@server/test/support";
 import { GroupPermission } from "@shared/types";
@@ -17,7 +18,7 @@ describe("#groups.create", () => {
     const user = await buildAdmin();
     const res = await server.post("/api/groups.create", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         name,
         externalId: "123",
       },
@@ -48,7 +49,7 @@ describe("#groups.update", () => {
     const user = await buildUser();
     const res = await server.post("/api/groups.update", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: group.id,
         name: "Test",
       },
@@ -61,7 +62,7 @@ describe("#groups.update", () => {
     const user = await buildAdmin();
     const res = await server.post("/api/groups.update", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: group.id,
         name: "Test",
       },
@@ -70,7 +71,7 @@ describe("#groups.update", () => {
   });
 
   describe("when user is admin", () => {
-    let user: User, group: Group;
+    let user: TestUser, group: Group;
     beforeEach(async () => {
       user = await buildAdmin();
       group = await buildGroup({
@@ -81,7 +82,7 @@ describe("#groups.update", () => {
     it("allows admin to edit a group", async () => {
       const res = await server.post("/api/groups.update", {
         body: {
-          token: user.getJwtToken(),
+          token: user.sessionToken,
           id: group.id,
           name: "Test",
           externalId: "123",
@@ -102,7 +103,7 @@ describe("#groups.update", () => {
   });
 
   describe("when user is group admin", () => {
-    let user: User, group: Group;
+    let user: TestUser, group: Group;
     beforeEach(async () => {
       user = await buildUser();
       group = await buildGroup({
@@ -115,7 +116,7 @@ describe("#groups.update", () => {
       });
       await server.post("/api/groups.add_user", {
         body: {
-          token: admin.getJwtToken(),
+          token: admin.sessionToken,
           id: group.id,
           userId: user.id,
           permission: "admin",
@@ -126,7 +127,7 @@ describe("#groups.update", () => {
     it("allows group admin to edit a group", async () => {
       const res = await server.post("/api/groups.update", {
         body: {
-          token: user.getJwtToken(),
+          token: user.sessionToken,
           id: group.id,
           name: "Test by Group Admin",
         },
@@ -138,7 +139,7 @@ describe("#groups.update", () => {
   });
 
   describe("when checking for noop updates", () => {
-    let user: User, group: Group;
+    let user: TestUser, group: Group;
     beforeEach(async () => {
       user = await buildAdmin();
       group = await buildGroup({
@@ -149,7 +150,7 @@ describe("#groups.update", () => {
     it("does not create an event if the update is a noop", async () => {
       const res = await server.post("/api/groups.update", {
         body: {
-          token: user.getJwtToken(),
+          token: user.sessionToken,
           id: group.id,
           name: group.name,
         },
@@ -173,7 +174,7 @@ describe("#groups.update", () => {
       });
       const res = await server.post("/api/groups.update", {
         body: {
-          token: user.getJwtToken(),
+          token: user.sessionToken,
           id: group.id,
           name: "TEST",
         },
@@ -205,7 +206,7 @@ describe("#groups.list", () => {
     });
     const res = await server.post("/api/groups.list", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
       },
     });
     const body = await res.json();
@@ -241,7 +242,7 @@ describe("#groups.list", () => {
     await user.destroy({ hooks: false });
     const res = await server.post("/api/groups.list", {
       body: {
-        token: me.getJwtToken(),
+        token: me.sessionToken,
       },
     });
     const body = await res.json();
@@ -279,7 +280,7 @@ describe("#groups.list", () => {
     });
     const res = await server.post("/api/groups.list", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
       },
     });
     const body = await res.json();
@@ -305,7 +306,7 @@ describe("#groups.list", () => {
     const anotherRes = await server.post("/api/groups.list", {
       body: {
         userId: user.id,
-        token: user.getJwtToken(),
+        token: user.sessionToken,
       },
     });
     const anotherBody = await anotherRes.json();
@@ -334,7 +335,7 @@ describe("#groups.list", () => {
     const res = await server.post("/api/groups.list", {
       body: {
         name: group.name,
-        token: user.getJwtToken(),
+        token: user.sessionToken,
       },
     });
     const body = await res.json();
@@ -352,7 +353,7 @@ describe("#groups.list", () => {
     const res = await server.post("/api/groups.list", {
       body: {
         externalId: "123",
-        token: user.getJwtToken(),
+        token: user.sessionToken,
       },
     });
     const body = await res.json();
@@ -370,7 +371,7 @@ describe("#groups.list", () => {
     const res = await server.post("/api/groups.list", {
       body: {
         limit: 1,
-        token: user.getJwtToken(),
+        token: user.sessionToken,
       },
     });
     const body = await res.json();
@@ -388,7 +389,7 @@ describe("#groups.info", () => {
     });
     const res = await server.post("/api/groups.info", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: group.id,
       },
     });
@@ -405,7 +406,7 @@ describe("#groups.info", () => {
     });
     const res = await server.post("/api/groups.info", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         externalId: "456",
       },
     });
@@ -426,7 +427,7 @@ describe("#groups.info", () => {
     });
     const res = await server.post("/api/groups.info", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: group.id,
       },
     });
@@ -442,7 +443,7 @@ describe("#groups.info", () => {
     });
     const res = await server.post("/api/groups.info", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: group.id,
       },
     });
@@ -465,7 +466,7 @@ describe("#groups.info", () => {
     const group = await buildGroup();
     const res = await server.post("/api/groups.info", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: group.id,
       },
     });
@@ -491,7 +492,7 @@ describe("#groups.delete", () => {
     const user = await buildUser();
     const res = await server.post("/api/groups.delete", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: group.id,
       },
     });
@@ -503,7 +504,7 @@ describe("#groups.delete", () => {
     const user = await buildAdmin();
     const res = await server.post("/api/groups.delete", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: group.id,
       },
     });
@@ -517,7 +518,7 @@ describe("#groups.delete", () => {
     });
     const res = await server.post("/api/groups.delete", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: group.id,
       },
     });
@@ -540,7 +541,7 @@ describe("#groups.memberships", () => {
     });
     const res = await server.post("/api/groups.memberships", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: group.id,
       },
     });
@@ -582,7 +583,7 @@ describe("#groups.memberships", () => {
     await user3.destroy();
     const res = await server.post("/api/groups.memberships", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: group.id,
         query: user.name.slice(0, 3),
       },
@@ -605,7 +606,7 @@ describe("#groups.memberships", () => {
     const group = await buildGroup();
     const res = await server.post("/api/groups.memberships", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: group.id,
       },
     });
@@ -621,7 +622,7 @@ describe("#groups.add_user", () => {
     });
     const res = await server.post("/api/groups.add_user", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: group.id,
         userId: user.id,
       },
@@ -641,7 +642,7 @@ describe("#groups.add_user", () => {
     });
     const res = await server.post("/api/groups.add_user", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: group.id,
         userId: anotherUser.id,
         permission: GroupPermission.Admin,
@@ -667,7 +668,7 @@ describe("#groups.add_user", () => {
     const anotherUser = await buildUser();
     const res = await server.post("/api/groups.add_user", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: group.id,
         userId: anotherUser.id,
       },
@@ -687,7 +688,7 @@ describe("#groups.add_user", () => {
     });
     const res = await server.post("/api/groups.add_user", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: group.id,
         userId: anotherUser.id,
       },
@@ -706,7 +707,7 @@ describe("#groups.remove_user", () => {
     });
     await server.post("/api/groups.add_user", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: group.id,
         userId: user.id,
       },
@@ -715,7 +716,7 @@ describe("#groups.remove_user", () => {
     expect(users.length).toEqual(1);
     const res = await server.post("/api/groups.remove_user", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: group.id,
         userId: user.id,
       },
@@ -738,7 +739,7 @@ describe("#groups.remove_user", () => {
     const anotherUser = await buildUser();
     const res = await server.post("/api/groups.remove_user", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: group.id,
         userId: anotherUser.id,
       },
@@ -758,7 +759,7 @@ describe("#groups.remove_user", () => {
     });
     const res = await server.post("/api/groups.remove_user", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: group.id,
         userId: anotherUser.id,
       },
@@ -788,7 +789,7 @@ describe("#groups.update_user", () => {
     // Then update the user to be an admin
     const res = await server.post("/api/groups.update_user", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: group.id,
         userId: anotherUser.id,
         permission: GroupPermission.Admin,
@@ -804,7 +805,7 @@ describe("#groups.update_user", () => {
     // Update the user to not be an admin
     const res2 = await server.post("/api/groups.update_user", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: group.id,
         userId: anotherUser.id,
         permission: "member",
@@ -846,7 +847,7 @@ describe("#groups.update_user", () => {
     // Try to update as non-admin
     const res = await server.post("/api/groups.update_user", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: group.id,
         userId: anotherUser.id,
         permission: GroupPermission.Admin,
@@ -867,7 +868,7 @@ describe("#groups.update_user", () => {
 
     const res = await server.post("/api/groups.update_user", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: group.id,
         userId: anotherUser.id,
         permission: GroupPermission.Admin,

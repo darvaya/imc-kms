@@ -17,6 +17,10 @@ interface BetterAuthInstance {
         unknown
       >;
     } | null>;
+    revokeSession: (opts: {
+      headers: Headers;
+      body?: { token: string };
+    }) => Promise<{ status: boolean } | null>;
   };
   $context: Promise<{
     internalAdapter: {
@@ -163,6 +167,9 @@ async function initBetterAuth(): Promise<BetterAuthInstance> {
   }
   if (typeof instance.api?.getSession !== "function") {
     throw new Error("better-auth instance missing .api.getSession — version mismatch?");
+  }
+  if (typeof instance.api?.revokeSession !== "function") {
+    throw new Error("better-auth instance missing .api.revokeSession — version mismatch?");
   }
 
   Logger.info(

@@ -1,5 +1,5 @@
 import Router from "koa-router";
-import { Client, UserRole } from "@shared/types";
+import { UserRole } from "@shared/types";
 import slugify from "@shared/utils/slugify";
 import teamCreator from "@server/commands/teamCreator";
 import { ValidationError } from "@server/errors";
@@ -8,7 +8,6 @@ import { transaction } from "@server/middlewares/transaction";
 import validate from "@server/middlewares/validate";
 import { Team, User } from "@server/models";
 import type { APIContext } from "@server/types";
-import { signIn } from "@server/utils/authentication";
 import { getVersion, getVersionInfo } from "@server/utils/getInstallationInfo";
 import * as T from "./schema";
 
@@ -35,20 +34,15 @@ router.post(
       authenticationProviders: [],
     });
 
-    const user = await User.createWithCtx(ctx, {
+    await User.createWithCtx(ctx, {
       name: userName,
       email: userEmail,
       teamId: team.id,
       role: UserRole.Admin,
     });
 
-    await signIn(ctx, "email", {
-      user,
-      team,
-      isNewTeam: true,
-      isNewUser: true,
-      client: Client.Web,
-    });
+    // Redirect to home — user will authenticate via Microsoft SSO
+    ctx.redirect(`${team.url}/home`);
   }
 );
 

@@ -1,3 +1,4 @@
+import { QueryTypes } from "sequelize";
 import Logger from "@server/logging/Logger";
 import { User, UserAuthentication } from "@server/models";
 import { sequelize } from "@server/storage/database";
@@ -52,6 +53,20 @@ export default class ValidateSSOAccessTask extends BaseTask<Props> {
         `Authentication token no longer valid for ${user?.id}`
       );
 
+      // Revoke all Better Auth sessions for this user
+      try {
+        await sequelize.query(
+          `DELETE FROM ba_session WHERE "outlineUserId" = :userId`,
+          { replacements: { userId }, type: QueryTypes.DELETE, transaction }
+        );
+      } catch (err) {
+        Logger.warn(
+          `Failed to revoke Better Auth sessions for user ${userId}`,
+          err as Error
+        );
+      }
+
+      // Rotate JWT secret to invalidate collaboration tokens
       await user?.rotateJwtSecret({ transaction });
     });
   }

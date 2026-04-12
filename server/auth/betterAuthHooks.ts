@@ -47,6 +47,9 @@ export async function afterSignInHook(
       await ctx.internalAdapter.updateSession(session.token, {
         outlineUserId: existingOutlineUserId,
       });
+
+      // Track sign-in (replaces signIn() from authentication.ts)
+      await trackSignIn(existingOutlineUserId, session.ipAddress, microsoftAccount.providerId);
       return;
     }
 
@@ -108,6 +111,9 @@ export async function afterSignInHook(
       outlineUserId,
     });
 
+    // Track sign-in for newly provisioned user
+    await trackSignIn(outlineUserId, session.ipAddress, microsoftAccount.providerId);
+
     Logger.info(
       "lifecycle",
       `better-auth: provisioned Outline user ${outlineUserId} for ${baUser.user.email}`
@@ -117,5 +123,45 @@ export async function afterSignInHook(
       "better-auth hook: failed to provision Outline user after sign-in",
       err as Error
     );
+  }
+}
+
+/**
+ * Track a sign-in event for the given Outline user. This replaces the
+ * tracking that the removed `signIn()` utility used to perform.
+ */
+async function trackSignIn(
+  outlineUserId: string,
+  ipAddress: string | null | undefined,
+  providerId: string
+): Promise<void> {
+  try {
+    const { User: UserModel, Event } = await import("@server/models");
+    const user = await UserModel.findByPk(outlineUserId);
+
+    if (!user) {
+      return;
+    }
+
+    const now = new Date();
+    user.lastActiveAt = now;
+    user.lastActiveIp = ipAddress ?? null;
+    user.lastSignedInAt = now;
+    user.lastSignedInIp = ipAddress ?? null;
+    await user.save({ hooks: false });
+
+    await Event.create({
+      name: "users.signin",
+      userId: outlineUserId,
+      teamId: user.teamId,
+      actorId: outlineUserId,
+      ip: ipAddress ?? null,
+      data: {
+        name: user.name,
+        service: providerId,
+      },
+    });
+  } catch (err) {
+    Logger.error("better-auth hook: failed to track sign-in", err as Error);
   }
 }

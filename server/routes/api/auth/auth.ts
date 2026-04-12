@@ -1,4 +1,4 @@
-import { subHours, subMinutes } from "date-fns";
+import { subHours } from "date-fns";
 import Router from "koa-router";
 import uniqBy from "lodash/uniqBy";
 import { TeamPreference } from "@shared/types";
@@ -17,7 +17,6 @@ import {
 } from "@server/presenters";
 import ValidateSSOAccessTask from "@server/queues/tasks/ValidateSSOAccessTask";
 import type { APIContext } from "@server/types";
-import { getSessionsInCookie } from "@server/utils/authentication";
 import type * as T from "./schema";
 
 const router = new Router();
@@ -123,19 +122,13 @@ router.post("auth.config", async (ctx: APIContext<T.AuthConfigReq>) => {
 
 router.post("auth.info", auth(), async (ctx: APIContext<T.AuthInfoReq>) => {
   const { user } = ctx.state.auth;
-  const sessions = getSessionsInCookie(ctx);
-  const signedInTeamIds = Object.keys(sessions);
+  const signedInTeamIds: string[] = [];
 
-  const [team, groups, signedInTeams, availableTeams] = await Promise.all([
+  const [team, groups, availableTeams] = await Promise.all([
     Team.scope("withDomains").findByPk(user.teamId, {
       rejectOnEmpty: true,
     }),
     user.groups(),
-    Team.findAll({
-      where: {
-        id: signedInTeamIds,
-      },
-    }),
     user.availableTeams(),
   ]);
 
@@ -154,7 +147,7 @@ router.post("auth.info", auth(), async (ctx: APIContext<T.AuthInfoReq>) => {
       groups: await Promise.all(groups.map(presentGroup)),
       groupUsers: groups.map((group) => presentGroupUser(group.groupUsers[0])),
       collaborationToken: user.getCollaborationToken(),
-      availableTeams: uniqBy([...signedInTeams, ...availableTeams], "id").map(
+      availableTeams: uniqBy(availableTeams, "id").map(
         (availableTeam) =>
           presentAvailableTeam(
             availableTeam,
@@ -172,21 +165,42 @@ router.post(
   auth(),
   transaction(),
   async (ctx: APIContext<T.AuthDeleteReq>) => {
-    const { auth, transaction } = ctx.state;
-    const { user } = auth;
+    const { auth: authState, transaction } = ctx.state;
+    const { user } = authState;
 
+    // Revoke the current Better Auth session via cookie (production browser flow)
+    try {
+      const { getBetterAuth } = await import("@server/auth/betterAuth");
+      const { fromNodeHeaders } = await import("better-auth/node");
+      const betterAuth = await getBetterAuth();
+      await betterAuth.api.revokeSession({
+        headers: fromNodeHeaders(ctx.req.headers),
+      });
+    } catch {
+      // Cookie-based revocation may fail when authenticating via body/header token
+    }
+
+    // Also delete the session directly by token to handle body/header auth
+    const { sequelize } = await import("@server/storage/database");
+    const { QueryTypes } = await import("sequelize");
+    await sequelize.query(
+      `DELETE FROM ba_session WHERE token = :token`,
+      {
+        replacements: { token: authState.token },
+        type: QueryTypes.DELETE,
+        transaction,
+      }
+    );
+
+    // Still rotate JWT secret to invalidate outstanding collaboration tokens
     await user.rotateJwtSecret({ transaction });
+
     await Event.createFromContext(ctx, {
       name: "users.signout",
       userId: user.id,
       data: {
         name: user.name,
       },
-    });
-
-    ctx.cookies.set("accessToken", "", {
-      sameSite: "lax",
-      expires: subMinutes(new Date(), 1),
     });
 
     ctx.body = {

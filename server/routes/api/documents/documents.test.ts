@@ -9,6 +9,7 @@ import {
 import { TextHelper } from "@shared/utils/TextHelper";
 import { createContext } from "@server/context";
 import { parser } from "@server/editor";
+import type { TestUser } from "@server/test/factories";
 import type { User } from "@server/models";
 import {
   Document,
@@ -59,7 +60,7 @@ describe("#documents.info", () => {
     });
     const res = await server.post("/api/documents.info", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: document.id,
       },
     });
@@ -76,7 +77,7 @@ describe("#documents.info", () => {
     });
     const res = await server.post("/api/documents.info", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: document.urlId,
       },
     });
@@ -94,7 +95,7 @@ describe("#documents.info", () => {
     await withAPIContext(user, (ctx) => document.archiveWithCtx(ctx));
     const res = await server.post("/api/documents.info", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: document.id,
       },
     });
@@ -114,7 +115,7 @@ describe("#documents.info", () => {
     });
     const res = await server.post("/api/documents.info", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: document.id,
       },
     });
@@ -129,7 +130,7 @@ describe("#documents.info", () => {
     });
     const res = await server.post("/api/documents.info", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: document.id,
       },
     });
@@ -176,13 +177,13 @@ describe("#documents.info", () => {
     await server.post("/api/collections.delete", {
       body: {
         id: collection.id,
-        token: user.getJwtToken(),
+        token: user.sessionToken,
       },
     });
     const res = await server.post("/api/documents.info", {
       body: {
         id: doc.id,
-        token: user2.getJwtToken(),
+        token: user2.sessionToken,
       },
     });
     expect(res.status).toEqual(403);
@@ -203,13 +204,13 @@ describe("#documents.info", () => {
     await server.post("/api/collections.delete", {
       body: {
         id: collection.id,
-        token: user.getJwtToken(),
+        token: user.sessionToken,
       },
     });
     const res = await server.post("/api/documents.info", {
       body: {
         id: doc.id,
-        token: user.getJwtToken(),
+        token: user.sessionToken,
       },
     });
     const body = await res.json();
@@ -401,7 +402,7 @@ describe("#documents.info", () => {
     });
     const res = await server.post("/api/documents.info", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         shareId: share.id,
       },
     });
@@ -426,7 +427,7 @@ describe("#documents.info", () => {
     });
     const res = await server.post("/api/documents.info", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         shareId: share.id,
       },
     });
@@ -456,7 +457,7 @@ describe("#documents.info", () => {
     });
     const res = await server.post("/api/documents.info", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         shareId: share.id,
       },
     });
@@ -469,7 +470,7 @@ describe("#documents.info", () => {
     const user = await buildUser();
     const res = await server.post("/api/documents.info", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: "9bcbf864-1090-4eb6-ba05-4da0c3a5c58e",
       },
     });
@@ -491,7 +492,7 @@ describe("#documents.info", () => {
     const user = await buildUser();
     const res = await server.post("/api/documents.info", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: document.id,
       },
     });
@@ -519,7 +520,7 @@ describe("#documents.export", () => {
     });
     const res = await server.post("/api/documents.export", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: document.id,
       },
     });
@@ -536,7 +537,7 @@ describe("#documents.export", () => {
     });
     const res = await server.post("/api/documents.export", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: document.id,
       },
       headers: {
@@ -556,7 +557,7 @@ describe("#documents.export", () => {
     await withAPIContext(user, (ctx) => document.archiveWithCtx(ctx));
     const res = await server.post("/api/documents.export", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: document.id,
       },
     });
@@ -576,7 +577,7 @@ describe("#documents.export", () => {
     });
     const res = await server.post("/api/documents.export", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: document.id,
       },
     });
@@ -591,7 +592,7 @@ describe("#documents.export", () => {
     });
     const res = await server.post("/api/documents.export", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: document.id,
       },
     });
@@ -615,7 +616,7 @@ describe("#documents.export", () => {
     const user = await buildUser();
     const res = await server.post("/api/documents.export", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: document.id,
       },
     });
@@ -628,7 +629,7 @@ describe("#documents.list", () => {
     const user = await buildUser();
     const res = await server.post("/api/documents.list", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         userId: "invalid",
       },
     });
@@ -641,7 +642,7 @@ describe("#documents.list", () => {
     const user = await buildUser();
     const res = await server.post("/api/documents.list", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         collectionId: "invalid",
       },
     });
@@ -654,7 +655,7 @@ describe("#documents.list", () => {
     const user = await buildUser();
     const res = await server.post("/api/documents.list", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         parentDocumentId: "invalid",
       },
     });
@@ -667,7 +668,7 @@ describe("#documents.list", () => {
     const user = await buildUser();
     const res = await server.post("/api/documents.list", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         backlinkDocumentId: "invalid",
       },
     });
@@ -684,7 +685,7 @@ describe("#documents.list", () => {
     });
     const res = await server.post("/api/documents.list", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
       },
     });
     const body = await res.json();
@@ -708,7 +709,7 @@ describe("#documents.list", () => {
     });
     const res = await server.post("/api/documents.list", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         parentDocumentId: null,
       },
     });
@@ -726,7 +727,7 @@ describe("#documents.list", () => {
     });
     const res = await server.post("/api/documents.list", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
       },
     });
     const body = await res.json();
@@ -744,7 +745,7 @@ describe("#documents.list", () => {
     await document.save();
     const res = await server.post("/api/documents.list", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
       },
     });
     const body = await res.json();
@@ -777,7 +778,7 @@ describe("#documents.list", () => {
     await withAPIContext(user, (ctx) => docs[0].archiveWithCtx(ctx));
     const res = await server.post("/api/documents.list", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         statusFilter: [StatusFilter.Archived],
         collectionId: collection.id,
       },
@@ -821,7 +822,7 @@ describe("#documents.list", () => {
     ]);
     const res = await server.post("/api/documents.list", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         statusFilter: [StatusFilter.Archived],
       },
     });
@@ -848,7 +849,7 @@ describe("#documents.list", () => {
 
     const res = await server.post("/api/documents.list", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
       },
     });
     const body = await res.json();
@@ -870,7 +871,7 @@ describe("#documents.list", () => {
     });
     const res = await server.post("/api/documents.list", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         direction: "ASC",
       },
     });
@@ -902,7 +903,7 @@ describe("#documents.list", () => {
     await collection.addDocumentToStructure(anotherDoc, 0);
     const res = await server.post("/api/documents.list", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         collectionId: collection.id,
         sort: "index",
         direction: "ASC",
@@ -941,7 +942,7 @@ describe("#documents.list", () => {
     // First page (offset=0, limit=10)
     const res1 = await server.post("/api/documents.list", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         collectionId: collection.id,
         sort: "index",
         direction: "ASC",
@@ -958,7 +959,7 @@ describe("#documents.list", () => {
     // Second page (offset=10, limit=10) - this tests the bug fix
     const res2 = await server.post("/api/documents.list", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         collectionId: collection.id,
         sort: "index",
         direction: "ASC",
@@ -975,7 +976,7 @@ describe("#documents.list", () => {
     // Third page (offset=20, limit=10)
     const res3 = await server.post("/api/documents.list", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         collectionId: collection.id,
         sort: "index",
         direction: "ASC",
@@ -998,7 +999,7 @@ describe("#documents.list", () => {
     });
     const res = await server.post("/api/documents.list", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         collectionId: document.collectionId,
       },
     });
@@ -1034,7 +1035,7 @@ describe("#documents.list", () => {
     );
     const res = await server.post("/api/documents.list", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         collectionId: collection.id,
       },
     });
@@ -1063,7 +1064,7 @@ describe("#documents.list", () => {
     });
     const res = await server.post("/api/documents.list", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         backlinkDocumentId: document.id,
       },
     });
@@ -1090,7 +1091,7 @@ describe("#documents.drafts", () => {
     });
     const res = await server.post("/api/documents.drafts", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         collectionId: "invalid",
       },
     });
@@ -1107,7 +1108,7 @@ describe("#documents.drafts", () => {
     });
     const res = await server.post("/api/documents.drafts", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         dateFilter: "invalid",
       },
     });
@@ -1124,7 +1125,7 @@ describe("#documents.drafts", () => {
     });
     const res = await server.post("/api/documents.drafts", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
       },
     });
     const body = await res.json();
@@ -1150,7 +1151,7 @@ describe("#documents.drafts", () => {
 
     const res = await server.post("/api/documents.drafts", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
       },
     });
     const body = await res.json();
@@ -1172,7 +1173,7 @@ describe("#documents.drafts", () => {
 
     const res = await server.post("/api/documents.drafts", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
       },
     });
     const body = await res.json();
@@ -1205,14 +1206,14 @@ describe("#documents.search_titles", () => {
     // add member to the document
     await server.post("/api/documents.add_user", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: document.id,
         userId: member.id,
       },
     });
     const res = await server.post("/api/documents.search_titles", {
       body: {
-        token: member.getJwtToken(),
+        token: member.sessionToken,
         query: "title",
         statusFilter: [StatusFilter.Draft],
       },
@@ -1244,14 +1245,14 @@ describe("#documents.search_titles", () => {
     // add member to the document
     await server.post("/api/documents.add_user", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: document.id,
         userId: member.id,
       },
     });
     const res = await server.post("/api/documents.search_titles", {
       body: {
-        token: member.getJwtToken(),
+        token: member.sessionToken,
         query: "title",
       },
     });
@@ -1265,7 +1266,7 @@ describe("#documents.search_titles", () => {
     const user = await buildUser();
     const res = await server.post("/api/documents.search_titles", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
       },
     });
     const body = await res.json();
@@ -1282,7 +1283,7 @@ describe("#documents.search_titles", () => {
     });
     const res = await server.post("/api/documents.search_titles", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         query: "SECRET",
       },
     });
@@ -1303,7 +1304,7 @@ describe("#documents.search_titles", () => {
     });
     const res = await server.post("/api/documents.search_titles", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         query: "SECRET",
         dateFilter: "day",
       },
@@ -1323,7 +1324,7 @@ describe("#documents.search_titles", () => {
     });
     const res = await server.post("/api/documents.search_titles", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         query: "SECRET",
         statusFilter: [StatusFilter.Archived],
       },
@@ -1343,7 +1344,7 @@ describe("#documents.search_titles", () => {
     });
     const res = await server.post("/api/documents.search_titles", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         query: "SECRET",
         statusFilter: [StatusFilter.Draft],
       },
@@ -1363,7 +1364,7 @@ describe("#documents.search_titles", () => {
     });
     const res = await server.post("/api/documents.search_titles", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         query: "SECRET",
         userId: user.id,
       },
@@ -1390,7 +1391,7 @@ describe("#documents.search_titles", () => {
     });
     const res = await server.post("/api/documents.search_titles", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         query: "SECRET",
         statusFilter: [StatusFilter.Published, StatusFilter.Draft],
       },
@@ -1416,7 +1417,7 @@ describe("#documents.search", () => {
     });
     const res = await server.post("/api/documents.search", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         query: "much",
       },
     });
@@ -1480,7 +1481,7 @@ describe("#documents.search", () => {
     });
     const res = await server.post("/api/documents.search", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         shareId: share.id,
         statusFilter: [StatusFilter.Draft],
         query: "test",
@@ -1536,7 +1537,7 @@ describe("#documents.search", () => {
     });
     const res = await server.post("/api/documents.search", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         query: "search term",
       },
     });
@@ -1572,7 +1573,7 @@ describe("#documents.search", () => {
     });
     const res = await server.post("/api/documents.search", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         query: "sear",
       },
     });
@@ -1601,7 +1602,7 @@ describe("#documents.search", () => {
       });
       const res = await server.post("/api/documents.search", {
         body: {
-          token: user.getJwtToken(),
+          token: user.sessionToken,
           query: `search -random`,
         },
       });
@@ -1627,7 +1628,7 @@ describe("#documents.search", () => {
       });
       const res = await server.post("/api/documents.search", {
         body: {
-          token: user.getJwtToken(),
+          token: user.sessionToken,
           query: `"search term"`,
         },
       });
@@ -1649,7 +1650,7 @@ describe("#documents.search", () => {
     });
     const res = await server.post("/api/documents.search", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         query: "search term",
         statusFilter: [StatusFilter.Published, StatusFilter.Archived],
       },
@@ -1663,7 +1664,7 @@ describe("#documents.search", () => {
     const user = await buildUser();
     const res = await server.post("/api/documents.search", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         query:
           "much much much much much much much much much much much much much much much much much much much much much much much much much much much much much much much much much much much much much much much much much much much much much much much much much much much much much much much much much much much much much much much much much much much much much much much much longer search term",
       },
@@ -1684,7 +1685,7 @@ describe("#documents.search", () => {
     });
     const res = await server.post("/api/documents.search", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         query: "search term",
         statusFilter: [StatusFilter.Draft],
       },
@@ -1706,7 +1707,7 @@ describe("#documents.search", () => {
     });
     const res = await server.post("/api/documents.search", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         statusFilter: [StatusFilter.Draft],
         query: "text",
       },
@@ -1726,7 +1727,7 @@ describe("#documents.search", () => {
     });
     const res = await server.post("/api/documents.search", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         query: "search term",
         statusFilter: [StatusFilter.Draft],
       },
@@ -1746,7 +1747,7 @@ describe("#documents.search", () => {
     await withAPIContext(user, (ctx) => document.archiveWithCtx(ctx));
     const res = await server.post("/api/documents.search", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         query: "search term",
         statusFilter: [StatusFilter.Published, StatusFilter.Draft],
       },
@@ -1766,7 +1767,7 @@ describe("#documents.search", () => {
     await withAPIContext(user, (ctx) => document.archiveWithCtx(ctx));
     const res = await server.post("/api/documents.search", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         query: "search term",
         statusFilter: [StatusFilter.Archived],
       },
@@ -1793,7 +1794,7 @@ describe("#documents.search", () => {
     });
     const res = await server.post("/api/documents.search", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         query: "search term",
         userId: user.id,
       },
@@ -1825,7 +1826,7 @@ describe("#documents.search", () => {
     });
     const res = await server.post("/api/documents.search", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         query: "search term",
         collectionId: collection.id,
       },
@@ -1853,7 +1854,7 @@ describe("#documents.search", () => {
     });
     const res = await server.post("/api/documents.search", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         query: "search term",
         collectionId: document.collectionId,
       },
@@ -1879,7 +1880,7 @@ describe("#documents.search", () => {
     });
     const res = await server.post("/api/documents.search", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         query: "search term",
       },
     });
@@ -1892,7 +1893,7 @@ describe("#documents.search", () => {
     const user = await buildUser();
     const res = await server.post("/api/documents.search", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         query: "search term",
         dateFilter: "DROP TABLE students;",
       },
@@ -1915,7 +1916,7 @@ describe("#documents.search", () => {
     const user = await buildUser();
     await server.post("/api/documents.search", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         query: "my term",
       },
     });
@@ -1952,14 +1953,14 @@ describe("#documents.search", () => {
     // add member to the document
     await server.post("/api/documents.add_user", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: document.id,
         userId: member.id,
       },
     });
     const res = await server.post("/api/documents.search", {
       body: {
-        token: member.getJwtToken(),
+        token: member.sessionToken,
         query: "title",
       },
     });
@@ -1992,14 +1993,14 @@ describe("#documents.search", () => {
     // add member to the document
     await server.post("/api/documents.add_user", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: document.id,
         userId: member.id,
       },
     });
     const res = await server.post("/api/documents.search", {
       body: {
-        token: member.getJwtToken(),
+        token: member.sessionToken,
         query: "title",
         statusFilter: [StatusFilter.Draft],
       },
@@ -2050,7 +2051,7 @@ describe("#documents.search", () => {
     ]);
     const res = await server.post("/api/documents.search", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         collectionId: collection1.id,
       },
     });
@@ -2068,7 +2069,7 @@ describe("#documents.templatize", () => {
     const user = await buildUser();
     const res = await server.post("/api/documents.templatize", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
       },
     });
     const body = await res.json();
@@ -2083,7 +2084,7 @@ describe("#documents.templatize", () => {
     });
     const res = await server.post("/api/documents.templatize", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: document.id,
       },
     });
@@ -2104,7 +2105,7 @@ describe("#documents.templatize", () => {
     });
     const res = await server.post("/api/documents.templatize", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: document.id,
         collectionId: collection.id,
         publish: true,
@@ -2128,7 +2129,7 @@ describe("#documents.templatize", () => {
     });
     const res = await server.post("/api/documents.templatize", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: document.id,
         publish: true,
       },
@@ -2151,7 +2152,7 @@ describe("#documents.templatize", () => {
     });
     const res = await server.post("/api/documents.templatize", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: document.id,
         collectionId: collection.id,
         publish: false,
@@ -2175,7 +2176,7 @@ describe("#documents.templatize", () => {
     });
     const res = await server.post("/api/documents.templatize", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: document.id,
         publish: false,
       },
@@ -2202,7 +2203,7 @@ describe("#documents.templatize", () => {
     });
     const res = await server.post("/api/documents.templatize", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: document.id,
         collectionId: anotherCollection.id,
         publish: true,
@@ -2248,7 +2249,7 @@ describe("#documents.archived", () => {
 
     const res = await server.post("/api/documents.archived", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         collectionId: firstCollection.id,
       },
     });
@@ -2291,7 +2292,7 @@ describe("#documents.archived", () => {
 
     const res = await server.post("/api/documents.archived", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
       },
     });
     const body = await res.json();
@@ -2308,7 +2309,7 @@ describe("#documents.archived", () => {
     await withAPIContext(user, (ctx) => document.archiveWithCtx(ctx));
     const res = await server.post("/api/documents.archived", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
       },
     });
     const body = await res.json();
@@ -2325,7 +2326,7 @@ describe("#documents.archived", () => {
     await document.delete(user);
     const res = await server.post("/api/documents.archived", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
       },
     });
     const body = await res.json();
@@ -2345,7 +2346,7 @@ describe("#documents.archived", () => {
     await withAPIContext(user, (ctx) => document.archiveWithCtx(ctx));
     const res = await server.post("/api/documents.archived", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
       },
     });
     const body = await res.json();
@@ -2357,7 +2358,7 @@ describe("#documents.archived", () => {
     const viewer = await buildViewer();
     const res = await server.post("/api/documents.archived", {
       body: {
-        token: viewer.getJwtToken(),
+        token: viewer.sessionToken,
       },
     });
     expect(res.status).toEqual(403);
@@ -2379,7 +2380,7 @@ describe("#documents.deleted", () => {
     await document.delete(user);
     const res = await server.post("/api/documents.deleted", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
       },
     });
     const body = await res.json();
@@ -2414,7 +2415,7 @@ describe("#documents.deleted", () => {
     ]);
     const res = await server.post("/api/documents.deleted", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
       },
     });
     const body = await res.json();
@@ -2434,7 +2435,7 @@ describe("#documents.deleted", () => {
     await document.delete(admin);
     const res = await server.post("/api/documents.deleted", {
       body: {
-        token: admin.getJwtToken(),
+        token: admin.sessionToken,
       },
     });
     const body = await res.json();
@@ -2457,7 +2458,7 @@ describe("#documents.deleted", () => {
     await document.delete(user);
     const res = await server.post("/api/documents.deleted", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
       },
     });
     const body = await res.json();
@@ -2469,7 +2470,7 @@ describe("#documents.deleted", () => {
     const viewer = await buildViewer();
     const res = await server.post("/api/documents.deleted", {
       body: {
-        token: viewer.getJwtToken(),
+        token: viewer.sessionToken,
       },
     });
     expect(res.status).toEqual(403);
@@ -2486,7 +2487,7 @@ describe("#documents.viewed", () => {
     const user = await buildUser();
     const res = await server.post("/api/documents.viewed", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
       },
     });
     const body = await res.json();
@@ -2506,7 +2507,7 @@ describe("#documents.viewed", () => {
     });
     const res = await server.post("/api/documents.viewed", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
       },
     });
     const body = await res.json();
@@ -2529,7 +2530,7 @@ describe("#documents.viewed", () => {
     await document.destroy();
     const res = await server.post("/api/documents.viewed", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
       },
     });
     const body = await res.json();
@@ -2561,7 +2562,7 @@ describe("#documents.viewed", () => {
     });
     const res = await server.post("/api/documents.viewed", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
       },
     });
     const body = await res.json();
@@ -2589,7 +2590,7 @@ describe("#documents.move", () => {
         id: document.id,
         collectionId: document.collectionId,
         parentDocumentId: document.id,
-        token: user.getJwtToken(),
+        token: user.sessionToken,
       },
     });
     const body = await res.json();
@@ -2621,7 +2622,7 @@ describe("#documents.move", () => {
         id: document.id,
         collectionId: document.collectionId,
         parentDocumentId: childDocument.id,
-        token: user.getJwtToken(),
+        token: user.sessionToken,
       },
     });
     const body = await res.json();
@@ -2652,7 +2653,7 @@ describe("#documents.move", () => {
         id: document.id,
         collectionId: collection.id,
         parentDocumentId: draft.id,
-        token: user.getJwtToken(),
+        token: user.sessionToken,
       },
     });
     const body = await res.json();
@@ -2664,7 +2665,7 @@ describe("#documents.move", () => {
     const user = await buildUser();
     const res = await server.post("/api/documents.move", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
       },
     });
     const body = await res.json();
@@ -2685,7 +2686,7 @@ describe("#documents.move", () => {
     });
     const res = await server.post("/api/documents.move", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: document.id,
         collectionId: collection.id,
         index: -1,
@@ -2711,7 +2712,7 @@ describe("#documents.move", () => {
     });
     const res = await server.post("/api/documents.move", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: document.id,
         collectionId: collection.id,
         index: 0,
@@ -2733,7 +2734,7 @@ describe("#documents.move", () => {
     });
     const res = await server.post("/api/documents.move", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: document.id,
         collectionId: collection.id,
       },
@@ -2753,7 +2754,7 @@ describe("#documents.move", () => {
     const collection = await buildCollection();
     const res = await server.post("/api/documents.move", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: document.id,
         collectionId: collection.id,
       },
@@ -2776,7 +2777,7 @@ describe("#documents.move", () => {
 
     const res = await server.post("/api/documents.move", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: document.id,
       },
     });
@@ -2801,7 +2802,7 @@ describe("#documents.move", () => {
 
     const res = await server.post("/api/documents.move", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: document.id,
         collectionId: collection.id,
       },
@@ -2830,7 +2831,7 @@ describe("#documents.move", () => {
     const user = await buildUser();
     const res = await server.post("/api/documents.move", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: document.id,
         collectionId: collection.id,
       },
@@ -2854,7 +2855,7 @@ describe("#documents.restore", () => {
 
     const archiveRes = await server.post("/api/collections.archive", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: collection.id,
       },
     });
@@ -2863,7 +2864,7 @@ describe("#documents.restore", () => {
 
     const res = await server.post("/api/documents.restore", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: document.id,
       },
     });
@@ -2889,7 +2890,7 @@ describe("#documents.restore", () => {
 
     const archiveRes = await server.post("/api/collections.archive", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: collection.id,
       },
     });
@@ -2900,7 +2901,7 @@ describe("#documents.restore", () => {
 
     const res = await server.post("/api/documents.restore", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: document.id,
         collectionId: anotherCollection.id,
       },
@@ -2918,7 +2919,7 @@ describe("#documents.restore", () => {
     await document.destroy();
     const res = await server.post("/api/documents.restore", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
       },
     });
     const body = await res.json();
@@ -2935,7 +2936,7 @@ describe("#documents.restore", () => {
     await document.destroy();
     const res = await server.post("/api/documents.restore", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: document.id,
         collectionId: "invalid",
       },
@@ -2960,7 +2961,7 @@ describe("#documents.restore", () => {
 
     const res = await server.post("/api/documents.restore", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: document.id,
       },
     });
@@ -2986,7 +2987,7 @@ describe("#documents.restore", () => {
 
     const res = await server.post("/api/documents.restore", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: document.id,
         collectionId: collection.id,
       },
@@ -3007,7 +3008,7 @@ describe("#documents.restore", () => {
     await document.destroy();
     const res = await server.post("/api/documents.restore", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: document.id,
       },
     });
@@ -3029,7 +3030,7 @@ describe("#documents.restore", () => {
     await document.destroy();
     const res = await server.post("/api/documents.restore", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: document.id,
         collectionId: collection.id,
       },
@@ -3061,7 +3062,7 @@ describe("#documents.restore", () => {
 
     const res = await server.post("/api/documents.restore", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: document.id,
         collectionId: anotherCollection.id,
       },
@@ -3091,7 +3092,7 @@ describe("#documents.restore", () => {
 
     const res = await server.post("/api/documents.restore", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: template.id,
       },
     });
@@ -3124,7 +3125,7 @@ describe("#documents.restore", () => {
 
     const res = await server.post("/api/documents.restore", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: template.id,
         collectionId: anotherCollection.id,
       },
@@ -3149,7 +3150,7 @@ describe("#documents.restore", () => {
 
     const res = await server.post("/api/documents.restore", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: template.id,
       },
     });
@@ -3177,7 +3178,7 @@ describe("#documents.restore", () => {
 
     const res = await server.post("/api/documents.restore", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: document.id,
         collectionId: collection.id,
       },
@@ -3206,7 +3207,7 @@ describe("#documents.restore", () => {
 
     const res = await server.post("/api/documents.restore", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: document.id,
         collectionId: collection.id,
       },
@@ -3230,7 +3231,7 @@ describe("#documents.restore", () => {
     await document.destroy();
     const res = await server.post("/api/documents.restore", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: document.id,
         collectionId: collection.id,
       },
@@ -3247,7 +3248,7 @@ describe("#documents.restore", () => {
     await withAPIContext(user, (ctx) => document.archiveWithCtx(ctx));
     const res = await server.post("/api/documents.restore", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: document.id,
       },
     });
@@ -3272,7 +3273,7 @@ describe("#documents.restore", () => {
     await withAPIContext(user, (ctx) => document.archiveWithCtx(ctx));
     const res = await server.post("/api/documents.restore", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: childDocument.id,
       },
     });
@@ -3301,7 +3302,7 @@ describe("#documents.restore", () => {
 
     const res = await server.post("/api/documents.restore", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: document.id,
         revisionId,
       },
@@ -3328,7 +3329,7 @@ describe("#documents.restore", () => {
     const revisionId = revision.id;
     const res = await server.post("/api/documents.restore", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: document.id,
         revisionId,
       },
@@ -3340,7 +3341,7 @@ describe("#documents.restore", () => {
     const user = await buildUser();
     const res = await server.post("/api/documents.restore", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: "76fe8ba4-4e6a-4a75-8a10-9bf57330b24c",
       },
     });
@@ -3368,7 +3369,7 @@ describe("#documents.restore", () => {
     const user = await buildUser();
     const res = await server.post("/api/documents.restore", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: document.id,
         revisionId,
       },
@@ -3382,7 +3383,7 @@ describe("#documents.import", () => {
     const user = await buildUser();
     const res = await server.post("/api/documents.import", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
       },
     });
     const body = await res.json();
@@ -3396,7 +3397,7 @@ describe("#documents.import", () => {
     const user = await buildUser();
     const res = await server.post("/api/documents.import", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
       },
     });
     expect(res.status).toEqual(400);
@@ -3425,7 +3426,7 @@ describe("#documents.create", () => {
     });
     const res = await server.post("/api/documents.create", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         templateId: template.id,
       },
     });
@@ -3450,7 +3451,7 @@ describe("#documents.create", () => {
     });
     const res = await server.post("/api/documents.create", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         templateId: template.id,
         template: true,
       },
@@ -3465,7 +3466,7 @@ describe("#documents.create", () => {
     const user = await buildUser();
     const res = await server.post("/api/documents.create", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         text: "hello",
       },
     });
@@ -3485,7 +3486,7 @@ describe("#documents.create", () => {
     });
     const res = await server.post("/api/documents.create", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         templateId: template.id,
       },
     });
@@ -3505,7 +3506,7 @@ describe("#documents.create", () => {
     });
     const res = await server.post("/api/documents.create", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         templateId: template.id,
         title: "doc title",
       },
@@ -3525,7 +3526,7 @@ describe("#documents.create", () => {
     });
     const res = await server.post("/api/documents.create", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         templateId: template.id,
         text: "doc text",
       },
@@ -3539,7 +3540,7 @@ describe("#documents.create", () => {
     const user = await buildUser();
     const res = await server.post("/api/documents.create", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         collectionId: "invalid",
         title: "new document",
         text: "hello",
@@ -3554,7 +3555,7 @@ describe("#documents.create", () => {
     const user = await buildUser();
     const res = await server.post("/api/documents.create", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         collectionId: null,
         title: "new document",
         text: "hello",
@@ -3568,7 +3569,7 @@ describe("#documents.create", () => {
     const createdAt = new Date().toISOString();
     const res = await server.post("/api/documents.create", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         collectionId: null,
         title: "new document",
         createdAt,
@@ -3585,7 +3586,7 @@ describe("#documents.create", () => {
     const user = await buildUser();
     const res = await server.post("/api/documents.create", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         collectionId: null,
         title: "new document",
         createdAt: addMinutes(new Date(), 1).toISOString(),
@@ -3600,7 +3601,7 @@ describe("#documents.create", () => {
     const user = await buildUser({ teamId: team.id });
     const res = await server.post("/api/documents.create", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         parentDocumentId: "invalid",
         title: "new document",
         text: "hello",
@@ -3620,7 +3621,7 @@ describe("#documents.create", () => {
     });
     const res = await server.post("/api/documents.create", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         collectionId: collection.id,
         icon: "🚢",
         title: "new document",
@@ -3642,7 +3643,7 @@ describe("#documents.create", () => {
     const user = await buildUser({ teamId: team.id });
     const res = await server.post("/api/documents.create", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         title: "draft document",
         text: "draft document without collection",
       },
@@ -3661,7 +3662,7 @@ describe("#documents.create", () => {
     const res = await server.post("/api/documents.create", {
       body: {
         template: true,
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         title: "template",
         text: "template without collection",
       },
@@ -3679,7 +3680,7 @@ describe("#documents.create", () => {
     const user = await buildUser({ teamId: team.id });
     const res = await server.post("/api/documents.create", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         title: "title",
         text: "text",
         publish: true,
@@ -3702,7 +3703,7 @@ describe("#documents.create", () => {
     });
     const res = await server.post("/api/documents.create", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         collectionId: collection.id,
         title:
           "This is a really long title that is not acceptable to Outline because it is so ridiculously long that we need to have a limit somewhere",
@@ -3726,7 +3727,7 @@ describe("#documents.create", () => {
     });
     const res = await server.post("/api/documents.create", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         collectionId: collection.id,
         title:
           "This text would be exactly 100 chars long if the following unicode character was counted as 1 char 🛡",
@@ -3750,7 +3751,7 @@ describe("#documents.create", () => {
     });
     const res = await server.post("/api/documents.create", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         parentDocumentId: document.id,
         title: "new document",
         text: "hello",
@@ -3768,7 +3769,7 @@ describe("#documents.create", () => {
     const user = await buildUser({ teamId: team.id });
     const res = await server.post("/api/documents.create", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         parentDocumentId: "d7a4eb73-fac1-4028-af45-d7e34d54db8e",
         title: "new document",
         text: "hello",
@@ -3793,7 +3794,7 @@ describe("#documents.create", () => {
     });
     const res = await server.post("/api/documents.create", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         parentDocumentId: document.id,
         title: "new document",
         text: "hello",
@@ -3816,7 +3817,7 @@ describe("#documents.update", () => {
     });
     const res = await server.post("/api/documents.update", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: document.id,
         title: "Updated title",
         text: "Updated text",
@@ -3847,7 +3848,7 @@ describe("#documents.update", () => {
 
     const res = await server.post("/api/documents.update", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: document.id,
         title: "Updated title",
         text: "Updated text",
@@ -3878,7 +3879,7 @@ describe("#documents.update", () => {
     });
     const res = await server.post("/api/documents.update", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: document.id,
         title: "Updated title",
         text: "Updated text",
@@ -3910,7 +3911,7 @@ describe("#documents.update", () => {
     });
     const res = await server.post("/api/documents.update", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: document.id,
         title: "Updated title",
         text: "Updated text",
@@ -3943,7 +3944,7 @@ describe("#documents.update", () => {
     await user.save();
     const res = await server.post("/api/documents.update", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: document.id,
         title: "Updated title",
         text: "Updated text",
@@ -3963,7 +3964,7 @@ describe("#documents.update", () => {
 
     const res = await server.post("/api/documents.update", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: document.id,
         icon: ":)",
       },
@@ -3982,7 +3983,7 @@ describe("#documents.update", () => {
     });
     const res = await server.post("/api/documents.update", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: document.id,
         icon: "beaker",
         color: "#FFDDEE",
@@ -4004,7 +4005,7 @@ describe("#documents.update", () => {
     });
     const res = await server.post("/api/documents.update", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: document.id,
         icon: null,
         color: null,
@@ -4031,7 +4032,7 @@ describe("#documents.update", () => {
     });
     const res = await server.post("/api/documents.update", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: template.id,
         title: "Updated title",
         text: "Updated text",
@@ -4072,7 +4073,7 @@ describe("#documents.update", () => {
     );
     const res = await server.post("/api/documents.update", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: document.id,
         collectionId: collection.id,
         title: "Updated title",
@@ -4101,7 +4102,7 @@ describe("#documents.update", () => {
     await withAPIContext(user, (ctx) => document.archiveWithCtx(ctx));
     const res = await server.post("/api/documents.update", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: document.id,
         title: "Updated title",
         text: "Updated text",
@@ -4141,7 +4142,7 @@ describe("#documents.update", () => {
     await collection.save();
     const res = await server.post("/api/documents.update", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: document.id,
         title: "Updated title",
       },
@@ -4179,7 +4180,7 @@ describe("#documents.update", () => {
     );
     const res = await server.post("/api/documents.update", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: document.id,
         title: "Changed text",
       },
@@ -4218,7 +4219,7 @@ describe("#documents.update", () => {
     );
     const res = await server.post("/api/documents.update", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: document.id,
         text: "Changed text",
       },
@@ -4248,7 +4249,7 @@ describe("#documents.update", () => {
     });
     const res = await server.post("/api/documents.update", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: document.id,
         text: "Changed text",
       },
@@ -4264,7 +4265,7 @@ describe("#documents.update", () => {
     });
     const res = await server.post("/api/documents.update", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: document.id,
         text: "Additional text",
         append: true,
@@ -4284,7 +4285,7 @@ describe("#documents.update", () => {
     });
     const res = await server.post("/api/documents.update", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: document.id,
         title: "Updated Title",
         append: true,
@@ -4303,7 +4304,7 @@ describe("#documents.update", () => {
     });
     const res = await server.post("/api/documents.update", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: document.id,
         title: "Updated Title",
         text: "",
@@ -4322,7 +4323,7 @@ describe("#documents.update", () => {
     });
     const res = await server.post("/api/documents.update", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: document.id,
         title: document.title,
       },
@@ -4354,7 +4355,7 @@ describe("#documents.update", () => {
     const user = await buildUser();
     const res = await server.post("/api/documents.update", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: document.id,
         text: "Updated",
       },
@@ -4367,7 +4368,7 @@ describe("#documents.update", () => {
     const user = await buildUser();
     const res = await server.post("/api/documents.update", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: document.id,
         text: "Updated",
         collectionId: "invalid",
@@ -4382,7 +4383,7 @@ describe("#documents.update", () => {
     const user = await buildUser();
     const res = await server.post("/api/documents.update", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         text: "Updated",
       },
     });
@@ -4397,7 +4398,7 @@ describe("#documents.archive", () => {
     const user = await buildUser();
     const res = await server.post("/api/documents.archive", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
       },
     });
     const body = await res.json();
@@ -4419,7 +4420,7 @@ describe("#documents.archive", () => {
     });
     const res = await server.post("/api/documents.archive", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: document.id,
       },
     });
@@ -4445,7 +4446,7 @@ describe("#documents.delete", () => {
     const user = await buildUser();
     const res = await server.post("/api/documents.delete", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
       },
     });
     const body = await res.json();
@@ -4461,7 +4462,7 @@ describe("#documents.delete", () => {
     });
     const res = await server.post("/api/documents.delete", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: document.id,
       },
     });
@@ -4479,7 +4480,7 @@ describe("#documents.delete", () => {
     });
     const res = await server.post("/api/documents.delete", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: document.id,
       },
     });
@@ -4512,7 +4513,7 @@ describe("#documents.delete", () => {
 
     const res = await server.post("/api/documents.delete", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: document.id,
       },
     });
@@ -4533,13 +4534,13 @@ describe("#documents.delete", () => {
     });
     await server.post("/api/documents.delete", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: document.id,
       },
     });
     const res = await server.post("/api/documents.delete", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: document.id,
         permanent: true,
       },
@@ -4558,13 +4559,13 @@ describe("#documents.delete", () => {
     });
     await server.post("/api/documents.delete", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: document.id,
       },
     });
     const res = await server.post("/api/documents.delete", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: document.id,
         permanent: true,
       },
@@ -4592,7 +4593,7 @@ describe("#documents.delete", () => {
     });
     const res = await server.post("/api/documents.delete", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: document.id,
       },
     });
@@ -4619,7 +4620,7 @@ describe("#documents.unpublish", () => {
     const user = await buildUser();
     const res = await server.post("/api/documents.unpublish", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
       },
     });
     const body = await res.json();
@@ -4635,7 +4636,7 @@ describe("#documents.unpublish", () => {
     });
     const res = await server.post("/api/documents.unpublish", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: document.id,
       },
     });
@@ -4666,7 +4667,7 @@ describe("#documents.unpublish", () => {
     await withAPIContext(user, (ctx) => child.archiveWithCtx(ctx));
     const res = await server.post("/api/documents.unpublish", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: document.id,
       },
     });
@@ -4690,7 +4691,7 @@ describe("#documents.unpublish", () => {
     });
     const res = await server.post("/api/documents.unpublish", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: document.id,
       },
     });
@@ -4712,7 +4713,7 @@ describe("#documents.unpublish", () => {
     });
     const res = await server.post("/api/documents.unpublish", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: document.id,
       },
     });
@@ -4728,7 +4729,7 @@ describe("#documents.unpublish", () => {
     await document.delete(user);
     const res = await server.post("/api/documents.unpublish", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: document.id,
       },
     });
@@ -4744,7 +4745,7 @@ describe("#documents.unpublish", () => {
     await withAPIContext(user, (ctx) => document.archiveWithCtx(ctx));
     const res = await server.post("/api/documents.unpublish", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: document.id,
       },
     });
@@ -4791,7 +4792,7 @@ describe("#documents.users", () => {
 
     const res = await server.post("/api/documents.users", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: document.id,
       },
     });
@@ -4850,7 +4851,7 @@ describe("#documents.users", () => {
 
     const res = await server.post("/api/documents.users", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: document.id,
       },
     });
@@ -4948,7 +4949,7 @@ describe("#documents.users", () => {
 
     const res = await server.post("/api/documents.users", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: document.id,
         query: "Al",
       },
@@ -4962,7 +4963,7 @@ describe("#documents.users", () => {
 
     const anotherRes = await server.post("/api/documents.users", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: document.id,
         query: "e",
       },
@@ -5059,7 +5060,7 @@ describe("#documents.users", () => {
 
     const res = await server.post("/api/documents.users", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: document.id,
         userId: alan.id,
       },
@@ -5073,7 +5074,7 @@ describe("#documents.users", () => {
 
     const anotherRes = await server.post("/api/documents.users", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: document.id,
         userId: jamie.id,
       },
@@ -5144,7 +5145,7 @@ describe("#documents.users", () => {
 
     const res = await server.post("/api/documents.users", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: document.id,
       },
     });
@@ -5165,7 +5166,7 @@ describe("#documents.add_user", () => {
     const user = await buildUser();
     const res = await server.post("/api/documents.add_user", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
       },
     });
     const body = await res.json();
@@ -5198,7 +5199,7 @@ describe("#documents.add_user", () => {
 
     const res = await server.post("/api/documents.add_user", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: document.id,
         userId: user.id,
       },
@@ -5225,7 +5226,7 @@ describe("#documents.add_user", () => {
 
     const res = await server.post("/api/documents.add_user", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: document.id,
         userId: member.id,
       },
@@ -5251,7 +5252,7 @@ describe("#documents.remove_user", () => {
     const user = await buildUser();
     const res = await server.post("/api/documents.remove_user", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
       },
     });
     const body = await res.json();
@@ -5277,7 +5278,7 @@ describe("#documents.remove_user", () => {
     });
     const res = await server.post("/api/documents.remove_user", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: document.id,
         userId: anotherUser.id,
       },
@@ -5302,7 +5303,7 @@ describe("#documents.remove_user", () => {
     });
     await server.post("/api/documents.add_user", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: document.id,
         userId: member.id,
       },
@@ -5311,7 +5312,7 @@ describe("#documents.remove_user", () => {
     expect(users.length).toEqual(1);
     const res = await server.post("/api/documents.remove_user", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: document.id,
         userId: member.id,
       },
@@ -5327,7 +5328,7 @@ describe("#documents.add_group", () => {
     const user = await buildUser();
     const res = await server.post("/api/documents.add_group", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
       },
     });
     const body = await res.json();
@@ -5355,7 +5356,7 @@ describe("#documents.add_group", () => {
     });
     const res = await server.post("/api/documents.add_group", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: document.id,
         groupId: group.id,
       },
@@ -5378,7 +5379,7 @@ describe("#documents.add_group", () => {
     const group = await buildGroup();
     const res = await server.post("/api/documents.add_group", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: document.id,
         groupId: group.id,
       },
@@ -5403,7 +5404,7 @@ describe("#documents.add_group", () => {
     });
     const res = await server.post("/api/documents.add_group", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: document.id,
         groupId: group.id,
       },
@@ -5441,7 +5442,7 @@ describe("#documents.add_group", () => {
     });
     const res = await server.post("/api/documents.add_group", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: document.id,
         groupId: group.id,
         permission: DocumentPermission.Read,
@@ -5477,7 +5478,7 @@ describe("#documents.add_group", () => {
     // First add with Read permission
     await server.post("/api/documents.add_group", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: document.id,
         groupId: group.id,
         permission: DocumentPermission.Read,
@@ -5487,7 +5488,7 @@ describe("#documents.add_group", () => {
     // Then update to ReadWrite permission
     const res = await server.post("/api/documents.add_group", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: document.id,
         groupId: group.id,
         permission: DocumentPermission.ReadWrite,
@@ -5520,7 +5521,7 @@ describe("#documents.remove_group", () => {
     const user = await buildUser();
     const res = await server.post("/api/documents.remove_group", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
       },
     });
     const body = await res.json();
@@ -5548,7 +5549,7 @@ describe("#documents.remove_group", () => {
     });
     const res = await server.post("/api/documents.remove_group", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: document.id,
         groupId: group.id,
       },
@@ -5571,7 +5572,7 @@ describe("#documents.remove_group", () => {
     const group = await buildGroup();
     const res = await server.post("/api/documents.remove_group", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: document.id,
         groupId: group.id,
       },
@@ -5598,7 +5599,7 @@ describe("#documents.remove_group", () => {
     // First add the group
     await server.post("/api/documents.add_group", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: document.id,
         groupId: group.id,
       },
@@ -5612,7 +5613,7 @@ describe("#documents.remove_group", () => {
     // Then remove the group
     const res = await server.post("/api/documents.remove_group", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: document.id,
         groupId: group.id,
       },
@@ -5644,7 +5645,7 @@ describe("#documents.remove_group", () => {
     // Try to remove group that was never added
     const res = await server.post("/api/documents.remove_group", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: document.id,
         groupId: group.id,
       },
@@ -5655,7 +5656,7 @@ describe("#documents.remove_group", () => {
 });
 
 describe("#documents.memberships", () => {
-  let actor: User, document: Document;
+  let actor: TestUser, document: Document;
   beforeEach(async () => {
     actor = await buildUser();
     const collection = await buildCollection({
@@ -5678,14 +5679,14 @@ describe("#documents.memberships", () => {
     await Promise.all([
       server.post("/api/documents.add_user", {
         body: {
-          token: actor.getJwtToken(),
+          token: actor.sessionToken,
           id: document.id,
           userId: members[0].id,
         },
       }),
       server.post("/api/documents.add_user", {
         body: {
-          token: actor.getJwtToken(),
+          token: actor.sessionToken,
           id: document.id,
           userId: members[1].id,
         },
@@ -5693,7 +5694,7 @@ describe("#documents.memberships", () => {
     ]);
     const res = await server.post("/api/documents.memberships", {
       body: {
-        token: actor.getJwtToken(),
+        token: actor.sessionToken,
         id: document.id,
       },
     });
@@ -5716,7 +5717,7 @@ describe("#documents.memberships", () => {
     await Promise.all([
       server.post("/api/documents.add_user", {
         body: {
-          token: actor.getJwtToken(),
+          token: actor.sessionToken,
           id: document.id,
           userId: members[0].id,
           permission: DocumentPermission.ReadWrite,
@@ -5724,7 +5725,7 @@ describe("#documents.memberships", () => {
       }),
       server.post("/api/documents.add_user", {
         body: {
-          token: actor.getJwtToken(),
+          token: actor.sessionToken,
           id: document.id,
           userId: members[1].id,
           permission: DocumentPermission.Read,
@@ -5733,7 +5734,7 @@ describe("#documents.memberships", () => {
     ]);
     const res = await server.post("/api/documents.memberships", {
       body: {
-        token: actor.getJwtToken(),
+        token: actor.sessionToken,
         id: document.id,
         permission: DocumentPermission.Read,
       },
@@ -5756,7 +5757,7 @@ describe("#documents.empty_trash", () => {
     const user = await buildAdmin();
     const res = await server.post("/api/documents.empty_trash", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
       },
     });
     const body = await res.json();
@@ -5767,7 +5768,7 @@ describe("#documents.empty_trash", () => {
     const user = await buildUser();
     const res = await server.post("/api/documents.empty_trash", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
       },
     });
     const body = await res.json();
@@ -5805,7 +5806,7 @@ describe("#documents.documents", () => {
 
     const res = await server.post("/api/documents.documents", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: parent.id,
       },
     });
@@ -5832,7 +5833,7 @@ describe("#documents.documents", () => {
 
     const res = await server.post("/api/documents.documents", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: parent.id,
       },
     });
@@ -5853,7 +5854,7 @@ describe("#documents.documents", () => {
 
     const res = await server.post("/api/documents.documents", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: doc.id,
       },
     });
@@ -5902,7 +5903,7 @@ describe("#documents.documents", () => {
 
     const res = await server.post("/api/documents.documents", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: parent.id,
       },
     });
