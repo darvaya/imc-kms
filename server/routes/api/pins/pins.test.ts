@@ -1,4 +1,4 @@
-import type { Collection, Document, Pin, User } from "@server/models";
+import type { Collection, Document, Pin } from "@server/models";
 import {
   buildAdmin,
   buildCollection,
@@ -6,15 +6,16 @@ import {
   buildDraftDocument,
   buildPin,
   buildUser,
+  type TestUser,
 } from "@server/test/factories";
 import { getTestServer } from "@server/test/support";
 
 const server = getTestServer();
 
 describe("#pins.create", () => {
-  let admin: User;
-  let user: User;
-  let anotherUser: User;
+  let admin: TestUser;
+  let user: TestUser;
+  let anotherUser: TestUser;
   let document: Document;
   let collection: Collection;
 
@@ -49,7 +50,7 @@ describe("#pins.create", () => {
   it("should fail with status 400 bad request when documentId is not suppled", async () => {
     const res = await server.post("/api/pins.create", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
       },
     });
     const body = await res.json();
@@ -60,7 +61,7 @@ describe("#pins.create", () => {
   it("should fail with status 400 bad request when documentId is invalid", async () => {
     const res = await server.post("/api/pins.create", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         documentId: "foo",
       },
     });
@@ -72,7 +73,7 @@ describe("#pins.create", () => {
   it("should fail with status 400 bad request when index is invalid", async () => {
     const res = await server.post("/api/pins.create", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         documentId: "foo1234567",
         index: "😀",
       },
@@ -85,7 +86,7 @@ describe("#pins.create", () => {
   it("should fail with status 403 forbidden when user is disallowed to read the document", async () => {
     const res = await server.post("/api/pins.create", {
       body: {
-        token: anotherUser.getJwtToken(),
+        token: anotherUser.sessionToken,
         documentId: document.id,
       },
     });
@@ -97,7 +98,7 @@ describe("#pins.create", () => {
   it("should fail with status 403 forbidden when user is disallowed to update the collection", async () => {
     const res = await server.post("/api/pins.create", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         documentId: document.id,
         collectionId: collection.id,
       },
@@ -115,7 +116,7 @@ describe("#pins.create", () => {
     });
     const res = await server.post("/api/pins.create", {
       body: {
-        token: admin.getJwtToken(),
+        token: admin.sessionToken,
         // A draft document cannot be pinned, neither by a member nor by an admin
         documentId: draft.id,
         collectionId: collection.id,
@@ -129,7 +130,7 @@ describe("#pins.create", () => {
   it("should fail with status 403 forbidden when user is disallowed to pin the document to home page", async () => {
     const res = await server.post("/api/pins.create", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         documentId: document.id,
       },
     });
@@ -141,7 +142,7 @@ describe("#pins.create", () => {
   it("should succeed with status 200 ok when user is allowed to pin", async () => {
     const res = await server.post("/api/pins.create", {
       body: {
-        token: admin.getJwtToken(),
+        token: admin.sessionToken,
         documentId: document.id,
       },
     });
@@ -155,7 +156,7 @@ describe("#pins.create", () => {
   it("should succeed with status 200 ok when valid collectionId is supplied", async () => {
     const res = await server.post("/api/pins.create", {
       body: {
-        token: admin.getJwtToken(),
+        token: admin.sessionToken,
         documentId: document.id,
         collectionId: collection.id,
       },
@@ -178,14 +179,14 @@ describe("#pins.info", () => {
 
     await server.post("/api/pins.create", {
       body: {
-        token: admin.getJwtToken(),
+        token: admin.sessionToken,
         documentId: document.id,
       },
     });
 
     const res = await server.post("/api/pins.info", {
       body: {
-        token: admin.getJwtToken(),
+        token: admin.sessionToken,
         documentId: document.id,
       },
     });
@@ -206,7 +207,7 @@ describe("#pins.info", () => {
 
     await server.post("/api/pins.create", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         documentId: document.id,
         collectionId: document.collectionId,
       },
@@ -214,7 +215,7 @@ describe("#pins.info", () => {
 
     const res = await server.post("/api/pins.info", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         documentId: document.id,
         collectionId: document.collectionId,
       },
@@ -236,7 +237,7 @@ describe("#pins.info", () => {
 
     const res = await server.post("/api/pins.info", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         documentId: document.id,
         collectionId: null,
       },
@@ -247,7 +248,7 @@ describe("#pins.info", () => {
 });
 
 describe("#pins.list", () => {
-  let user: User;
+  let user: TestUser;
   let pins: Pin[];
   let docs: Document[];
   let collection: Collection;
@@ -294,7 +295,7 @@ describe("#pins.list", () => {
   it("should succeed with status 200 ok returning pinned documents", async () => {
     const res = await server.post("/api/pins.list", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
       },
     });
     const body = await res.json();
@@ -313,7 +314,7 @@ describe("#pins.list", () => {
   it("should succeed with status 200 ok returning pinned documents filtered by collectionId supplied", async () => {
     const res = await server.post("/api/pins.list", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         collectionId: collection.id,
       },
     });
@@ -347,7 +348,7 @@ describe("#pins.list", () => {
 
     const res = await server.post("/api/pins.list", {
       body: {
-        token: teamMember.getJwtToken(),
+        token: teamMember.sessionToken,
         collectionId: privateCollection.id,
       },
     });
@@ -374,7 +375,7 @@ describe("#pins.list", () => {
 
     const res = await server.post("/api/pins.list", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         collectionId: collectionWithPins.id,
       },
     });
@@ -389,7 +390,7 @@ describe("#pins.list", () => {
   it("should fail with status 403 forbidden when collection does not exist", async () => {
     const res = await server.post("/api/pins.list", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         collectionId: "00000000-0000-0000-0000-000000000000",
       },
     });
@@ -400,8 +401,8 @@ describe("#pins.list", () => {
 });
 
 describe("#pins.update", () => {
-  let user: User;
-  let admin: User;
+  let user: TestUser;
+  let admin: TestUser;
   let pin: Pin;
 
   beforeEach(async () => {
@@ -439,7 +440,7 @@ describe("#pins.update", () => {
   it("should fail with status 400 bad request when id is missing", async () => {
     const res = await server.post("/api/pins.update", {
       body: {
-        token: admin.getJwtToken(),
+        token: admin.sessionToken,
       },
     });
     const body = await res.json();
@@ -450,7 +451,7 @@ describe("#pins.update", () => {
   it("should fail with status 400 bad request when index is missing", async () => {
     const res = await server.post("/api/pins.update", {
       body: {
-        token: admin.getJwtToken(),
+        token: admin.sessionToken,
         id: pin.id,
       },
     });
@@ -462,7 +463,7 @@ describe("#pins.update", () => {
   it("should fail with status 400 bad request when an invalid index is sent", async () => {
     const res = await server.post("/api/pins.update", {
       body: {
-        token: admin.getJwtToken(),
+        token: admin.sessionToken,
         id: pin.id,
         index: "😀",
       },
@@ -475,7 +476,7 @@ describe("#pins.update", () => {
   it("should fail with status 403 forbidden when user is disallowed to update the pin", async () => {
     const res = await server.post("/api/pins.update", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: pin.id,
         index: "b",
       },
@@ -488,7 +489,7 @@ describe("#pins.update", () => {
   it("should succeed with status 200 ok and when user is allowed to update the pin", async () => {
     const res = await server.post("/api/pins.update", {
       body: {
-        token: admin.getJwtToken(),
+        token: admin.sessionToken,
         id: pin.id,
         index: "b",
       },
@@ -502,7 +503,7 @@ describe("#pins.update", () => {
 });
 
 describe("#pins.delete", () => {
-  let admin: User;
+  let admin: TestUser;
   let pin: Pin;
 
   beforeEach(async () => {
@@ -525,7 +526,7 @@ describe("#pins.delete", () => {
   it("should fail with status 400 bad request when id is missing", async () => {
     const res = await server.post("/api/pins.delete", {
       body: {
-        token: admin.getJwtToken(),
+        token: admin.sessionToken,
       },
     });
     const body = await res.json();
@@ -539,7 +540,7 @@ describe("#pins.delete", () => {
     });
     const res = await server.post("/api/pins.delete", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: pin.id,
       },
     });
@@ -551,7 +552,7 @@ describe("#pins.delete", () => {
   it("should succeed with status 200 ok when user is allowed to delete the pin", async () => {
     const res = await server.post("/api/pins.delete", {
       body: {
-        token: admin.getJwtToken(),
+        token: admin.sessionToken,
         id: pin.id,
       },
     });

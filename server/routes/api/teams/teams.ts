@@ -145,7 +145,7 @@ router.post(
       authenticationProviders,
     });
 
-    const newUser = await User.createWithCtx(ctx, {
+    await User.createWithCtx(ctx, {
       teamId: team.id,
       name: user.name,
       email: user.email,
@@ -156,9 +156,7 @@ router.post(
       success: true,
       data: {
         team: presentTeam(team),
-        transferUrl: `${
-          team.url
-        }/auth/redirect?token=${newUser?.getTransferToken()}`,
+        transferUrl: `${team.url}/home`,
       },
     };
   }

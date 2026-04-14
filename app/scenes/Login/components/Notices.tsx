@@ -27,14 +27,6 @@ function Message({ notice }: { notice: string }) {
           invite email.
         </Trans>
       );
-    case "gmail-account-creation":
-      return (
-        <Trans>
-          Sorry, a new account cannot be created with a personal Gmail address.
-          <hr />
-          Please use a Google Workspaces account instead.
-        </Trans>
-      );
     case "pending-deletion":
       return (
         <Trans>
@@ -53,20 +45,6 @@ function Message({ notice }: { notice: string }) {
       return (
         <Trans>
           We could not read the user info supplied by your identity provider.
-        </Trans>
-      );
-    case "email-auth-required":
-      return (
-        <Trans>
-          Your account uses email sign-in, please sign-in with email to
-          continue.
-        </Trans>
-      );
-    case "email-auth-ratelimit":
-      return (
-        <Trans>
-          An email sign-in link was recently sent, please check your inbox or
-          try again in a few minutes.
         </Trans>
       );
     case "auth-error":

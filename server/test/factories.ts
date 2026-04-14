@@ -51,6 +51,7 @@ import {
 } from "@server/models";
 import { RelationshipType } from "@server/models/Relationship";
 import AttachmentHelper from "@server/models/helpers/AttachmentHelper";
+import { sequelize } from "@server/storage/database";
 import { hash } from "@server/utils/crypto";
 import { OAuthInterface } from "@server/utils/oauth/OAuthInterface";
 
@@ -191,7 +192,9 @@ export async function buildGuestUser(overrides: Partial<User> = {}) {
   });
 }
 
-export async function buildUser(overrides: Partial<User> = {}) {
+export type TestUser = User & { sessionToken: string };
+
+export async function buildUser(overrides: Partial<User> = {}): Promise<TestUser> {
   let team;
 
   if (!overrides.teamId) {
@@ -231,7 +234,44 @@ export async function buildUser(overrides: Partial<User> = {}) {
   if (team) {
     user.team = team;
   }
-  return user;
+
+  // Create Better Auth session records so tests can authenticate
+  const baUserId = randomUUID();
+  const sessionToken = randomString(32);
+  try {
+    await sequelize.query(
+      `INSERT INTO ba_user (id, name, email, "emailVerified", image, "createdAt", "updatedAt", "outlineUserId")
+       VALUES (:baUserId, :name, :email, true, null, NOW(), NOW(), :outlineUserId)`,
+      {
+        replacements: {
+          baUserId,
+          name: user.name,
+          email: user.email ?? "test@example.com",
+          outlineUserId: user.id,
+        },
+      }
+    );
+    await sequelize.query(
+      `INSERT INTO ba_session (id, token, "userId", "ipAddress", "userAgent", "expiresAt", "createdAt", "updatedAt", "outlineUserId")
+       VALUES (:sessionId, :token, :baUserId, '127.0.0.1', 'test', :expiresAt, NOW(), NOW(), :outlineUserId)`,
+      {
+        replacements: {
+          sessionId: randomUUID(),
+          token: sessionToken,
+          baUserId,
+          expiresAt: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
+          outlineUserId: user.id,
+        },
+      }
+    );
+  } catch {
+    // BA tables may not exist in all test environments; tests will
+    // fail with clear auth errors if sessions are missing.
+  }
+  const testUser = user as TestUser;
+  testUser.sessionToken = sessionToken;
+
+  return testUser;
 }
 
 export async function buildAdmin(overrides: Partial<User> = {}) {

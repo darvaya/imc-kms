@@ -3,7 +3,6 @@ import JWT from "jsonwebtoken";
 import type { FindOptions } from "sequelize";
 import { Team, User } from "@server/models";
 import { AuthenticationError, UserSuspendedError } from "../errors";
-import type { Context } from "koa";
 
 export function getJWTPayload(token: string) {
   let payload;
@@ -24,17 +23,19 @@ export function getJWTPayload(token: string) {
   }
 }
 
-export async function getUserForJWT(
-  token: string,
-  allowedTypes = ["session", "transfer"]
+/**
+ * Validates a collaboration JWT token and returns the associated user.
+ * Only accepts tokens with type "collaboration".
+ */
+export async function getUserForCollaborationToken(
+  token: string
 ): Promise<User> {
   const payload = getJWTPayload(token);
 
-  if (!allowedTypes.includes(payload.type)) {
+  if (payload.type !== "collaboration") {
     throw AuthenticationError("Invalid token");
   }
 
-  // check the token is within it's expiration time
   if (payload.expiresAt) {
     if (new Date(payload.expiresAt) < new Date()) {
       throw AuthenticationError("Expired token");
@@ -50,6 +51,7 @@ export async function getUserForJWT(
       },
     ],
   });
+
   if (!user) {
     throw AuthenticationError("Invalid token");
   }
@@ -62,52 +64,6 @@ export async function getUserForJWT(
       adminEmail: suspendingAdmin?.email || undefined,
     });
   }
-
-  if (payload.type === "transfer") {
-    // If the user has made a single API request since the transfer token was
-    // created then it's no longer valid, they'll need to sign in again.
-    if (
-      user.lastActiveAt &&
-      payload.createdAt &&
-      user.lastActiveAt > new Date(payload.createdAt)
-    ) {
-      throw AuthenticationError("Token has already been used");
-    }
-  }
-
-  try {
-    JWT.verify(token, user.jwtSecret);
-  } catch (_err) {
-    throw AuthenticationError("Invalid token");
-  }
-
-  return user;
-}
-
-export async function getUserForEmailSigninToken(
-  ctx: Context,
-  token: string
-): Promise<User> {
-  const payload = getJWTPayload(token);
-
-  if (payload.type !== "email-signin") {
-    throw AuthenticationError("Invalid token");
-  }
-
-  // check the token is within it's expiration time
-  if (payload.createdAt) {
-    if (new Date(payload.createdAt) < subMinutes(new Date(), 10)) {
-      throw AuthenticationError("Expired token");
-    }
-  }
-
-  if (payload.ip !== ctx.request.ip) {
-    throw AuthenticationError("Token mismatch");
-  }
-
-  const user = await User.scope("withTeam").findByPk(payload.id, {
-    rejectOnEmpty: true,
-  });
 
   try {
     JWT.verify(token, user.jwtSecret);

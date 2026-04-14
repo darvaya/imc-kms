@@ -74,7 +74,7 @@ import FileStorage from "@server/storage/files";
 import type { APIContext } from "@server/types";
 import { RateLimiterStrategy } from "@server/utils/RateLimiter";
 import ZipHelper from "@server/utils/ZipHelper";
-import { getTeamFromContext } from "@server/utils/passport";
+import { getTeamFromContext } from "@server/utils/team";
 import { assertPresent } from "@server/validation";
 import pagination from "../middlewares/pagination";
 import * as T from "./schema";

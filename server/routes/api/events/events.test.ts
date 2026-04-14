@@ -39,7 +39,7 @@ describe("#events.list", () => {
     });
     const res = await server.post("/api/events.list", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
       },
     });
     const body = await res.json();
@@ -77,7 +77,7 @@ describe("#events.list", () => {
     });
     const res = await server.post("/api/events.list", {
       body: {
-        token: admin.getJwtToken(),
+        token: admin.sessionToken,
         auditLog: true,
       },
     });
@@ -117,7 +117,7 @@ describe("#events.list", () => {
     });
     const res = await server.post("/api/events.list", {
       body: {
-        token: admin.getJwtToken(),
+        token: admin.sessionToken,
         auditLog: true,
         actorId: admin.id,
       },
@@ -157,7 +157,7 @@ describe("#events.list", () => {
     });
     const res = await server.post("/api/events.list", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         actorId: admin.id,
       },
     });
@@ -194,7 +194,7 @@ describe("#events.list", () => {
     });
     const res = await server.post("/api/events.list", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         actorId: user.id,
       },
     });
@@ -225,7 +225,7 @@ describe("#events.list", () => {
     });
     const res = await server.post("/api/events.list", {
       body: {
-        token: admin.getJwtToken(),
+        token: admin.sessionToken,
         documentId: document.id,
       },
     });
@@ -256,7 +256,7 @@ describe("#events.list", () => {
     });
     const res = await server.post("/api/events.list", {
       body: {
-        token: actor.getJwtToken(),
+        token: actor.sessionToken,
         documentId: document.id,
       },
     });
@@ -292,7 +292,7 @@ describe("#events.list", () => {
     });
     const res = await server.post("/api/events.list", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         name: "documents.publish",
       },
     });
@@ -331,7 +331,7 @@ describe("#events.list", () => {
     });
     const res = await server.post("/api/events.list", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         events: ["documents.publish"],
       },
     });
@@ -364,7 +364,7 @@ describe("#events.list", () => {
     await user.destroy({ hooks: false });
     const res = await server.post("/api/events.list", {
       body: {
-        token: admin.getJwtToken(),
+        token: admin.sessionToken,
       },
     });
     const body = await res.json();
@@ -377,7 +377,7 @@ describe("#events.list", () => {
     const user = await buildUser();
     const res = await server.post("/api/events.list", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         auditLog: true,
       },
     });

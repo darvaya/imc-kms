@@ -12,7 +12,7 @@ import { AuthenticationType } from "@server/types";
 import auth from "./authentication";
 
 describe("Authentication middleware", () => {
-  describe("with session JWT", () => {
+  describe("with session token", () => {
     it("should authenticate with correct session token", async () => {
       const state = {} as DefaultState;
       const user = await buildUser();
@@ -21,7 +21,7 @@ describe("Authentication middleware", () => {
         {
           // @ts-expect-error mock request
           request: {
-            get: jest.fn(() => `Bearer ${user.getJwtToken()}`),
+            get: jest.fn(() => `Bearer ${user.sessionToken}`),
           },
           state,
           cache: {},
@@ -41,7 +41,7 @@ describe("Authentication middleware", () => {
           {
             // @ts-expect-error mock request
             request: {
-              get: jest.fn(() => `Bearer ${user.getJwtToken()}error`),
+              get: jest.fn(() => `Bearer ${user.sessionToken}error`),
             },
             state,
             cache: {},
@@ -49,7 +49,7 @@ describe("Authentication middleware", () => {
           jest.fn()
         );
       } catch (e) {
-        expect(e.message).toBe("Invalid token");
+        expect(e.message).toBe("Authentication required");
       }
     });
 
@@ -65,7 +65,7 @@ describe("Authentication middleware", () => {
           {
             // @ts-expect-error mock request
             request: {
-              get: jest.fn(() => `Bearer ${user.getJwtToken()}`),
+              get: jest.fn(() => `Bearer ${user.sessionToken}`),
             },
             state,
             cache: {},
@@ -236,7 +236,7 @@ describe("Authentication middleware", () => {
           // @ts-expect-error mock request
           get: jest.fn(() => null),
           query: {
-            token: user.getJwtToken(),
+            token: user.sessionToken,
           },
         },
         state,
@@ -257,7 +257,7 @@ describe("Authentication middleware", () => {
           // @ts-expect-error mock request
           get: jest.fn(() => null),
           body: {
-            token: user.getJwtToken(),
+            token: user.sessionToken,
           },
         },
         state,
@@ -283,7 +283,7 @@ describe("Authentication middleware", () => {
         {
           // @ts-expect-error mock request
           request: {
-            get: jest.fn(() => `Bearer ${user.getJwtToken()}`),
+            get: jest.fn(() => `Bearer ${user.sessionToken}`),
           },
           state,
           cache: {},
@@ -313,7 +313,7 @@ describe("Authentication middleware", () => {
         {
           // @ts-expect-error mock request
           request: {
-            get: jest.fn(() => `Bearer ${user.getJwtToken()}`),
+            get: jest.fn(() => `Bearer ${user.sessionToken}`),
           },
           state,
           cache: {},
@@ -324,6 +324,6 @@ describe("Authentication middleware", () => {
       error = err;
     }
 
-    expect(error.message).toEqual("Invalid token");
+    expect(error.message).toEqual("Authentication required");
   });
 });

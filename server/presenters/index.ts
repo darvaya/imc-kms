@@ -16,7 +16,6 @@ import presentMembership from "./membership";
 import presentOAuthClient, { presentPublishedOAuthClient } from "./oauthClient";
 import presentPin from "./pin";
 import presentPolicies from "./policy";
-import presentProviderConfig from "./providerConfig";
 import presentPublicTeam from "./publicTeam";
 import presentReaction from "./reaction";
 import presentRelationship from "./relationship";
@@ -51,7 +50,6 @@ export {
   presentPublicTeam,
   presentPin,
   presentPolicies,
-  presentProviderConfig,
   presentReaction,
   presentRelationship,
   presentRevision,
