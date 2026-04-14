@@ -19,7 +19,7 @@ describe("#shares.list", () => {
     const user = await buildUser();
     const res = await server.post("/api/shares.list", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         sort: "foo",
       },
     });
@@ -47,7 +47,7 @@ describe("#shares.list", () => {
     });
     const res = await server.post("/api/shares.list", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
       },
     });
     const body = await res.json();
@@ -71,7 +71,7 @@ describe("#shares.list", () => {
     });
     const res = await server.post("/api/shares.list", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         query: "test",
       },
     });
@@ -98,7 +98,7 @@ describe("#shares.list", () => {
     });
     const res = await server.post("/api/shares.list", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         query: "test",
       },
     });
@@ -123,7 +123,7 @@ describe("#shares.list", () => {
     await share.revoke(createContext({ user }));
     const res = await server.post("/api/shares.list", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
       },
     });
     const body = await res.json();
@@ -145,7 +145,7 @@ describe("#shares.list", () => {
     });
     const res = await server.post("/api/shares.list", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
       },
     });
     const body = await res.json();
@@ -167,7 +167,7 @@ describe("#shares.list", () => {
     await document.delete(user);
     const res = await server.post("/api/shares.list", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
       },
     });
     const body = await res.json();
@@ -187,7 +187,7 @@ describe("#shares.list", () => {
     });
     const res = await server.post("/api/shares.list", {
       body: {
-        token: admin.getJwtToken(),
+        token: admin.sessionToken,
       },
     });
     const body = await res.json();
@@ -219,7 +219,7 @@ describe("#shares.list", () => {
     await collection.save();
     const res = await server.post("/api/shares.list", {
       body: {
-        token: admin.getJwtToken(),
+        token: admin.sessionToken,
       },
     });
     const body = await res.json();
@@ -240,7 +240,7 @@ describe("#shares.create", () => {
     const user = await buildUser();
     const res = await server.post("/api/shares.create", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
       },
     });
     const body = await res.json();
@@ -254,7 +254,7 @@ describe("#shares.create", () => {
     const user = await buildUser();
     const res = await server.post("/api/shares.create", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         documentId: "foo",
       },
     });
@@ -271,7 +271,7 @@ describe("#shares.create", () => {
     });
     const res = await server.post("/api/shares.create", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         collectionId: collection.id,
       },
     });
@@ -289,7 +289,7 @@ describe("#shares.create", () => {
     });
     const res = await server.post("/api/shares.create", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         documentId: document.id,
       },
     });
@@ -307,7 +307,7 @@ describe("#shares.create", () => {
     });
     const res = await server.post("/api/shares.create", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         documentId: document.id,
         includeChildDocuments: true,
         published: true,
@@ -330,7 +330,7 @@ describe("#shares.create", () => {
     });
     const res = await server.post("/api/shares.create", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         documentId: document.id,
         published: true,
         allowIndexing: false,
@@ -373,7 +373,7 @@ describe("#shares.create", () => {
     );
     const res = await server.post("/api/shares.create", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         documentId: document.id,
         published: true,
       },
@@ -409,7 +409,7 @@ describe("#shares.create", () => {
     );
     const res = await server.post("/api/shares.create", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         documentId: document.id,
       },
     });
@@ -417,7 +417,7 @@ describe("#shares.create", () => {
     expect(res.status).toEqual(200);
     const response = await server.post("/api/shares.update", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: body.data.id,
         published: true,
       },
@@ -439,7 +439,7 @@ describe("#shares.create", () => {
     await share.revoke(createContext({ user }));
     const res = await server.post("/api/shares.create", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         documentId: document.id,
       },
     });
@@ -462,7 +462,7 @@ describe("#shares.create", () => {
     });
     const res = await server.post("/api/shares.create", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         documentId: document.id,
       },
     });
@@ -480,7 +480,7 @@ describe("#shares.create", () => {
     });
     const res = await server.post("/api/shares.create", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         documentId: document.id,
       },
     });
@@ -488,7 +488,7 @@ describe("#shares.create", () => {
     expect(res.status).toEqual(200);
     const response = await server.post("/api/shares.update", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: body.data.id,
         published: true,
       },
@@ -510,7 +510,7 @@ describe("#shares.create", () => {
     });
     const res = await server.post("/api/shares.create", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         documentId: document.id,
       },
     });
@@ -518,7 +518,7 @@ describe("#shares.create", () => {
     expect(res.status).toEqual(200);
     const response = await server.post("/api/shares.update", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: body.data.id,
         published: true,
       },
@@ -543,7 +543,7 @@ describe("#shares.create", () => {
     const user = await buildUser();
     const res = await server.post("/api/shares.create", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         documentId: document.id,
       },
     });
@@ -556,7 +556,7 @@ describe("#shares.info", () => {
     const user = await buildUser();
     const res = await server.post("/api/shares.info", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
       },
     });
     const body = await res.json();
@@ -570,7 +570,7 @@ describe("#shares.info", () => {
     const user = await buildUser();
     const res = await server.post("/api/shares.info", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         documentId: "foo",
       },
     });
@@ -600,7 +600,7 @@ describe("#shares.info", () => {
     });
     const res = await server.post("/api/shares.info", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         documentId: document.id,
       },
     });
@@ -620,7 +620,7 @@ describe("#shares.info", () => {
     });
     const res = await server.post("/api/shares.info", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: share.id,
       },
     });
@@ -645,7 +645,7 @@ describe("#shares.info", () => {
     });
     const res = await server.post("/api/shares.info", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         documentId: document.id,
       },
     });
@@ -663,7 +663,7 @@ describe("#shares.info", () => {
     });
     const res = await server.post("/api/shares.info", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         documentId: document.id,
       },
     });
@@ -701,7 +701,7 @@ describe("#shares.info", () => {
     await collection.addDocumentToStructure(childDocument, 0);
     const res = await server.post("/api/shares.info", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         documentId: childDocument.id,
       },
     });
@@ -750,7 +750,7 @@ describe("#shares.info", () => {
     await collection.addDocumentToStructure(childDocument, 0);
     const res = await server.post("/api/shares.info", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         documentId: childDocument.id,
       },
     });
@@ -795,7 +795,7 @@ describe("#shares.info", () => {
     await collection.addDocumentToStructure(childDocument, 0);
     const res = await server.post("/api/shares.info", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         documentId: childDocument.id,
       },
     });
@@ -826,7 +826,7 @@ describe("#shares.update", () => {
     });
     const res = await server.post("/api/shares.update", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: share.id,
         urlId: "url_id",
       },
@@ -842,7 +842,7 @@ describe("#shares.update", () => {
     const user = await buildUser();
     const res = await server.post("/api/shares.update", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         urlId: "url-id",
       },
     });
@@ -863,7 +863,7 @@ describe("#shares.update", () => {
     });
     const res = await server.post("/api/shares.update", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: share.id,
         urlId: "url-id",
       },
@@ -885,7 +885,7 @@ describe("#shares.update", () => {
     });
     await server.post("/api/shares.update", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: share.id,
         urlId: "url-id",
       },
@@ -893,7 +893,7 @@ describe("#shares.update", () => {
 
     const res = await server.post("/api/shares.update", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: share.id,
         urlId: null,
       },
@@ -915,7 +915,7 @@ describe("#shares.update", () => {
     });
     const res = await server.post("/api/shares.update", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: share.id,
         published: true,
       },
@@ -939,7 +939,7 @@ describe("#shares.update", () => {
     });
     const res = await server.post("/api/shares.update", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: share.id,
         published: true,
       },
@@ -962,7 +962,7 @@ describe("#shares.update", () => {
     });
     const res = await server.post("/api/shares.update", {
       body: {
-        token: admin.getJwtToken(),
+        token: admin.sessionToken,
         id: share.id,
         published: true,
       },
@@ -1007,7 +1007,7 @@ describe("#shares.update", () => {
     });
     const res = await server.post("/api/shares.update", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: share.id,
         published: true,
       },
@@ -1021,7 +1021,7 @@ describe("#shares.revoke", () => {
     const user = await buildUser();
     const res = await server.post("/api/shares.revoke", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
       },
     });
     const body = await res.json();
@@ -1042,7 +1042,7 @@ describe("#shares.revoke", () => {
     });
     const res = await server.post("/api/shares.revoke", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: share.id,
       },
     });
@@ -1062,7 +1062,7 @@ describe("#shares.revoke", () => {
     });
     const res = await server.post("/api/shares.revoke", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: share.id,
       },
     });
@@ -1083,7 +1083,7 @@ describe("#shares.revoke", () => {
     await document.delete(user);
     const res = await server.post("/api/shares.revoke", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: share.id,
       },
     });
@@ -1102,7 +1102,7 @@ describe("#shares.revoke", () => {
     });
     const res = await server.post("/api/shares.revoke", {
       body: {
-        token: admin.getJwtToken(),
+        token: admin.sessionToken,
         id: share.id,
       },
     });
@@ -1142,7 +1142,7 @@ describe("#shares.revoke", () => {
     });
     const res = await server.post("/api/shares.revoke", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: share.id,
       },
     });

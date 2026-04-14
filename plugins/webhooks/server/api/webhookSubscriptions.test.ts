@@ -22,7 +22,7 @@ describe("#webhookSubscriptions.list", () => {
     const user = await buildUser();
 
     const res = await server.post("/api/webhookSubscriptions.list", {
-      body: { token: user.getJwtToken() },
+      body: { token: user.sessionToken },
     });
     const body = await res.json();
 
@@ -44,7 +44,7 @@ describe("#webhookSubscriptions.list", () => {
     );
 
     const res = await server.post("/api/webhookSubscriptions.list", {
-      body: { token: user.getJwtToken() },
+      body: { token: user.sessionToken },
     });
     const body = await res.json();
 
@@ -68,7 +68,7 @@ describe("#webhookSubscriptions.create", () => {
     const user = await buildUser();
 
     const res = await server.post("/api/webhookSubscriptions.create", {
-      body: { token: user.getJwtToken() },
+      body: { token: user.sessionToken },
     });
     const body = await res.json();
 
@@ -85,7 +85,7 @@ describe("#webhookSubscriptions.create", () => {
 
     const res = await server.post("/api/webhookSubscriptions.create", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         name,
         url,
         events,
@@ -119,7 +119,7 @@ describe("#webhookSubscriptions.update", () => {
     const user = await buildUser();
 
     const res = await server.post("/api/webhookSubscriptions.update", {
-      body: { token: user.getJwtToken() },
+      body: { token: user.sessionToken },
     });
     const body = await res.json();
 
@@ -143,7 +143,7 @@ describe("#webhookSubscriptions.update", () => {
 
     const res = await server.post("/api/webhookSubscriptions.update", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: existingWebhook.id,
         name,
         url,
@@ -177,7 +177,7 @@ describe("#webhookSubscriptions.update", () => {
 
     const res = await server.post("/api/webhookSubscriptions.update", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: disabledWebhook.id,
         name,
         url,
@@ -210,7 +210,7 @@ describe("#webhookSubscriptions.delete", () => {
     const user = await buildUser();
 
     const res = await server.post("/api/webhookSubscriptions.delete", {
-      body: { token: user.getJwtToken() },
+      body: { token: user.sessionToken },
     });
     const body = await res.json();
 
@@ -229,7 +229,7 @@ describe("#webhookSubscriptions.delete", () => {
     });
 
     const res = await server.post("/api/webhookSubscriptions.delete", {
-      body: { token: user.getJwtToken(), id: createdWebhook.id },
+      body: { token: user.sessionToken, id: createdWebhook.id },
     });
     const body = await res.json();
 

@@ -24,7 +24,7 @@ describe("#subscriptions.create", () => {
 
     const res = await server.post("/api/subscriptions.create", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         collectionId: collection.id,
         event: SubscriptionType.Document,
       },
@@ -48,7 +48,7 @@ describe("#subscriptions.create", () => {
 
     const res = await server.post("/api/subscriptions.create", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         documentId: document.id,
         event: SubscriptionType.Document,
       },
@@ -72,7 +72,7 @@ describe("#subscriptions.create", () => {
 
     const res = await server.post("/api/subscriptions.create", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         documentId: document.id,
         event: SubscriptionType.Document,
       },
@@ -106,7 +106,7 @@ describe("#subscriptions.create", () => {
     // First `subscriptions.create` request.
     await server.post("/api/subscriptions.create", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         documentId: document.id,
         event: SubscriptionType.Document,
       },
@@ -115,7 +115,7 @@ describe("#subscriptions.create", () => {
     // Second `subscriptions.create` request.
     await server.post("/api/subscriptions.create", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         documentId: document.id,
         event: SubscriptionType.Document,
       },
@@ -124,7 +124,7 @@ describe("#subscriptions.create", () => {
     // Third `subscriptions.create` request.
     await server.post("/api/subscriptions.create", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         documentId: document.id,
         event: SubscriptionType.Document,
       },
@@ -133,7 +133,7 @@ describe("#subscriptions.create", () => {
     // List subscriptions associated with `document.id`
     const res = await server.post("/api/subscriptions.list", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         documentId: document.id,
         event: SubscriptionType.Document,
       },
@@ -158,7 +158,7 @@ describe("#subscriptions.create", () => {
 
     const res = await server.post("/api/subscriptions.create", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         documentId: document.id,
         // Subscription on event that cannot be subscribed to.
         event: "documents.publish",
@@ -180,7 +180,7 @@ describe("#subscriptions.create", () => {
 
     const res = await server.post("/api/subscriptions.create", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         event: SubscriptionType.Document,
       },
     });
@@ -208,7 +208,7 @@ describe("#subscriptions.info", () => {
 
     await server.post("/api/subscriptions.create", {
       body: {
-        token: subscriber.getJwtToken(),
+        token: subscriber.sessionToken,
         collectionId: collection.id,
         event: SubscriptionType.Document,
       },
@@ -216,7 +216,7 @@ describe("#subscriptions.info", () => {
 
     const res = await server.post("/api/subscriptions.info", {
       body: {
-        token: subscriber.getJwtToken(),
+        token: subscriber.sessionToken,
         collectionId: collection.id,
         event: SubscriptionType.Document,
       },
@@ -248,7 +248,7 @@ describe("#subscriptions.info", () => {
     // `subscriber` subscribes to `document0`.
     await server.post("/api/subscriptions.create", {
       body: {
-        token: subscriber.getJwtToken(),
+        token: subscriber.sessionToken,
         documentId: document0.id,
         event: SubscriptionType.Document,
       },
@@ -257,7 +257,7 @@ describe("#subscriptions.info", () => {
     // `subscriber` subscribes to `document1`.
     await server.post("/api/subscriptions.create", {
       body: {
-        token: subscriber.getJwtToken(),
+        token: subscriber.sessionToken,
         documentId: document1.id,
         event: SubscriptionType.Document,
       },
@@ -267,7 +267,7 @@ describe("#subscriptions.info", () => {
     // their subscription on `document0`.
     const subscription0 = await server.post("/api/subscriptions.info", {
       body: {
-        token: subscriber.getJwtToken(),
+        token: subscriber.sessionToken,
         documentId: document0.id,
         event: SubscriptionType.Document,
       },
@@ -286,7 +286,7 @@ describe("#subscriptions.info", () => {
 
     const res = await server.post("/api/subscriptions.info", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         event: SubscriptionType.Document,
       },
     });
@@ -310,7 +310,7 @@ describe("#subscriptions.info", () => {
 
     const res = await server.post("/api/subscriptions.info", {
       body: {
-        token: subscriber.getJwtToken(),
+        token: subscriber.sessionToken,
         documentId: document.id,
         event: SubscriptionType.Document,
       },
@@ -339,7 +339,7 @@ describe("#subscriptions.info", () => {
     // `subscriber` subscribes to `document0`.
     await server.post("/api/subscriptions.create", {
       body: {
-        token: subscriber.getJwtToken(),
+        token: subscriber.sessionToken,
         documentId: document0.id,
         event: SubscriptionType.Document,
       },
@@ -348,7 +348,7 @@ describe("#subscriptions.info", () => {
     // `subscriber` subscribes to `document1`.
     await server.post("/api/subscriptions.create", {
       body: {
-        token: subscriber.getJwtToken(),
+        token: subscriber.sessionToken,
         documentId: document1.id,
         event: SubscriptionType.Document,
       },
@@ -357,7 +357,7 @@ describe("#subscriptions.info", () => {
     // `viewer` wants info about `subscriber`'s subscription on `document0`.
     const subscription0 = await server.post("/api/subscriptions.info", {
       body: {
-        token: viewer.getJwtToken(),
+        token: viewer.sessionToken,
         documentId: document0.id,
         event: SubscriptionType.Document,
       },
@@ -374,7 +374,7 @@ describe("#subscriptions.info", () => {
     // `viewer` wants info about `subscriber`'s subscription on `document0`.
     const subscription1 = await server.post("/api/subscriptions.info", {
       body: {
-        token: viewer.getJwtToken(),
+        token: viewer.sessionToken,
         documentId: document1.id,
         event: SubscriptionType.Document,
       },
@@ -410,7 +410,7 @@ describe("#subscriptions.info", () => {
     // `subscriber` subscribes to `document0`.
     await server.post("/api/subscriptions.create", {
       body: {
-        token: subscriber.getJwtToken(),
+        token: subscriber.sessionToken,
         documentId: document0.id,
         event: SubscriptionType.Document,
       },
@@ -419,7 +419,7 @@ describe("#subscriptions.info", () => {
     // `subscriber` subscribes to `document1`.
     await server.post("/api/subscriptions.create", {
       body: {
-        token: subscriber.getJwtToken(),
+        token: subscriber.sessionToken,
         documentId: document1.id,
         event: SubscriptionType.Document,
       },
@@ -428,7 +428,7 @@ describe("#subscriptions.info", () => {
     // `viewer` wants info about `subscriber`'s subscription on `document0` - they have requested an invalid event.
     const subscription0 = await server.post("/api/subscriptions.info", {
       body: {
-        token: viewer.getJwtToken(),
+        token: viewer.sessionToken,
         documentId: document0.id,
         event: "documents.changed",
       },
@@ -448,7 +448,7 @@ describe("#subscriptions.info", () => {
     // They have requested an invalid event.
     const subscription1 = await server.post("/api/subscriptions.info", {
       body: {
-        token: viewer.getJwtToken(),
+        token: viewer.sessionToken,
         documentId: document1.id,
         event: "doc.affected",
       },
@@ -481,7 +481,7 @@ describe("#subscriptions.list", () => {
 
     const res = await server.post("/api/subscriptions.list", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         documentId: document.id,
         event: SubscriptionType.Document,
       },
@@ -513,7 +513,7 @@ describe("#subscriptions.list", () => {
     // changes on this document.
     await server.post("/api/subscriptions.create", {
       body: {
-        token: subscriber0.getJwtToken(),
+        token: subscriber0.sessionToken,
         documentId: document.id,
         event: "documents.update",
       },
@@ -523,7 +523,7 @@ describe("#subscriptions.list", () => {
     // changes on this document.
     await server.post("/api/subscriptions.create", {
       body: {
-        token: subscriber1.getJwtToken(),
+        token: subscriber1.sessionToken,
         documentId: document.id,
         event: "documents.update",
       },
@@ -533,7 +533,7 @@ describe("#subscriptions.list", () => {
     // for this document.
     const res = await server.post("/api/subscriptions.list", {
       body: {
-        token: viewer.getJwtToken(),
+        token: viewer.sessionToken,
         documentId: document.id,
         event: "documents.update",
       },
@@ -549,7 +549,7 @@ describe("#subscriptions.list", () => {
     // for this document.
     const res0 = await server.post("/api/subscriptions.list", {
       body: {
-        token: subscriber0.getJwtToken(),
+        token: subscriber0.sessionToken,
         documentId: document.id,
         event: "documents.update",
       },
@@ -566,7 +566,7 @@ describe("#subscriptions.list", () => {
     // for this document.
     const res1 = await server.post("/api/subscriptions.list", {
       body: {
-        token: subscriber1.getJwtToken(),
+        token: subscriber1.sessionToken,
         documentId: document.id,
         event: "documents.update",
       },
@@ -597,7 +597,7 @@ describe("#subscriptions.list", () => {
     // changes on this document.
     await server.post("/api/subscriptions.create", {
       body: {
-        token: subscriber0.getJwtToken(),
+        token: subscriber0.sessionToken,
         documentId: document.id,
         event: "documents.update",
       },
@@ -607,7 +607,7 @@ describe("#subscriptions.list", () => {
     // changes on this document.
     await server.post("/api/subscriptions.create", {
       body: {
-        token: subscriber1.getJwtToken(),
+        token: subscriber1.sessionToken,
         documentId: document.id,
         event: "documents.update",
       },
@@ -617,7 +617,7 @@ describe("#subscriptions.list", () => {
     // for this document.
     const res = await server.post("/api/subscriptions.list", {
       body: {
-        token: viewer.getJwtToken(),
+        token: viewer.sessionToken,
         documentId: document.id,
         event: "changes.on.documents",
       },
@@ -650,7 +650,7 @@ describe("#subscriptions.list", () => {
     // changes on this document.
     await server.post("/api/subscriptions.create", {
       body: {
-        token: subscriber0.getJwtToken(),
+        token: subscriber0.sessionToken,
         documentId: document.id,
         event: "documents.update",
       },
@@ -660,7 +660,7 @@ describe("#subscriptions.list", () => {
     // changes on this document.
     await server.post("/api/subscriptions.create", {
       body: {
-        token: subscriber1.getJwtToken(),
+        token: subscriber1.sessionToken,
         documentId: document.id,
         event: "documents.update",
       },
@@ -670,7 +670,7 @@ describe("#subscriptions.list", () => {
     // for this internal document.
     const res = await server.post("/api/subscriptions.info", {
       body: {
-        token: viewer.getJwtToken(),
+        token: viewer.sessionToken,
         documentId: document.id,
         event: "documents.update",
       },
@@ -691,7 +691,7 @@ describe("#subscriptions.list", () => {
 
     const res = await server.post("/api/subscriptions.list", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         event: SubscriptionType.Document,
       },
     });
@@ -814,7 +814,7 @@ describe("#subscriptions.delete", () => {
       const res = await server.post("/api/subscriptions.delete", {
         body: {
           id: subscription.id,
-          token: user.getJwtToken(),
+          token: user.sessionToken,
         },
       });
 
@@ -848,7 +848,7 @@ describe("#subscriptions.delete", () => {
       const res = await server.post("/api/subscriptions.delete", {
         body: {
           id: subscription.id,
-          token: user.getJwtToken(),
+          token: user.sessionToken,
         },
       });
 
@@ -886,7 +886,7 @@ describe("#subscriptions.delete", () => {
       // changes on this document.
       await server.post("/api/subscriptions.create", {
         body: {
-          token: subscriber0.getJwtToken(),
+          token: subscriber0.sessionToken,
           documentId: document.id,
           event: "documents.update",
         },
@@ -896,7 +896,7 @@ describe("#subscriptions.delete", () => {
       // changes on this document.
       const resp = await server.post("/api/subscriptions.create", {
         body: {
-          token: subscriber1.getJwtToken(),
+          token: subscriber1.sessionToken,
           documentId: document.id,
           event: "documents.update",
         },
@@ -910,7 +910,7 @@ describe("#subscriptions.delete", () => {
       const res = await server.post("/api/subscriptions.delete", {
         body: {
           id: subscription1Id,
-          token: subscriber0.getJwtToken(),
+          token: subscriber0.sessionToken,
         },
       });
 

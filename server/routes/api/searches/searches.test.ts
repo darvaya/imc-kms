@@ -1,12 +1,11 @@
-import type { User } from "@server/models";
 import { SearchQuery } from "@server/models";
-import { buildSearchQuery, buildUser } from "@server/test/factories";
+import { buildSearchQuery, buildUser, type TestUser } from "@server/test/factories";
 import { getTestServer } from "@server/test/support";
 
 const server = getTestServer();
 
 describe("#searches.list", () => {
-  let user: User;
+  let user: TestUser;
 
   beforeEach(async () => {
     user = await buildUser();
@@ -33,7 +32,7 @@ describe("#searches.list", () => {
   it("should succeed with status 200 ok returning results", async () => {
     const res = await server.post("/api/searches.list", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
       },
     });
     const body = await res.json();
@@ -48,7 +47,7 @@ describe("#searches.list", () => {
   it("should allow filtering by source", async () => {
     const res = await server.post("/api/searches.list", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         source: "api",
       },
     });
@@ -59,7 +58,7 @@ describe("#searches.list", () => {
 });
 
 describe("#searches.update", () => {
-  let user: User;
+  let user: TestUser;
   let searchQuery: SearchQuery;
 
   beforeEach(async () => {
@@ -74,7 +73,7 @@ describe("#searches.update", () => {
   it("should fail with status 400 bad request when an invalid id is provided", async () => {
     const res = await server.post("/api/searches.update", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: "id",
         score: 1,
       },
@@ -85,7 +84,7 @@ describe("#searches.update", () => {
   it("should fail with status 400 bad request when an invalid score is provided", async () => {
     const res = await server.post("/api/searches.update", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: searchQuery.id,
         score: 2,
       },
@@ -96,7 +95,7 @@ describe("#searches.update", () => {
   it("should succeed with status 200 ok and successfully update the query", async () => {
     const res = await server.post("/api/searches.update", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: searchQuery.id,
         score: 1,
       },
@@ -110,7 +109,7 @@ describe("#searches.update", () => {
 });
 
 describe("#searches.delete", () => {
-  let user: User;
+  let user: TestUser;
   let searchQuery: SearchQuery;
 
   beforeEach(async () => {
@@ -125,7 +124,7 @@ describe("#searches.delete", () => {
   it("should fail with status 400 bad request when no id or query is provided", async () => {
     const res = await server.post("/api/searches.delete", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
       },
     });
 
@@ -137,7 +136,7 @@ describe("#searches.delete", () => {
   it("should fail with status 400 bad request when an invalid id is provided", async () => {
     const res = await server.post("/api/searches.delete", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: "id",
       },
     });
@@ -158,7 +157,7 @@ describe("#searches.delete", () => {
 
     const res = await server.post("/api/searches.delete", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: searchQuery.id,
       },
     });

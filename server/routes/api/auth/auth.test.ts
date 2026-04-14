@@ -3,23 +3,12 @@ import { randomUUID } from "crypto";
 import { buildUser, buildTeam } from "@server/test/factories";
 import { getTestServer, setSelfHosted } from "@server/test/support";
 
-const mockTeamInSessionId = randomUUID();
-
-jest.mock("@server/utils/authentication", () => ({
-  getSessionsInCookie() {
-    return { [mockTeamInSessionId]: {} };
-  },
-}));
-
 const server = getTestServer();
 
 describe("#auth.info", () => {
   it("should return current authentication", async () => {
     const team = await buildTeam();
     const team2 = await buildTeam();
-    const team3 = await buildTeam({
-      id: mockTeamInSessionId,
-    });
 
     const user = await buildUser({ teamId: team.id });
     await buildUser();
@@ -29,7 +18,7 @@ describe("#auth.info", () => {
     });
     const res = await server.post("/api/auth.info", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
       },
     });
     const body = await res.json();
@@ -37,10 +26,9 @@ describe("#auth.info", () => {
 
     const availableTeamIds = body.data.availableTeams.map((t: any) => t.id);
 
-    expect(availableTeamIds.length).toEqual(3);
+    expect(availableTeamIds.length).toEqual(2);
     expect(availableTeamIds).toContain(team.id);
     expect(availableTeamIds).toContain(team2.id);
-    expect(availableTeamIds).toContain(team3.id);
     expect(body.data.user.name).toBe(user.name);
     expect(body.data.team.name).toBe(team.name);
     expect(body.data.team.allowedDomains).toEqual([]);
@@ -52,7 +40,7 @@ describe("#auth.info", () => {
     await team.destroy();
     const res = await server.post("/api/auth.info", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
       },
     });
     expect(res.status).toEqual(401);
@@ -69,14 +57,14 @@ describe("#auth.delete", () => {
     const user = await buildUser();
     const res = await server.post("/api/auth.delete", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
       },
     });
     expect(res.status).toEqual(200);
 
     const res2 = await server.post("/api/auth.info", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
       },
     });
     expect(res2.status).toEqual(401);

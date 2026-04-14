@@ -2,7 +2,7 @@ import type { onAuthenticatePayload, Extension } from "@hocuspocus/server";
 import { trace } from "@server/logging/tracing";
 import Document from "@server/models/Document";
 import { can } from "@server/policies";
-import { getUserForJWT } from "@server/utils/jwt";
+import { getUserForCollaborationToken } from "@server/utils/jwt";
 import { AuthenticationError } from "../errors";
 
 @trace()
@@ -19,7 +19,7 @@ export default class AuthenticationExtension implements Extension {
       throw AuthenticationError("Authentication required");
     }
 
-    const user = await getUserForJWT(token, ["session", "collaboration"]);
+    const user = await getUserForCollaborationToken(token);
     const document = await Document.findByPk(documentId, {
       userId: user.id,
     });

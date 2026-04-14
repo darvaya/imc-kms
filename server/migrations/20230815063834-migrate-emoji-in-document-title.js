@@ -19,7 +19,7 @@ module.exports = {
       `server/scripts/${scriptName}`
     );
 
-    execSync(`node ${scriptPath}`, { stdio: "inherit" });
+    execSync(`node "${scriptPath}"`, { stdio: "inherit" });
   },
 
   async down() {

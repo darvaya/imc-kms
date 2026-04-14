@@ -10,7 +10,7 @@ describe("#apiKeys.create", () => {
 
     const res = await server.post("/api/apiKeys.create", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         name: "My API Key",
         expiresAt: now.toISOString(),
       },
@@ -28,7 +28,7 @@ describe("#apiKeys.create", () => {
 
     const res = await server.post("/api/apiKeys.create", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         name: "My API Key",
       },
     });
@@ -45,7 +45,7 @@ describe("#apiKeys.create", () => {
 
     const res = await server.post("/api/apiKeys.create", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         name: "My API Key",
         scope: [
           "/api/documents.list",
@@ -84,7 +84,7 @@ describe("#apiKeys.list", () => {
     const res = await server.post("/api/apiKeys.list", {
       body: {
         userId: user.id,
-        token: admin.getJwtToken(),
+        token: admin.sessionToken,
       },
     });
     const body = await res.json();
@@ -102,7 +102,7 @@ describe("#apiKeys.list", () => {
     const res = await server.post("/api/apiKeys.list", {
       body: {
         userId: admin.id,
-        token: admin.getJwtToken(),
+        token: admin.sessionToken,
       },
     });
     const body = await res.json();
@@ -120,7 +120,7 @@ describe("#apiKeys.list", () => {
 
     const res = await server.post("/api/apiKeys.list", {
       body: {
-        token: admin.getJwtToken(),
+        token: admin.sessionToken,
       },
     });
 
@@ -146,7 +146,7 @@ describe("#apiKeys.delete", () => {
 
     const res = await server.post("/api/apiKeys.delete", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: apiKey.id,
       },
     });
@@ -164,7 +164,7 @@ describe("#apiKeys.delete", () => {
 
     const res = await server.post("/api/apiKeys.delete", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: apiKey.id,
       },
     });
@@ -182,7 +182,7 @@ describe("#apiKeys.delete", () => {
 
     const res = await server.post("/api/apiKeys.delete", {
       body: {
-        token: admin.getJwtToken(),
+        token: admin.sessionToken,
         id: apiKey.id,
       },
     });

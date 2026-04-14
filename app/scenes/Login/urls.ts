@@ -23,7 +23,16 @@ function validateAndEncodeSubdomain(subdomain: string): string {
 export function getRedirectUrl(authUrl: string) {
   const { custom, teamSubdomain, host } = parseDomain(window.location.origin);
   const url = new URL(env.URL);
-  url.pathname = authUrl;
+
+  // authUrl may contain query params (e.g. "/path?provider=microsoft").
+  // Setting url.pathname directly would encode the ? as %3F.
+  const [path, search] = authUrl.split("?");
+  url.pathname = path;
+  if (search) {
+    new URLSearchParams(search).forEach((value, key) => {
+      url.searchParams.set(key, value);
+    });
+  }
 
   if (custom || teamSubdomain) {
     url.searchParams.set("host", host);

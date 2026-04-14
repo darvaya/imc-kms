@@ -152,10 +152,10 @@ describe("user model", () => {
     });
   });
 
-  describe("getJwtToken", () => {
-    it("should set JWT secret", async () => {
+  describe("getCollaborationToken", () => {
+    it("should return a collaboration token", async () => {
       const user = await buildUser();
-      expect(user.getJwtToken()).toBeTruthy();
+      expect(user.getCollaborationToken()).toBeTruthy();
     });
   });
 

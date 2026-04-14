@@ -11,7 +11,7 @@ import env from "@server/env";
 import { Integration } from "@server/models";
 import { DocumentHelper } from "@server/models/helpers/DocumentHelper";
 import presentEnv from "@server/presenters/env";
-import { getTeamFromContext } from "@server/utils/passport";
+import { getTeamFromContext } from "@server/utils/team";
 import prefetchTags from "@server/utils/prefetchTags";
 import readManifestFile from "@server/utils/readManifestFile";
 import { loadPublicShare } from "@server/commands/shareLoader";

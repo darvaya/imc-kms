@@ -60,7 +60,7 @@ describe("#notifications.list", () => {
 
     const res = await server.post("/api/notifications.list", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
       },
     });
     const body = await res.json();
@@ -124,7 +124,7 @@ describe("#notifications.list", () => {
 
     const res = await server.post("/api/notifications.list", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         eventType: NotificationEventType.MentionedInComment,
       },
     });
@@ -189,7 +189,7 @@ describe("#notifications.list", () => {
 
     const res = await server.post("/api/notifications.list", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         archived: true,
       },
     });
@@ -255,7 +255,7 @@ describe("#notifications.list", () => {
 
     const res = await server.post("/api/notifications.list", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         archived: false,
       },
     });
@@ -373,7 +373,7 @@ describe("#notifications.update", () => {
 
     const res = await server.post("/api/notifications.update", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: notification.id,
         viewedAt: new Date(),
       },
@@ -413,7 +413,7 @@ describe("#notifications.update", () => {
 
     const res = await server.post("/api/notifications.update", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         id: notification.id,
         archivedAt: new Date(),
       },
@@ -471,7 +471,7 @@ describe("#notifications.update_all", () => {
 
     const res = await server.post("/api/notifications.update_all", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
       },
     });
     const body = await res.json();
@@ -524,7 +524,7 @@ describe("#notifications.update_all", () => {
 
     const res = await server.post("/api/notifications.update_all", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         viewedAt: new Date(),
       },
     });
@@ -579,7 +579,7 @@ describe("#notifications.update_all", () => {
 
     const res = await server.post("/api/notifications.update_all", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         viewedAt: null,
       },
     });
@@ -633,7 +633,7 @@ describe("#notifications.update_all", () => {
 
     const res = await server.post("/api/notifications.update_all", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         archivedAt: new Date(),
       },
     });
@@ -688,7 +688,7 @@ describe("#notifications.update_all", () => {
 
     const res = await server.post("/api/notifications.update_all", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         archivedAt: null,
       },
     });

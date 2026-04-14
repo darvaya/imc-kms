@@ -27,7 +27,7 @@ describe("#files.create", () => {
     const user = await buildUser();
     const res = await server.post("/api/files.create", {
       body: {
-        token: user.getJwtToken(),
+        token: user.sessionToken,
         key: "public/foo/bar/baz.png",
       },
     });
@@ -52,7 +52,7 @@ describe("#files.create", () => {
     const form = new FormData();
     form.append("key", attachment.key);
     form.append("file", content, fileName);
-    form.append("token", user.getJwtToken());
+    form.append("token", user.sessionToken);
 
     const res = await server.post(`/api/files.create`, {
       headers: form.getHeaders(),
@@ -89,7 +89,7 @@ describe("#files.create", () => {
     const form = new FormData();
     form.append("key", attachment.key);
     form.append("file", content, fileName);
-    form.append("token", user.getJwtToken());
+    form.append("token", user.sessionToken);
 
     const res = await server.post(`/api/files.create`, {
       headers: form.getHeaders(),
@@ -117,7 +117,7 @@ describe("#files.create", () => {
     const form = new FormData();
     form.append("key", attachment.key);
     form.append("file", content, fileName);
-    form.append("token", user.getJwtToken());
+    form.append("token", user.sessionToken);
 
     const res = await server.post(`/api/files.create`, {
       headers: form.getHeaders(),
@@ -198,7 +198,7 @@ describe("#files.get", () => {
     const form = new FormData();
     form.append("key", attachment.key);
     form.append("file", content, fileName);
-    form.append("token", user.getJwtToken());
+    form.append("token", user.sessionToken);
 
     await server.post(`/api/files.create`, {
       headers: form.getHeaders(),
@@ -234,7 +234,7 @@ describe("#files.get", () => {
     const form = new FormData();
     form.append("key", attachment.key);
     form.append("file", content, fileName);
-    form.append("token", user.getJwtToken());
+    form.append("token", user.sessionToken);
 
     await server.post(`/api/files.create`, {
       headers: form.getHeaders(),

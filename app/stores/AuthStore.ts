@@ -11,6 +11,7 @@ import Team from "~/models/Team";
 import env from "~/env";
 import { setPostLoginPath } from "~/hooks/useLastVisitedPath";
 import { client } from "~/utils/ApiClient";
+import { signOutBetterAuth } from "~/utils/betterAuthClient";
 import Desktop from "~/utils/Desktop";
 import Logger from "~/utils/Logger";
 import isCloudHosted from "~/utils/isCloudHosted";
@@ -25,6 +26,7 @@ type Provider = {
   id: string;
   name: string;
   authUrl: string;
+  authType?: string;
 };
 
 export type Config = {
@@ -331,6 +333,13 @@ export default class AuthStore extends Store<Team> {
         await client.post(`/auth.delete`);
       } catch (err) {
         Logger.error("Failed to delete authentication", err);
+      }
+
+      try {
+        // clear better-auth session cookie if present
+        await signOutBetterAuth();
+      } catch (err) {
+        Logger.error("Failed to sign out of better-auth", err);
       }
     }
 

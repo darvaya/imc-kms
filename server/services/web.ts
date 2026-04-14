@@ -15,6 +15,7 @@ import Logger from "@server/logging/Logger";
 import Metrics from "@server/logging/Metrics";
 import csp from "@server/middlewares/csp";
 import { attachCSRFToken } from "@server/middlewares/csrf";
+import betterAuthHandler from "@server/auth/betterAuthHandler";
 import ShutdownHelper, { ShutdownOrder } from "@server/utils/ShutdownHelper";
 import { initI18n } from "@server/utils/i18n";
 import routes from "../routes";
@@ -68,6 +69,10 @@ export default function init(app: Koa = new Koa(), server?: Server) {
   ShutdownHelper.add("connections", ShutdownOrder.normal, async () => {
     Metrics.gaugePerInstance("connections.count", 0);
   });
+
+  // better-auth handler must run before the /api mount so that requests to
+  // /api/better-auth/* are intercepted before bodyParser and the API 404 catch-all.
+  app.use(betterAuthHandler());
 
   app.use(mount("/api", api));
 

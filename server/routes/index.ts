@@ -13,7 +13,7 @@ import { NotFoundError } from "@server/errors";
 import shareDomains from "@server/middlewares/shareDomains";
 import { Integration } from "@server/models";
 import { opensearchResponse } from "@server/utils/opensearch";
-import { getTeamFromContext } from "@server/utils/passport";
+import { getTeamFromContext } from "@server/utils/team";
 import { robotsResponse } from "@server/utils/robots";
 import apexRedirect from "../middlewares/apexRedirect";
 import { renderApp, renderShare } from "./app";

@@ -1,5 +1,5 @@
 import crypto from "crypto";
-import { addHours, addMinutes, subMinutes } from "date-fns";
+import { addHours, subMinutes } from "date-fns";
 import JWT from "jsonwebtoken";
 import type { Context } from "koa";
 import type {
@@ -571,23 +571,6 @@ class User extends ParanoidModel<
   };
 
   /**
-   * Returns a session token that is used to make API requests and is stored
-   * in the client browser cookies to remain logged in.
-   *
-   * @param expiresAt The time the token will expire at
-   * @returns The session token
-   */
-  getJwtToken = (expiresAt?: Date) =>
-    JWT.sign(
-      {
-        id: this.id,
-        expiresAt: expiresAt ? expiresAt.toISOString() : undefined,
-        type: "session",
-      },
-      this.jwtSecret
-    );
-
-  /**
    * Returns a session token that is used to make collaboration requests and is
    * stored in the client memory.
    *
@@ -599,41 +582,6 @@ class User extends ParanoidModel<
         id: this.id,
         expiresAt: addHours(new Date(), 24).toISOString(),
         type: "collaboration",
-      },
-      this.jwtSecret
-    );
-
-  /**
-   * Returns a temporary token that is only used for transferring a session
-   * between subdomains or domains. It has a short expiry and can only be used
-   * once.
-   *
-   * @returns The transfer token
-   */
-  getTransferToken = () =>
-    JWT.sign(
-      {
-        id: this.id,
-        createdAt: new Date().toISOString(),
-        expiresAt: addMinutes(new Date(), 1).toISOString(),
-        type: "transfer",
-      },
-      this.jwtSecret
-    );
-
-  /**
-   * Returns a temporary token that is only used for logging in from an email
-   * It can only be used to sign in once and has a medium length expiry
-   *
-   * @returns The email signin token
-   */
-  getEmailSigninToken = (ctx: Context) =>
-    JWT.sign(
-      {
-        id: this.id,
-        ip: ctx.request.ip,
-        createdAt: new Date().toISOString(),
-        type: "email-signin",
       },
       this.jwtSecret
     );

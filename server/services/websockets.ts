@@ -1,10 +1,10 @@
 import type { IncomingMessage } from "http";
 import type http from "http";
 import type { Duplex } from "stream";
-import cookie from "cookie";
 import type Koa from "koa";
 import IO from "socket.io";
 import { createAdapter } from "socket.io-redis";
+import { validateBetterAuthSessionFromHeaders } from "@server/auth/betterAuthSession";
 import env from "@server/env";
 import { AuthenticationError } from "@server/errors";
 import Logger from "@server/logging/Logger";
@@ -16,7 +16,6 @@ import { Collection, Group } from "@server/models";
 import { can } from "@server/policies";
 import Redis from "@server/storage/redis";
 import ShutdownHelper, { ShutdownOrder } from "@server/utils/ShutdownHelper";
-import { getUserForJWT } from "@server/utils/jwt";
 import { websocketQueue } from "../queues";
 import WebsocketsProcessor from "../queues/processors/WebsocketsProcessor";
 
@@ -227,20 +226,18 @@ async function authenticated(io: IO.Server, socket: SocketWithAuth) {
 }
 
 /**
- * Authenticate the socket with the given token, attach the user model for the
- * duration of the session.
+ * Authenticate the socket using the Better Auth session cookie, attach the
+ * user model for the duration of the session.
  */
 async function authenticate(socket: SocketWithAuth) {
-  const cookies = socket.request.headers.cookie
-    ? cookie.parse(socket.request.headers.cookie)
-    : {};
-  const { accessToken } = cookies;
+  const result = await validateBetterAuthSessionFromHeaders(
+    socket.request.headers
+  );
 
-  if (!accessToken) {
-    throw AuthenticationError("No access token");
+  if (!result) {
+    throw AuthenticationError("No valid session");
   }
 
-  const user = await getUserForJWT(accessToken);
-  socket.client.user = user;
-  return user;
+  socket.client.user = result.user;
+  return result.user;
 }

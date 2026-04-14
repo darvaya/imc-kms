@@ -2,6 +2,10 @@ import type { Next } from "koa";
 import capitalize from "lodash/capitalize";
 import type { UserRole } from "@shared/types";
 import { UserRoleHelper } from "@shared/utils/UserRoleHelper";
+import {
+  validateBetterAuthSession,
+  validateBetterAuthSessionFromToken,
+} from "@server/auth/betterAuthSession";
 import tracer, {
   addTags,
   getRootSpanFromRequestContext,
@@ -9,7 +13,6 @@ import tracer, {
 import { User, Team, ApiKey, OAuthAuthentication } from "@server/models";
 import type { AppContext } from "@server/types";
 import { AuthenticationType } from "@server/types";
-import { getUserForJWT } from "@server/utils/jwt";
 import {
   AuthenticationError,
   AuthorizationError,
@@ -144,6 +147,12 @@ async function validateAuthentication(
   ctx: AppContext,
   options: AuthenticationOptions
 ): Promise<{ user: User; token: string; type: AuthenticationType }> {
+  // Try better-auth session first (dual-mode: better-auth + legacy JWT)
+  const betterAuthResult = await validateBetterAuthSession(ctx);
+  if (betterAuthResult) {
+    return betterAuthResult;
+  }
+
   const { token, transport } = parseAuthentication(ctx);
 
   if (!token) {
@@ -240,8 +249,13 @@ async function validateAuthentication(
 
     await apiKey.updateActiveAt();
   } else {
-    type = AuthenticationType.APP;
-    user = await getUserForJWT(token);
+    // Try Better Auth session token (passed in body/header instead of cookie)
+    const sessionResult = await validateBetterAuthSessionFromToken(token);
+    if (!sessionResult) {
+      throw AuthenticationError("Authentication required");
+    }
+    type = sessionResult.type;
+    user = sessionResult.user;
   }
 
   if (user.isSuspended) {

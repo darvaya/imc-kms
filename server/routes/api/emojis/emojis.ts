@@ -13,7 +13,7 @@ import type { APIContext } from "@server/types";
 import { RateLimiterStrategy } from "@server/utils/RateLimiter";
 import pagination from "../middlewares/pagination";
 import * as T from "./schema";
-import { getTeamFromContext } from "@server/utils/passport";
+import { getTeamFromContext } from "@server/utils/team";
 import { loadPublicShare } from "@server/commands/shareLoader";
 import { AuthorizationError } from "@server/errors";
 
