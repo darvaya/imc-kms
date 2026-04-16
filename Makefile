@@ -1,28 +1,28 @@
-up:
-	docker compose up -d redis postgres
-	yarn install-local-ssl
+install:
 	yarn install --immutable
-	yarn dev:watch
 
 build:
-	docker compose build --pull outline
+	yarn build
 
-test:
-	docker compose up -d postgres
-	NODE_ENV=test yarn sequelize db:drop
-	NODE_ENV=test yarn sequelize db:create
-	NODE_ENV=test yarn sequelize db:migrate
-	yarn test
+migrate:
+	yarn db:migrate
 
-watch:
-	docker compose up -d redis postgres
-	NODE_ENV=test yarn sequelize db:drop
-	NODE_ENV=test yarn sequelize db:create
-	NODE_ENV=test yarn sequelize db:migrate
-	yarn test:watch
+start:
+	mkdir -p logs
+	pm2 start ecosystem.config.cjs
 
-destroy:
-	docker compose stop
-	docker compose rm -f
+stop:
+	pm2 stop kms
 
-.PHONY: up build destroy test watch # let's go to reserve rules names
+restart:
+	pm2 restart kms
+
+logs:
+	pm2 logs kms
+
+status:
+	pm2 status
+
+deploy: install build migrate restart
+
+.PHONY: install build migrate start stop restart logs status deploy
