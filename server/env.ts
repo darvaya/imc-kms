@@ -254,11 +254,11 @@ export class Environment {
   );
 
   /**
-   * The port that the server will listen on, defaults to 3000.
+   * The port that the server will listen on, defaults to 3100.
    */
   @IsNumber()
   @IsOptional()
-  public PORT = this.toOptionalNumber(environment.PORT) ?? 3000;
+  public PORT = this.toOptionalNumber(environment.PORT) ?? 3100;
 
   /**
    * Optional extra debugging. Comma separated
