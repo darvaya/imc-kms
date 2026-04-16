@@ -5,7 +5,7 @@ build:
 	yarn build
 
 migrate:
-	yarn db:migrate
+	NODE_ENV=production yarn db:migrate
 
 start:
 	mkdir -p logs
