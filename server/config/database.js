@@ -1,3 +1,11 @@
+// Load .env file so sequelize-cli picks up DATABASE_URL / DATABASE_* vars
+// when invoked directly (e.g. `yarn db:migrate`), without going through the
+// app's bootstrap. Matches options used in server/scripts/bootstrap.ts.
+require("@dotenvx/dotenvx").config({
+  silent: true,
+  ignore: ["MISSING_ENV_FILE"],
+});
+
 const shared = {
   use_env_variable: process.env.DATABASE_URL ? "DATABASE_URL" : undefined,
   dialect: "postgres",
