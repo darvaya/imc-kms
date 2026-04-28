@@ -211,6 +211,20 @@ export class Environment {
   public URL = (environment.URL ?? "").replace(/\/$/, "");
 
   /**
+   * The path component of `URL` without a trailing slash. Empty string when
+   * `URL` has no path component. Drives sub-path-aware deployment by acting as
+   * the single source of truth that the inner Koa app is mounted under.
+   */
+  @Public
+  public get BASE_PATH(): string {
+    if (!this.URL) {
+      return "";
+    }
+    const { pathname } = new URL(this.URL);
+    return pathname === "/" ? "" : pathname.replace(/\/$/, "");
+  }
+
+  /**
    * If using a Cloudfront/Cloudflare distribution or similar it can be set below.
    * This will cause paths to javascript, stylesheets, and images to be updated to
    * the hostname defined in CDN_URL. In your CDN configuration the origin server

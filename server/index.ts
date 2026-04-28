@@ -10,6 +10,7 @@ import type { Context } from "koa";
 import Koa from "koa";
 import helmet from "koa-helmet";
 import logger from "koa-logger";
+import mount from "koa-mount";
 import Router from "koa-router";
 import type { AddressInfo } from "net";
 import stoppable from "stoppable";
@@ -67,30 +68,40 @@ async function start(_id: number, disconnect: () => void) {
 
   // If a --port flag is passed then it takes priority over the env variable
   const normalizedPort = getArg("port", "p") || env.PORT;
-  const app = new Koa();
+  const outerApp = new Koa();
+  const innerApp = new Koa();
   const server = stoppable(
     useHTTPS
-      ? https.createServer(ssl, app.callback())
-      : http.createServer(app.callback()),
+      ? https.createServer(ssl, outerApp.callback())
+      : http.createServer(outerApp.callback()),
     ShutdownHelper.connectionGraceTimeout
   );
   const router = new Router();
 
-  // install basic middleware shared by all services
-  if (env.DEBUG.includes("http")) {
-    app.use(logger((str) => Logger.info("http", str)));
+  // Trust proxy headers on the outer app — `ctx` is created from outerApp so
+  // proxy=true must live there for ctx.protocol / ctx.ips to be correct.
+  if (env.isProduction) {
+    outerApp.proxy = true;
   }
 
-  app.use(helmet());
+  // HTTP request logger (inner app — health probes intentionally bypass).
+  if (env.DEBUG.includes("http")) {
+    innerApp.use(logger((str) => Logger.info("http", str)));
+  }
 
-  // catch errors in one place, automatically set status and response headers
-  onerror(app);
+  innerApp.use(helmet());
 
-  // Apply default rate limit to all routes
-  app.use(defaultRateLimiter());
+  // catch errors in one place, automatically set status and response headers.
+  // The custom ctx.onerror is read off the prototype chain rooted at
+  // outerApp.context (where the request ctx is created), so install it on the
+  // outer app even though most requests are served by inner middleware.
+  onerror(outerApp);
+
+  // Apply default rate limit to all routed requests; /_health bypasses.
+  innerApp.use(defaultRateLimiter());
 
   /** Perform a redirect on the browser so that the user's auth cookies are included in the request. */
-  app.context.redirectOnClient = function (
+  outerApp.context.redirectOnClient = function (
     this: Context,
     /** The URL to redirect to */
     url: string,
@@ -168,7 +179,10 @@ async function start(_id: number, disconnect: () => void) {
     ctx.body = "OK";
   });
 
-  app.use(router.routes());
+  // The health router lives on the outer app so health probes don't depend on
+  // BASE_PATH. Must be registered before the mount so it short-circuits ahead
+  // of the inner app.
+  outerApp.use(router.routes());
 
   // loop through requested services at startup
   for (const name of env.SERVICES) {
@@ -178,8 +192,14 @@ async function start(_id: number, disconnect: () => void) {
 
     Logger.info("lifecycle", `Starting ${name} service`);
     const init = services[name as keyof typeof services];
-    await init(app, server as https.Server, env.SERVICES);
+    await init(innerApp, server as https.Server, env.SERVICES);
   }
+
+  // Mount the inner app under BASE_PATH so existing route literals (`/api/*`,
+  // `/auth/*`, `/oauth/*`, the SPA catch-all) work mount-relative. koa-mount
+  // returns the inner middleware unchanged when prefix === "/", so the empty
+  // BASE_PATH branch is a no-op.
+  outerApp.use(mount(env.BASE_PATH || "/", innerApp));
 
   server.on("error", (err) => {
     if ("code" in err && err.code === "EADDRINUSE") {

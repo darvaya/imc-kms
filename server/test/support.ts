@@ -1,4 +1,6 @@
 import { faker } from "@faker-js/faker";
+import Koa from "koa";
+import mount from "koa-mount";
 import type { Transaction } from "sequelize";
 import sharedEnv from "@shared/env";
 import { createContext } from "@server/context";
@@ -11,14 +13,47 @@ import type { APIContext } from "@server/types";
 import { AuthenticationType } from "@server/types";
 import TestServer from "./TestServer";
 
+function buildOuterApp(basePath: string) {
+  const innerApp = webService();
+  const outerApp = new Koa();
+  onerror(outerApp);
+  outerApp.use(mount(basePath || "/", innerApp));
+  return outerApp;
+}
+
 export function getTestServer() {
-  const app = webService();
-  onerror(app);
-  const server = new TestServer(app);
+  const outerApp = buildOuterApp(env.BASE_PATH);
+  const server = new TestServer(outerApp);
 
   const disconnect = async () => {
     await sequelize.close();
     return server.close();
+  };
+
+  afterAll(disconnect);
+
+  return server;
+}
+
+/**
+ * Builds a TestServer that mirrors the production outer/inner topology with a
+ * specific BASE_PATH (e.g. "/kms"). Snapshots and restores `env.URL` /
+ * `sharedEnv.URL` so the rest of the suite continues to see the path-less
+ * defaults from `setup.ts`.
+ */
+export function getSubpathTestServer(basePath: string) {
+  const originalEnvUrl = env.URL;
+  const originalSharedEnvUrl = sharedEnv.URL;
+
+  env.URL = sharedEnv.URL = `https://app.outline.dev${basePath}`;
+
+  const outerApp = buildOuterApp(basePath);
+  const server = new TestServer(outerApp);
+
+  const disconnect = () => {
+    env.URL = originalEnvUrl;
+    sharedEnv.URL = originalSharedEnvUrl;
+    server.close();
   };
 
   afterAll(disconnect);

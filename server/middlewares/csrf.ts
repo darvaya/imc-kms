@@ -54,16 +54,22 @@ export function verifyCSRFToken() {
       return false;
     }
 
-    // For API routes, use AuthenticationHelper to determine if the operation is read-only
-    if (ctx.originalUrl.startsWith("/api/")) {
-      const canAccessWithReadOnly = AuthenticationHelper.canAccess(ctx.path, [
-        Scope.Read,
-      ]);
+    // The previous `ctx.originalUrl.startsWith("/api/")` guard cannot be kept
+    // under sub-path deployment: koa-mount rewrites `ctx.path` (and `ctx.url`)
+    // for the lifetime of the request but does NOT touch `ctx.originalUrl`,
+    // so under URL=http://host/kms `ctx.originalUrl` looks like
+    // `/kms/api/...` and `startsWith("/api/")` mis-detects legitimate API
+    // requests. Note: verifyCSRFToken is also attached on /auth and /oauth
+    // routes (server/routes/auth/index.ts, server/routes/oauth/index.ts), so
+    // dropping the API-route guard expands the read-scope shortcut to those
+    // surfaces — see slice 01 completed.md for the rationale and follow-up.
+    const canAccessWithReadOnly = AuthenticationHelper.canAccess(ctx.path, [
+      Scope.Read,
+    ]);
 
-      // If it can be accessed with read-only scope, it doesn't need CSRF protection
-      if (canAccessWithReadOnly) {
-        return false;
-      }
+    // If it can be accessed with read-only scope, it doesn't need CSRF protection
+    if (canAccessWithReadOnly) {
+      return false;
     }
 
     // Protect all other mutating requests
