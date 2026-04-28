@@ -17,6 +17,7 @@ import {
 } from "class-validator";
 import uniq from "lodash/uniq";
 import { languages } from "@shared/i18n";
+import { parseBasePath } from "@shared/utils/basePath";
 import { Day, Hour } from "@shared/utils/time";
 import {
   CannotUseWith,
@@ -217,11 +218,7 @@ export class Environment {
    */
   @Public
   public get BASE_PATH(): string {
-    if (!this.URL) {
-      return "";
-    }
-    const { pathname } = new URL(this.URL);
-    return pathname === "/" ? "" : pathname.replace(/\/$/, "");
+    return parseBasePath(this.URL);
   }
 
   /**

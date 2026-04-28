@@ -6,6 +6,7 @@ import webpackStats from "rollup-plugin-webpack-stats";
 import { ServerOptions, defineConfig } from "vite";
 import { VitePWA } from "vite-plugin-pwa";
 import environment from "./server/utils/environment";
+import { parseBasePath } from "./shared/utils/basePath";
 
 let httpsConfig: ServerOptions["https"] | undefined;
 let host: string | undefined;
@@ -24,11 +25,16 @@ if (environment.NODE_ENV === "development") {
   }
 }
 
+// Path component of `URL` (e.g. "/kms"), or "" for path-less deployments.
+// Baked into the build at vite-config evaluation time — `yarn vite:build`
+// must be re-run if `URL` changes between deployments.
+const BASE_PATH = parseBasePath(environment.URL);
+
 export default () =>
   defineConfig({
     root: "./",
     publicDir: "./server/static",
-    base: (environment.CDN_URL ?? "") + "/static/",
+    base: (environment.CDN_URL ?? "") + BASE_PATH + "/static/",
     server: {
       port: 3001,
       host: true,
@@ -54,7 +60,7 @@ export default () =>
           globPatterns: ["**/*.{js,css,ico,png,svg}"],
           navigateFallback: null,
           modifyURLPrefix: {
-            "": `${environment.CDN_URL ?? ""}/static/`,
+            "": `${environment.CDN_URL ?? ""}${BASE_PATH}/static/`,
           },
           skipWaiting: true,
           clientsClaim: true,
@@ -96,8 +102,12 @@ export default () =>
           short_name: "IMC KMS",
           theme_color: "#fff",
           background_color: "#fff",
-          start_url: "/",
-          scope: ".",
+          start_url: `${BASE_PATH}/`,
+          // Path-less deployments keep the relative `"."` to match the
+          // pre-slice behavior; sub-path deployments need an absolute scope so
+          // the manifest URL (served under `${BASE_PATH}/static/...`) doesn't
+          // resolve scope outside the mount.
+          scope: BASE_PATH ? `${BASE_PATH}/` : ".",
           display: "standalone",
           // For Chrome, you must provide at least a 192x192 pixel icon, and a 512x512 pixel icon.
           // If only those two icon sizes are provided, Chrome will automatically scale the icons
@@ -105,18 +115,18 @@ export default () =>
           // pixel-perfection, provide icons in increments of 48dp.
           icons: [
             {
-              src: "/images/icon-192.png",
+              src: `${BASE_PATH}/images/icon-192.png`,
               sizes: "192x192",
               type: "image/png",
             },
             {
-              src: "/images/icon-512.png",
+              src: `${BASE_PATH}/images/icon-512.png`,
               sizes: "512x512",
               type: "image/png",
             },
             // last one duplicated for purpose: 'any maskable'
             {
-              src: "/images/icon-512.png",
+              src: `${BASE_PATH}/images/icon-512.png`,
               sizes: "512x512",
               type: "image/png",
               purpose: "any maskable",

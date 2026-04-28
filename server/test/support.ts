@@ -55,11 +55,19 @@ export function getTestServer() {
 export function getSubpathTestServer(basePath: string) {
   const originalEnvUrl = env.URL;
   const originalSharedEnvUrl = sharedEnv.URL;
+  const subpathUrl = `https://app.outline.dev${basePath}`;
 
-  env.URL = sharedEnv.URL = `https://app.outline.dev${basePath}`;
+  env.URL = sharedEnv.URL = subpathUrl;
 
   const outerApp = buildOuterApp(basePath);
   const server = new TestServer(outerApp);
+
+  // The global `beforeEach` in `server/test/setup.ts` resets `env.URL` /
+  // `sharedEnv.URL` to the path-less default before every test. Re-apply the
+  // sub-path URL so handlers read the correct `BASE_PATH` at request time.
+  beforeEach(() => {
+    env.URL = sharedEnv.URL = subpathUrl;
+  });
 
   const disconnect = () => {
     env.URL = originalEnvUrl;
