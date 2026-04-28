@@ -1,6 +1,7 @@
 import { faker } from "@faker-js/faker";
 import Koa from "koa";
 import mount from "koa-mount";
+import Router from "koa-router";
 import type { Transaction } from "sequelize";
 import sharedEnv from "@shared/env";
 import { createContext } from "@server/context";
@@ -17,6 +18,18 @@ function buildOuterApp(basePath: string) {
   const innerApp = webService();
   const outerApp = new Koa();
   onerror(outerApp);
+
+  // Mirror the production topology: the `/_health` router lives on the outer
+  // app (registered before the mount) so process-level health probes don't
+  // depend on BASE_PATH. The handler is a stub here — it asserts only the
+  // routing layer, not real DB/Redis liveness, since unit tests don't need
+  // to verify storage connectivity.
+  const healthRouter = new Router();
+  healthRouter.get("/_health", (ctx) => {
+    ctx.body = "OK";
+  });
+  outerApp.use(healthRouter.routes());
+
   outerApp.use(mount(basePath || "/", innerApp));
   return outerApp;
 }
@@ -25,12 +38,10 @@ export function getTestServer() {
   const outerApp = buildOuterApp(env.BASE_PATH);
   const server = new TestServer(outerApp);
 
-  const disconnect = async () => {
-    await sequelize.close();
-    return server.close();
-  };
-
-  afterAll(disconnect);
+  // Closing sequelize here would break sibling describe blocks that share the
+  // same singleton connection. Global cleanup is owned by
+  // `server/test/globalTeardown.js` (wired up via .jestconfig.json).
+  afterAll(() => server.close());
 
   return server;
 }

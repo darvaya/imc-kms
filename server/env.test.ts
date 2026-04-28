@@ -53,7 +53,12 @@ describe("env.BASE_PATH", () => {
 });
 
 describe("env.public", () => {
-  it("includes BASE_PATH so it reaches window.env on the client", () => {
+  it("includes BASE_PATH so it reaches window.env on the client", async () => {
+    // PublicEnvironmentRegister.registerEnv() schedules its first read of
+    // @Public-decorated keys via process.nextTick (see
+    // server/utils/decorators/Public.ts). Synchronously after construction,
+    // env.public is still empty — flush the tick before asserting.
+    await new Promise<void>((resolve) => process.nextTick(resolve));
     expect(env.public).toHaveProperty("BASE_PATH");
   });
 });
