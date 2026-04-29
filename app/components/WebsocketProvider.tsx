@@ -32,6 +32,7 @@ import type Team from "~/models/Team";
 import type User from "~/models/User";
 import type UserMembership from "~/models/UserMembership";
 import withStores from "~/components/withStores";
+import { getRealtimePath } from "~/components/getRealtimePath";
 import type {
   PartialExcept,
   WebsocketCollectionUpdateIndexEvent,
@@ -83,7 +84,7 @@ class WebsocketProvider extends Component<Props> {
 
   createConnection = () => {
     this.socket = io(window.location.origin, {
-      path: "/realtime",
+      path: getRealtimePath(),
       transports: ["websocket"],
       reconnectionDelay: 1000,
       reconnectionDelayMax: 30000,

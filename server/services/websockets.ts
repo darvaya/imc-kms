@@ -30,7 +30,7 @@ export default function init(
   server: http.Server,
   serviceNames: string[]
 ) {
-  const path = "/realtime";
+  const path = `${env.BASE_PATH}/realtime`;
 
   // Websockets for events and non-collaborative documents
   const io = new IO.Server(server, {

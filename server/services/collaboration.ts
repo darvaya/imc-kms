@@ -25,7 +25,7 @@ export default function init(
   server: http.Server,
   serviceNames: string[]
 ) {
-  const path = "/collaboration";
+  const path = `${env.BASE_PATH}/collaboration`;
   const wss = new WebSocket.Server({
     noServer: true,
     maxPayload: DocumentValidation.maxStateLength,
@@ -107,8 +107,10 @@ export default function init(
         }
       }
 
+      // Must mirror the `path` constant in `server/services/websockets.ts`
+      // (`${env.BASE_PATH}/realtime`). If the realtime path changes there, update here too.
       if (
-        req.url?.startsWith("/realtime") &&
+        req.url?.startsWith(`${env.BASE_PATH}/realtime`) &&
         serviceNames.includes("websockets")
       ) {
         // Nothing to do, the websockets service will handle this request
