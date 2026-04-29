@@ -1,6 +1,7 @@
 import * as React from "react";
 import Frame from "../components/Frame";
 import Image from "../components/Img";
+import { assetUrl } from "../../utils/urls";
 import type { EmbedProps as Props } from ".";
 import { useTheme } from "styled-components";
 
@@ -16,7 +17,7 @@ function PlantUmlDiagrams({ matches, ...props }: Props) {
       src={finalUrl}
       icon={
         <Image
-          src="/images/plantuml.png"
+          src={assetUrl("/images/plantuml.png")}
           alt="PlantUml"
           width={16}
           height={16}

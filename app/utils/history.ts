@@ -1,5 +1,6 @@
 import { createBrowserHistory } from "history";
+import env from "~/env";
 
-const history = createBrowserHistory();
+const history = createBrowserHistory({ basename: env.BASE_PATH ?? "" });
 
 export default history;

@@ -190,6 +190,77 @@ describe("sanitizeUrl", () => {
   });
 });
 
+describe("assetUrl", () => {
+  let originalUrl: string | undefined;
+  let originalCdn: string | undefined;
+  let originalBasePath: string | undefined;
+
+  beforeEach(() => {
+    originalUrl = env.URL;
+    originalCdn = env.CDN_URL;
+    originalBasePath = env.BASE_PATH;
+    env.URL = "https://example.com";
+    env.CDN_URL = "";
+    env.BASE_PATH = "";
+  });
+
+  afterEach(() => {
+    env.URL = originalUrl;
+    env.CDN_URL = originalCdn;
+    env.BASE_PATH = originalBasePath;
+  });
+
+  it("returns the path unchanged with empty CDN and empty BASE_PATH", () => {
+    expect(urlsUtils.assetUrl("/images/foo.png")).toBe("/images/foo.png");
+  });
+
+  it("prepends BASE_PATH when CDN is empty", () => {
+    env.BASE_PATH = "/kms";
+    expect(urlsUtils.assetUrl("/images/foo.png")).toBe("/kms/images/foo.png");
+  });
+
+  it("prepends CDN and BASE_PATH together", () => {
+    env.CDN_URL = "https://cdn.example.com";
+    env.BASE_PATH = "/kms";
+    expect(urlsUtils.assetUrl("/images/foo.png")).toBe(
+      "https://cdn.example.com/kms/images/foo.png"
+    );
+  });
+
+  it("passes http:// URLs through unchanged", () => {
+    env.CDN_URL = "https://cdn.example.com";
+    env.BASE_PATH = "/kms";
+    expect(urlsUtils.assetUrl("http://other.example.com/foo.png")).toBe(
+      "http://other.example.com/foo.png"
+    );
+  });
+
+  it("passes https:// URLs through unchanged", () => {
+    env.CDN_URL = "https://cdn.example.com";
+    env.BASE_PATH = "/kms";
+    expect(urlsUtils.assetUrl("https://other.example.com/foo.png")).toBe(
+      "https://other.example.com/foo.png"
+    );
+  });
+
+  it("passes data: URIs through unchanged", () => {
+    env.BASE_PATH = "/kms";
+    const dataUri = "data:image/png;base64,iVBORw0KGgo=";
+    expect(urlsUtils.assetUrl(dataUri)).toBe(dataUri);
+  });
+
+  it("passes blob: URLs through unchanged", () => {
+    env.BASE_PATH = "/kms";
+    const blobUrl = "blob:https://example.com/abc-123";
+    expect(urlsUtils.assetUrl(blobUrl)).toBe(blobUrl);
+  });
+
+  it("treats a missing leading slash the same as a leading slash", () => {
+    env.BASE_PATH = "/kms";
+    expect(urlsUtils.assetUrl("images/foo.png")).toBe("/kms/images/foo.png");
+  });
+});
+
 describe("#urlRegex", () => {
   it("should return undefined for invalid urls", () => {
     expect(urlRegex(undefined)).toBeUndefined();

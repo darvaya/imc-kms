@@ -28,7 +28,7 @@ import {
 } from "../../types";
 import { cn } from "../styles/utils";
 import type { ComponentProps } from "../types";
-import { toDisplayUrl, cdnPath } from "../../utils/urls";
+import { toDisplayUrl, assetUrl } from "../../utils/urls";
 
 type Attrs = {
   className: string;
@@ -218,7 +218,7 @@ export const MentionURL = (props: IssueUrlProps) => {
             fetchedAt: new Date().toISOString(),
             data: {
               title: toDisplayUrl(url),
-              faviconUrl: cdnPath("/images/link.png"),
+              faviconUrl: assetUrl("/images/link.png"),
             },
           });
         }

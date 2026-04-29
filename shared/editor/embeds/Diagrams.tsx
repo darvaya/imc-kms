@@ -1,6 +1,7 @@
 import * as React from "react";
 import Frame from "../components/Frame";
 import Image from "../components/Img";
+import { assetUrl } from "../../utils/urls";
 import type { EmbedProps as Props } from ".";
 
 function Diagrams({ matches, ...props }: Props) {
@@ -18,7 +19,7 @@ function Diagrams({ matches, ...props }: Props) {
       src={props.attrs.href}
       icon={
         <Image
-          src="/images/diagrams.png"
+          src={assetUrl("/images/diagrams.png")}
           alt="Diagrams.net"
           width={16}
           height={16}

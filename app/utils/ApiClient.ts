@@ -4,6 +4,7 @@ import queryString from "query-string";
 import EDITOR_VERSION from "@shared/editor/version";
 import type { JSONObject } from "@shared/types";
 import { Scope } from "@shared/types";
+import env from "~/env";
 import stores from "~/stores";
 import Logger from "./Logger";
 import download from "./download";
@@ -44,7 +45,7 @@ class ApiClient {
   shareId?: string;
 
   constructor(options: Options = {}) {
-    this.baseUrl = options.baseUrl || "/api";
+    this.baseUrl = options.baseUrl || `${env.BASE_PATH ?? ""}/api`;
   }
 
   setShareId = (shareId: string | undefined) => {

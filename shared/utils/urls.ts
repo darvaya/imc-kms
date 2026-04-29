@@ -14,6 +14,25 @@ export function cdnPath(path: string): string {
 }
 
 /**
+ * Resolves a static asset path to a URL that respects both an optional CDN
+ * (`env.CDN_URL`) and the deployment sub-path (`env.BASE_PATH`).
+ *
+ * Pass-through for absolute URLs and `data:` / `blob:` URIs so inline icons
+ * (used by some embeds) are not corrupted.
+ *
+ * @param path The asset path to resolve. Typically root-relative like
+ * `/images/foo.png`. A missing leading slash is added defensively.
+ * @returns The fully-resolved asset URL.
+ */
+export function assetUrl(path: string): string {
+  if (path.match(/^(?:https?:|data:|blob:)/)) {
+    return path;
+  }
+  const normalized = path.startsWith("/") ? path : `/${path}`;
+  return `${env.CDN_URL ?? ""}${env.BASE_PATH ?? ""}${normalized}`;
+}
+
+/**
  * Extracts the file name from a given url.
  *
  * @param url The url to extract the file name from.

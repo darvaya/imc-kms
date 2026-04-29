@@ -5,7 +5,7 @@ import * as React from "react";
 import { useTranslation, Trans } from "react-i18next";
 import { Pagination } from "@shared/constants";
 import { FileOperationType } from "@shared/types";
-import { cdnPath } from "@shared/utils/urls";
+import { assetUrl } from "@shared/utils/urls";
 import type FileOperation from "~/models/FileOperation";
 import ImportModel from "~/models/Import";
 import Button from "~/components/Button";
@@ -96,7 +96,7 @@ function useImportsConfig() {
     items.push({
       title: "Confluence",
       subtitle: t("Import pages from a Confluence instance"),
-      icon: <img src={cdnPath("/images/confluence.png")} width={28} />,
+      icon: <img src={assetUrl("/images/confluence.png")} width={28} />,
       action: (
         <Button type="submit" disabled neutral>
           {t("Enterprise")}

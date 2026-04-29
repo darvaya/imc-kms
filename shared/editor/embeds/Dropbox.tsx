@@ -1,5 +1,6 @@
 import * as React from "react";
 import Frame from "../components/Frame";
+import { assetUrl } from "../../utils/urls";
 import type { EmbedProps as Props } from ".";
 
 function Dropbox({ matches, ...props }: Props) {
@@ -11,7 +12,9 @@ function Dropbox({ matches, ...props }: Props) {
   // Wrap inside an iframe to isolate external script and losened CSP
   return (
     <Frame
-      src={`/embeds/dropbox?url=${encodeURIComponent(props.attrs.href)}`}
+      src={assetUrl(
+        `/embeds/dropbox?url=${encodeURIComponent(props.attrs.href)}`
+      )}
       className={props.isSelected ? "ProseMirror-selectednode" : ""}
       width="100%"
       height={embedHeight}

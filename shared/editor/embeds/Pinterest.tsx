@@ -1,6 +1,7 @@
 import * as React from "react";
 import styled from "styled-components";
 import Frame from "../components/Frame";
+import { assetUrl } from "../../utils/urls";
 import type { EmbedProps as Props } from ".";
 
 function Pinterest({ matches, ...props }: Props) {
@@ -29,7 +30,7 @@ function Pinterest({ matches, ...props }: Props) {
     <PinterestFrame
       {...props}
       ref={frame}
-      src={`/embeds/pinterest?url=${encodeURIComponent(boardUrl)}`}
+      src={assetUrl(`/embeds/pinterest?url=${encodeURIComponent(boardUrl)}`)}
       title="Pinterest Content"
       height={`${height}px`}
       width="100%"

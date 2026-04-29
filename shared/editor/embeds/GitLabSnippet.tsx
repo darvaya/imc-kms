@@ -1,5 +1,6 @@
 import * as React from "react";
 import Frame from "../components/Frame";
+import { assetUrl } from "../../utils/urls";
 import type { EmbedProps as Props } from ".";
 
 function GitLabSnippet(props: Props) {
@@ -26,7 +27,9 @@ function GitLabSnippet(props: Props) {
   return (
     <Frame
       ref={frame}
-      src={`/embeds/gitlab?url=${encodeURIComponent(props.attrs.href)}`}
+      src={assetUrl(
+        `/embeds/gitlab?url=${encodeURIComponent(props.attrs.href)}`
+      )}
       className={props.isSelected ? "ProseMirror-selectednode" : ""}
       width="100%"
       height={`${height}px`}

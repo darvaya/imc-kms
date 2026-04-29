@@ -28,6 +28,7 @@ import styled from "styled-components";
 import Image from "@shared/editor/components/Img";
 import type { MenuItem } from "@shared/editor/types";
 import { metaDisplay } from "@shared/utils/keyboard";
+import { assetUrl } from "@shared/utils/urls";
 import type { Dictionary } from "~/hooks/useDictionary";
 import Desktop from "~/utils/Desktop";
 
@@ -232,14 +233,14 @@ export default function blockMenuItems(
     {
       name: "code_block",
       title: "Mermaid Diagram",
-      icon: <Img src="/images/mermaidjs.png" alt="Mermaid Diagram" />,
+      icon: <Img src={assetUrl("/images/mermaidjs.png")} alt="Mermaid Diagram" />,
       keywords: "diagram flowchart",
       attrs: { language: "mermaidjs" },
     },
     {
       name: "editDiagram",
       title: "Diagrams.net Diagram",
-      icon: <Img src="/images/diagrams.png" alt="Diagrams.net Diagram" />,
+      icon: <Img src={assetUrl("/images/diagrams.png")} alt="Diagrams.net Diagram" />,
       keywords: "diagram flowchart draw.io",
     },
   ];
