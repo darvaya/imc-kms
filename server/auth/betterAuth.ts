@@ -113,6 +113,13 @@ async function initBetterAuth(): Promise<BetterAuthInstance> {
     secret: env.BETTER_AUTH_SECRET,
     basePath: "/api/better-auth",
     baseURL: env.URL,
+    advanced: {
+      // Scope session / OAuth-state cookies to the deploy sub-path so they are
+      // not sent to co-tenant apps sharing the host. Empty BASE_PATH -> "/".
+      defaultCookieAttributes: {
+        path: env.BASE_PATH || "/",
+      },
+    },
     socialProviders: {
       microsoft: {
         clientId: env.MICROSOFT_CLIENT_ID,

@@ -4,6 +4,7 @@ import useDragResize from "./hooks/useDragResize";
 import { ResizeLeft, ResizeRight } from "./ResizeHandle";
 import type { ComponentProps } from "../types";
 import { isFirefox } from "../../utils/browser";
+import { urlWithBasePath } from "../../utils/urls";
 import Flex from "../../components/Flex";
 import { s } from "../../styles";
 import { Preview, Subtitle, Title } from "./Widget";
@@ -71,7 +72,7 @@ export default function PdfViewer(props: Props) {
           embedRef.current.src = "";
           requestAnimationFrame(() => {
             if (embedRef.current) {
-              embedRef.current.src = href;
+              embedRef.current.src = urlWithBasePath(href);
             }
           });
         }
@@ -109,7 +110,7 @@ export default function PdfViewer(props: Props) {
       </Flex>
       <embed
         title={name}
-        src={href}
+        src={urlWithBasePath(href)}
         ref={embedRef}
         type="application/pdf"
         width={width}

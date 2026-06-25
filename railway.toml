@@ -1,8 +1,18 @@
+# NOTE: The PRIMARY, documented deploy target is AWS bare-metal (Apache +
+# systemd/PM2) under the /kms sub-path — see docs/DEPLOYMENT-GUIDE.md. This
+# Railway config is kept as a secondary option. It uses Nixpacks; the previous
+# `Dockerfile.railway` reference was broken — no such file exists in the repo.
+#
+# For a /kms sub-path on Railway you still need an external edge that forwards
+# /kms unchanged (Railway alone serves a root domain), and URL must carry /kms
+# at BUILD time (it is baked into the Vite bundle). For a root-origin build,
+# set URL=https://<your>.up.railway.app (no path).
 [build]
-builder = "dockerfile"
-dockerfilePath = "Dockerfile.railway"
+builder = "NIXPACKS"
 
 [deploy]
+# Health check is at the ORIGIN ROOT /_health (registered before the BASE_PATH
+# mount), so it is NOT under /kms.
 healthcheckPath = "/_health"
 healthcheckTimeout = 300
 restartPolicyType = "on_failure"

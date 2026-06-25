@@ -5,6 +5,7 @@ import type {
   FileOperationType,
 } from "@shared/types";
 import { bytesToHumanReadable } from "@shared/utils/files";
+import { urlWithBasePath } from "@shared/utils/urls";
 import User from "./User";
 import Model from "./base/Model";
 import Relation from "./decorators/Relation";
@@ -38,7 +39,9 @@ class FileOperation extends Model {
 
   @computed
   get downloadUrl(): string {
-    return `/api/fileOperations.redirect?id=${this.id}`;
+    // Opened directly via window.open (createExternalLinkAction), bypassing
+    // ApiClient — so it must carry the deploy sub-path itself.
+    return urlWithBasePath(`/api/fileOperations.redirect?id=${this.id}`);
   }
 }
 

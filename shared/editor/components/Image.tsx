@@ -4,7 +4,7 @@ import * as React from "react";
 import styled from "styled-components";
 import Flex from "../../components/Flex";
 import { s } from "../../styles";
-import { isExternalUrl, sanitizeUrl } from "../../utils/urls";
+import { isExternalUrl, sanitizeUrl, urlWithBasePath } from "../../utils/urls";
 import { EditorStyleHelper } from "../styles/EditorStyleHelper";
 import type { ComponentProps } from "../types";
 import { ResizeLeft, ResizeRight } from "./ResizeHandle";
@@ -68,7 +68,7 @@ const Image = (props: Props) => {
     }
   }, [node.attrs.width]);
 
-  const sanitizedSrc = sanitizeUrl(src);
+  const sanitizedSrc = sanitizeUrl(urlWithBasePath(src));
   const linkMarkType = props.view.state.schema.marks.link;
   const imgLink =
     find(node.attrs.marks ?? [], (mark) => mark.type === linkMarkType.name)

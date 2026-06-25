@@ -1,5 +1,6 @@
 import { Client } from "@shared/types";
 import { parseDomain } from "@shared/utils/domains";
+import { urlWithBasePath } from "@shared/utils/urls";
 import env from "~/env";
 import Desktop from "~/utils/Desktop";
 
@@ -26,8 +27,10 @@ export function getRedirectUrl(authUrl: string) {
 
   // authUrl may contain query params (e.g. "/path?provider=microsoft").
   // Setting url.pathname directly would encode the ? as %3F.
+  // `authUrl` is a root-relative server path (e.g. "/auth/slack"); prefix the
+  // deploy sub-path so we don't overwrite the `/kms` segment of `env.URL`.
   const [path, search] = authUrl.split("?");
-  url.pathname = path;
+  url.pathname = urlWithBasePath(path);
   if (search) {
     new URLSearchParams(search).forEach((value, key) => {
       url.searchParams.set(key, value);

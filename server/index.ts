@@ -21,7 +21,11 @@ import services from "./services";
 import { getArg } from "./utils/args";
 import { getSSLOptions } from "./utils/ssl";
 import { defaultRateLimiter } from "@server/middlewares/rateLimiter";
-import { printEnv, checkPendingMigrations } from "./utils/startup";
+import {
+  printEnv,
+  checkPendingMigrations,
+  checkBasePathParity,
+} from "./utils/startup";
 import { checkUpdates } from "./utils/updates";
 import onerror from "./onerror";
 import ShutdownHelper, { ShutdownOrder } from "./utils/ShutdownHelper";
@@ -49,6 +53,7 @@ if (env.SERVICES.includes("collaboration") && !env.REDIS_COLLABORATION_URL) {
 async function master() {
   await checkConnection(sequelize);
   await checkPendingMigrations();
+  checkBasePathParity();
   await printEnv();
 
   if (env.TELEMETRY && env.isProduction) {

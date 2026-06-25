@@ -1,7 +1,11 @@
 import { useCallback } from "react";
 import { useHistory } from "react-router-dom";
 import { isModKey } from "@shared/utils/keyboard";
-import { isDocumentUrl, isInternalUrl } from "@shared/utils/urls";
+import {
+  isDocumentUrl,
+  isInternalUrl,
+  urlWithBasePath,
+} from "@shared/utils/urls";
 import { sharedModelPath } from "~/utils/routeHelpers";
 import { isHash } from "~/utils/urls";
 import useStores from "./useStores";
@@ -45,7 +49,7 @@ export default function useEditorClickHandlers({ shareId }: Params) {
 
         // Link to our own API should be opened in a new tab, not in the app
         if (navigateTo.startsWith("/api/")) {
-          window.open(href, "_blank");
+          window.open(urlWithBasePath(href), "_blank");
           return;
         }
 
@@ -73,7 +77,7 @@ export default function useEditorClickHandlers({ shareId }: Params) {
 
         // If we're navigating to a share link from a non-share link then open it in a new tab
         if (!shareId && navigateTo.startsWith("/s/")) {
-          window.open(href, "_blank");
+          window.open(urlWithBasePath(href), "_blank");
           return;
         }
 
@@ -83,7 +87,7 @@ export default function useEditorClickHandlers({ shareId }: Params) {
         ) {
           history.push(navigateTo, { sidebarContext: "collections" }); // optimistic preference of "collections"
         } else {
-          window.open(navigateTo, "_blank");
+          window.open(urlWithBasePath(navigateTo), "_blank");
         }
       } else {
         window.open(href, "_blank");

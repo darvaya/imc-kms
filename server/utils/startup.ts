@@ -1,3 +1,5 @@
+import fs from "node:fs";
+import path from "node:path";
 import { styleText } from "node:util";
 import isEmpty from "lodash/isEmpty";
 import env from "@server/env";
@@ -74,6 +76,44 @@ Backup your database, run the database migrations and the following script:
 $ node ./build/server/scripts/20210226232041-migrate-authentication.js
 `,
       new Error("Data migration required")
+    );
+  }
+}
+
+/**
+ * Asserts that the sub-path baked into the client bundle at build time matches
+ * the `BASE_PATH` derived from the runtime `URL`. The sub-path is compiled into
+ * hashed asset URLs (`vite.config.ts` `base`), the PWA manifest and the workbox
+ * precache prefix, so a `URL` that differs between `yarn vite:build` and
+ * `yarn start` makes every asset 404 — a silent, confusing failure. Fails fast
+ * with an actionable message instead. Production-only; skipped when the build
+ * stamp is absent (e.g. dev, or a build produced before this check existed).
+ */
+export function checkBasePathParity() {
+  if (!env.isProduction) {
+    return;
+  }
+
+  const stampPath = path.join(process.cwd(), "build", "base-path.json");
+  let bakedBasePath: string;
+  try {
+    bakedBasePath = JSON.parse(fs.readFileSync(stampPath, "utf8")).basePath;
+  } catch {
+    Logger.warn(
+      `Could not read ${stampPath} to verify the build/runtime sub-path. If assets 404 after deploy, rebuild with the production URL set (yarn build).`
+    );
+    return;
+  }
+
+  if (bakedBasePath !== env.BASE_PATH) {
+    Logger.fatal(
+      styleText(
+        "red",
+        `Sub-path mismatch: the client was BUILT with BASE_PATH="${bakedBasePath}" but is RUNNING with BASE_PATH="${env.BASE_PATH}" (derived from URL=${env.URL}).\n` +
+          `The sub-path is baked into hashed asset URLs and the PWA manifest at build time, so every asset would 404.\n` +
+          `Fix: set URL to the same value at build and runtime, then REBUILD (yarn build). A restart alone will not fix it.`
+      ),
+      new Error("BASE_PATH build/runtime mismatch")
     );
   }
 }

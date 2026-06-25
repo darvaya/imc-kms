@@ -1,6 +1,7 @@
 import invariant from "invariant";
 import { AttachmentPreset } from "@shared/types";
 import { dataUrlToBlob } from "@shared/utils/files";
+import { urlWithBasePath } from "@shared/utils/urls";
 import { client } from "./ApiClient";
 import Logger from "./Logger";
 
@@ -105,7 +106,12 @@ export const uploadFile = async (
       xhr.withCredentials = !requiresPreflightRequest;
     }
 
-    xhr.open("POST", data.uploadUrl, true);
+    // Local-disk storage returns a root-relative upload URL ("/api/files.create");
+    // prefix the deploy sub-path so it stays on the mount. S3 returns an
+    // absolute URL, which urlWithBasePath passes through unchanged. (The
+    // withCredentials decision above keys on the original relative-vs-absolute
+    // form, so it is computed before this prefixing.)
+    xhr.open("POST", urlWithBasePath(data.uploadUrl), true);
     xhr.send(formData);
   });
 

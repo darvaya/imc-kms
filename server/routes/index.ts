@@ -52,7 +52,10 @@ router.use(["/images/*", "/email/*", "/fonts/*"], async (ctx, next) => {
 router.use(
   ["/share/:shareId", "/share/:shareId/doc/:documentSlug", "/share/:shareId/*"],
   (ctx) => {
-    ctx.redirect(ctx.path.replace(/^\/share/, "/s"));
+    // ctx.path is mount-relative under koa-mount; re-add BASE_PATH so the
+    // Location header carries the deploy sub-path (a bare "/s/…" would resolve
+    // at the origin root and 404 under /kms).
+    ctx.redirect(`${env.BASE_PATH}${ctx.path.replace(/^\/share/, "/s")}`);
     ctx.status = 301;
   }
 );
@@ -71,7 +74,10 @@ if (env.isProduction) {
         maxAge: Day.ms * 365,
         immutable: true,
         setHeaders: (res) => {
-          res.setHeader("Service-Worker-Allowed", "/");
+          // Allow the service worker (registered at `${BASE_PATH}/static/sw.js`)
+          // to claim the `${BASE_PATH}/` scope. Scope it to the mount rather
+          // than "/" so it cannot claim a co-tenant app at the shared root.
+          res.setHeader("Service-Worker-Allowed", `${env.BASE_PATH || ""}/`);
           res.setHeader("Access-Control-Allow-Origin", "*");
         },
       });
@@ -140,7 +146,9 @@ router.get("/doc/:documentSlug", async (ctx, next) => {
 
 router.get("/sitemap.xml", async (ctx) => {
   if (ctx.state?.rootShare) {
-    ctx.redirect(`/api/shares.sitemap?id=${ctx.state?.rootShare.id}`);
+    ctx.redirect(
+      `${env.BASE_PATH}/api/shares.sitemap?id=${ctx.state?.rootShare.id}`
+    );
   } else {
     ctx.status = 404;
   }

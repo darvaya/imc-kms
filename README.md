@@ -43,7 +43,18 @@ See the [/start-local workflow](.agent/workflows/start-local.md) for detailed in
 
 ## Deployment
 
-This application is configured for deployment on Railway. See `.env.railway.example` for required environment variables.
+**Primary target — AWS bare-metal under the `/kms` sub-path** (Apache + systemd/PM2),
+the same pattern as the sibling imc-clocka app. Follow the step-by-step runbook:
+
+- [`docs/DEPLOYMENT-GUIDE.md`](docs/DEPLOYMENT-GUIDE.md) — full IT runbook
+- [`deploy/apache/kms.conf`](deploy/apache/kms.conf) — Apache reverse proxy
+- [`deploy/systemd/kms.service`](deploy/systemd/kms.service) — systemd unit
+- [`.env.example`](.env.example) — environment variables
+
+The deploy sub-path is derived from `URL` (e.g. `URL=https://host/kms` → `/kms`)
+and **baked into the build** — `URL` must match at `yarn build` and `yarn start`.
+
+Railway is a secondary option (`railway.toml`, `.env.railway.example`).
 
 ## License
 

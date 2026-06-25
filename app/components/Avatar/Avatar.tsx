@@ -1,5 +1,6 @@
 import * as React from "react";
 import styled from "styled-components";
+import { urlWithBasePath } from "@shared/utils/urls";
 import useBoolean from "~/hooks/useBoolean";
 import Initials from "./Initials";
 import Tooltip from "../Tooltip";
@@ -57,7 +58,11 @@ function Avatar(props: Props) {
     showTooltip,
     ...rest
   } = props;
-  const src = props.src || model?.avatarUrl;
+  // avatarUrl is often a root-relative attachment redirect (local-disk storage),
+  // rendered here as a raw <img> that bypasses ApiClient — so it must carry the
+  // deploy sub-path itself. Absolute (S3/https) avatars pass through unchanged.
+  const rawSrc = props.src || model?.avatarUrl;
+  const src = rawSrc ? urlWithBasePath(rawSrc) : rawSrc;
   const [error, handleError] = useBoolean(false);
   const initial =
     model?.initial || (model?.name ? model.name[0] : "").toUpperCase();

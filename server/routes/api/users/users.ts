@@ -272,7 +272,7 @@ router.get(
       user = res.user;
       email = res.email;
     } catch (_err) {
-      ctx.redirect(`/?notice=expired-token`);
+      ctx.redirect(`${env.BASE_PATH}/?notice=expired-token`);
       return;
     }
 
@@ -291,7 +291,7 @@ router.get(
 
     await user.updateWithCtx(ctx, { email });
 
-    ctx.redirect(settingsPath());
+    ctx.redirect(`${env.BASE_PATH}${settingsPath()}`);
   }
 );
 

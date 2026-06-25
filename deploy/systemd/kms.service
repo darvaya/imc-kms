@@ -1,0 +1,52 @@
+# IMC KMS — systemd unit for AWS Bare-Metal EC2.
+#
+# This is the systemd alternative to the PM2 flow (ecosystem.config.cjs +
+# Makefile). Use ONE of them, not both. systemd matches imc-clocka's deploy
+# contract and survives reboots without `pm2 startup`/`pm2 save`.
+#
+# Install:
+#   sudo useradd --system --home /opt/kms --shell /usr/sbin/nologin kms   # once
+#   sudo cp deploy/systemd/kms.service /etc/systemd/system/kms.service
+#   sudo systemctl daemon-reload
+#   sudo systemctl enable --now kms
+#   sudo systemctl status kms
+#   journalctl -u kms -f          # live logs
+#
+# Assumes the app is deployed at /opt/kms with its env in /opt/kms/.env and the
+# build already produced (yarn build). The single process runs ALL services
+# (web, websockets, collaboration, worker) by default. To split the worker onto
+# its own unit, copy this file to kms-worker.service and append
+# `--services=worker` to ExecStart (and `--services=web,websockets,collaboration`
+# here). The collaboration service is restricted to 1 process unless
+# REDIS_COLLABORATION_URL is set.
+
+[Unit]
+Description=IMC KMS — Outline knowledge base
+After=network-online.target postgresql.service redis-server.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=kms
+Group=kms
+WorkingDirectory=/opt/kms
+EnvironmentFile=/opt/kms/.env
+# NODE_ENV must be production so the server serves the built SPA + runs the
+# build/runtime BASE_PATH parity check.
+Environment=NODE_ENV=production
+ExecStart=/usr/bin/node ./build/server/index.js
+Restart=on-failure
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+
+# Hardening — process isolation. ReadWritePaths is the only writable location
+# (logs + any local file storage under /opt/kms); the rest is read-only.
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/opt/kms
+
+[Install]
+WantedBy=multi-user.target

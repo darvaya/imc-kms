@@ -23,10 +23,12 @@ export function attachCSRFToken() {
       const raw = generateRawToken(16);
       const bundled = bundleToken(raw, env.SECRET_KEY);
 
-      // Set cookie that JavaScript can read (not HttpOnly)
+      // Set cookie that JavaScript can read (not HttpOnly). Scope it to the
+      // deploy sub-path so it is not sent to co-tenant apps sharing the host.
       ctx.cookies.set(CSRF.cookieName, bundled, {
         httpOnly: false,
         sameSite: "lax",
+        path: env.BASE_PATH || "/",
         domain: getCookieDomain(ctx.request.hostname, env.isCloudHosted),
       });
     }

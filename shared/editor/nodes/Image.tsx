@@ -8,7 +8,7 @@ import type {
 import type { Command } from "prosemirror-state";
 import { NodeSelection, Plugin, TextSelection } from "prosemirror-state";
 import * as React from "react";
-import { sanitizeUrl } from "../../utils/urls";
+import { sanitizeUrl, urlWithBasePath } from "../../utils/urls";
 import Caption from "../components/Caption";
 import ImageComponent from "../components/Image";
 import type { MarkdownSerializerState } from "../lib/markdown/serializer";
@@ -65,7 +65,7 @@ export const downloadImageNode = async (
   cache?: RequestCache
 ) => {
   try {
-    const image = await fetch(node.attrs.src, {
+    const image = await fetch(urlWithBasePath(node.attrs.src), {
       cache,
     });
     const imageBlob = await image.blob();
@@ -86,7 +86,7 @@ export const downloadImageNode = async (
     if (cache !== "reload") {
       downloadImageNode(node, "reload");
     } else {
-      window.open(sanitizeUrl(node.attrs.src), "_blank");
+      window.open(sanitizeUrl(urlWithBasePath(node.attrs.src)), "_blank");
     }
   }
 };
@@ -208,7 +208,7 @@ export default class Image extends SimpleImage {
             "img",
             {
               ...node.attrs,
-              src: sanitizeUrl(node.attrs.src),
+              src: sanitizeUrl(urlWithBasePath(node.attrs.src)),
               width: node.attrs.width,
               height: node.attrs.height,
               contentEditable: "false",

@@ -2,6 +2,7 @@ import * as React from "react";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 import { s } from "@shared/styles";
+import { urlWithBasePath } from "@shared/utils/urls";
 import ButtonLarge from "~/components/ButtonLarge";
 import ChangeLanguage from "~/components/ChangeLanguage";
 import Flex from "~/components/Flex";
@@ -23,7 +24,7 @@ const WorkspaceSetup = ({ onBack }: { onBack?: () => void }) => {
       <ChangeLanguage locale={detectLanguage()} />
       <Centered
         as={Form}
-        action="/api/installation.create"
+        action={urlWithBasePath("/api/installation.create")}
         method="POST"
         gap={12}
       >

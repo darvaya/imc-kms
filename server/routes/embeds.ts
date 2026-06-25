@@ -26,7 +26,7 @@ const iframeCheckScript = (
   ctx: Context
 ) => `<script nonce="${ctx.state.cspNonce}">
   if (window.self === window.top) {
-    window.location.href = window.location.origin;
+    window.location.href = window.location.origin + "${env.BASE_PATH}";
   }
 </script>`;
 

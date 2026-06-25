@@ -33,6 +33,33 @@ export function assetUrl(path: string): string {
 }
 
 /**
+ * Prepends the deployment sub-path (`env.BASE_PATH`) to a root-relative
+ * application URL. Use for RAW navigation / `fetch` / `<form action>` / API
+ * URLs that bypass {@link ApiClient} (whose `baseUrl` already includes
+ * `BASE_PATH`) and the React Router basename (which prefixes `<Link>` and
+ * `history.push`). Without this, such literals resolve at the origin root and
+ * 404 — or hit a co-tenant app on a shared host — under a sub-path deploy.
+ *
+ * Unlike {@link assetUrl} this does NOT prepend `env.CDN_URL`: these are app
+ * endpoints (`/api`, `/auth`, `/oauth`, attachment redirects), not CDN assets.
+ *
+ * Pass-through for absolute URLs and `data:` / `blob:` URIs, so it is safe to
+ * wrap a value that may already be absolute (e.g. an exported attachment URL),
+ * and a no-op when `BASE_PATH` is empty (root-origin deploys) or when called
+ * server-side where the shared `env.BASE_PATH` is not populated.
+ *
+ * @param path A root-relative app path, e.g. `/api/foo` or `/auth/bar`.
+ * @returns The path prefixed with `BASE_PATH`.
+ */
+export function urlWithBasePath(path: string): string {
+  if (path.match(/^(?:https?:|data:|blob:)/)) {
+    return path;
+  }
+  const normalized = path.startsWith("/") ? path : `/${path}`;
+  return `${env.BASE_PATH ?? ""}${normalized}`;
+}
+
+/**
  * Extracts the file name from a given url.
  *
  * @param url The url to extract the file name from.

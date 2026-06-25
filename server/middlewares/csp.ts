@@ -37,11 +37,16 @@ const getBucketOrigin = () => {
  * Create a Content Security Policy middleware for the application.
  */
 export default function createCSPMiddleware() {
+  // CSP host-sources match by ORIGIN — a path-bearing source like
+  // `https://host/kms` matches only that exact URL and never the real assets at
+  // `/kms/static/...`, so always use the bare origin (never `env.URL`, which
+  // carries the sub-path).
+  const origin = new URL(env.URL).origin;
   // Construct scripts CSP based on options in use
   const defaultSrc: string[] = ["'self'"];
   const scriptSrc: string[] = [];
   const styleSrc: string[] = ["'self'", "'unsafe-inline'"];
-  const objectSrc: string[] = [env.URL, "'self'"];
+  const objectSrc: string[] = ["'self'"];
 
   if (env.isCloudHosted) {
     scriptSrc.push("www.googletagmanager.com");
@@ -51,10 +56,10 @@ export default function createCSPMiddleware() {
 
   // Allow to load assets from Vite
   if (!env.isProduction) {
-    scriptSrc.push(env.URL.replace(`:${env.PORT}`, ":3001"));
+    scriptSrc.push(origin.replace(`:${env.PORT}`, ":3001"));
     scriptSrc.push("localhost:3001");
   } else {
-    scriptSrc.push(env.URL);
+    scriptSrc.push(origin);
   }
 
   if (env.GOOGLE_ANALYTICS_ID) {

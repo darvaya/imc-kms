@@ -1,6 +1,6 @@
 import * as React from "react";
 import styled, { css } from "styled-components";
-import { sanitizeUrl } from "../../utils/urls";
+import { sanitizeUrl, urlWithBasePath } from "../../utils/urls";
 import type { ComponentProps } from "../types";
 import { ResizeLeft, ResizeRight } from "./ResizeHandle";
 import useDragResize from "./hooks/useDragResize";
@@ -57,7 +57,7 @@ export default function Video(props: Props) {
         style={style}
       >
         <StyledVideo
-          src={sanitizeUrl(node.attrs.src)}
+          src={sanitizeUrl(urlWithBasePath(node.attrs.src))}
           title={node.attrs.title}
           style={style}
           controls={!dragging}

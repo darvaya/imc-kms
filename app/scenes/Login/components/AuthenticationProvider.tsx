@@ -1,5 +1,6 @@
 import * as React from "react";
 import { useTranslation } from "react-i18next";
+import { urlWithBasePath } from "@shared/utils/urls";
 import ButtonLarge from "~/components/ButtonLarge";
 import PluginIcon from "~/components/PluginIcon";
 import { getRedirectUrl } from "../urls";
@@ -21,15 +22,18 @@ function AuthenticationProvider(props: Props) {
   const handleClick = async () => {
     if (id === "microsoft-better-auth") {
       try {
-        const response = await fetch("/api/better-auth/sign-in/social", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            provider: "microsoft",
-            callbackURL: "/auth/redirect",
-          }),
-          credentials: "include",
-        });
+        const response = await fetch(
+          urlWithBasePath("/api/better-auth/sign-in/social"),
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              provider: "microsoft",
+              callbackURL: urlWithBasePath("/auth/redirect"),
+            }),
+            credentials: "include",
+          }
+        );
         const data = await response.json();
         if (data.url) {
           window.location.href = data.url;

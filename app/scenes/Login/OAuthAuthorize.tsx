@@ -4,6 +4,7 @@ import styled from "styled-components";
 import Flex from "@shared/components/Flex";
 import { s } from "@shared/styles";
 import { parseDomain } from "@shared/utils/domains";
+import { urlWithBasePath } from "@shared/utils/urls";
 import type OAuthClient from "~/models/oauth/OAuthClient";
 import ButtonLarge from "~/components/ButtonLarge";
 import ChangeLanguage from "~/components/ChangeLanguage";
@@ -83,7 +84,7 @@ function Authorize() {
     if (window.history.length) {
       window.history.back();
     } else {
-      window.location.href = "/";
+      window.location.href = urlWithBasePath("/");
     }
   };
 
@@ -206,7 +207,7 @@ function Authorize() {
         </ul>
         <Form
           method="POST"
-          action="/oauth/authorize"
+          action={urlWithBasePath("/oauth/authorize")}
           style={{ width: "100%" }}
           onSubmit={handleSubmit}
         >

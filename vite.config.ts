@@ -136,6 +136,22 @@ export default () =>
       }),
       // Generate a stats.json file for webpack that will be consumed by RelativeCI
       webpackStats(),
+      // Stamp the sub-path that was baked into this build so the server can
+      // assert at startup that runtime `URL` (hence `BASE_PATH`) matches the
+      // build. `base`, the PWA manifest and the workbox precache prefix are all
+      // baked here at build time — if `URL` drifts between `yarn vite:build`
+      // and `yarn start`, every hashed asset 404s. See
+      // `server/utils/startup.ts` -> checkBasePathParity().
+      {
+        name: "kms-stamp-base-path",
+        apply: "build",
+        closeBundle() {
+          fs.writeFileSync(
+            path.resolve(__dirname, "build", "base-path.json"),
+            `${JSON.stringify({ basePath: BASE_PATH })}\n`
+          );
+        },
+      },
     ],
     experimental: {
       enableNativePlugin: true,

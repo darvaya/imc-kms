@@ -9,6 +9,7 @@ import type { NavigationNode, ProsemirrorData } from "@shared/types";
 import { IconType } from "@shared/types";
 import { determineIconType } from "@shared/utils/icon";
 import { parser, serializer, schema } from "@server/editor";
+import env from "@server/env";
 import { addTags } from "@server/logging/tracer";
 import { trace } from "@server/logging/tracing";
 import { Collection, Document, Revision } from "@server/models";
@@ -226,14 +227,27 @@ export class DocumentHelper {
           ? model.teamId
           : (await model.$get("document"))?.teamId;
 
-      if (!teamId) {
-        return output;
+      if (teamId) {
+        output = await TextHelper.attachmentsToSignedUrls(
+          output,
+          teamId,
+          typeof options.signedUrls === "number"
+            ? options.signedUrls
+            : undefined
+        );
       }
 
-      output = await TextHelper.attachmentsToSignedUrls(
-        output,
-        teamId,
-        typeof options.signedUrls === "number" ? options.signedUrls : undefined
+      // Absolutize any attachment / file / custom-emoji endpoints the signing
+      // pass left ROOT-RELATIVE (custom emoji, deleted or cross-team
+      // attachments). Server-side, the editor `toDOM` cannot apply BASE_PATH
+      // (the shared `env.BASE_PATH` is only populated client-side), so these
+      // would otherwise resolve at the origin root and 404 under a sub-path
+      // deploy when this HTML is used in SSR share pages, emails, or exports.
+      // Runs AFTER signing so it never collides with the signed-URL substring
+      // replacement; already-signed/absolute `https://…` URLs do not match.
+      output = output.replace(
+        /(["'(])\/(api\/(?:attachments\.redirect|files\.get|emojis\.redirect)[^"')\s]*)/g,
+        (_match, prefix, path) => `${prefix}${env.URL}/${path}`
       );
     }
 

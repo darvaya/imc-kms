@@ -1,7 +1,7 @@
 import type { Node } from "prosemirror-model";
 import { isCode } from "./isCode";
 import type { EditorView } from "prosemirror-view";
-import { sanitizeUrl } from "@shared/utils/urls";
+import { sanitizeUrl, urlWithBasePath } from "@shared/utils/urls";
 
 export abstract class LightboxImage {
   public pos: number;
@@ -21,7 +21,9 @@ class LightboxRegularImage extends LightboxImage {
     super();
     this.pos = pos;
     const node = view.state.doc.nodeAt(pos);
-    this.src = sanitizeUrl(node?.attrs.src) ?? "";
+    this.src = node?.attrs.src
+      ? (sanitizeUrl(urlWithBasePath(node.attrs.src)) ?? "")
+      : "";
     this.alt = node?.attrs.alt ?? "";
     this.source = node?.attrs.source;
     this.element = view.nodeDOM(pos) as HTMLSpanElement;

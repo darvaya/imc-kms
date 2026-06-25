@@ -10,7 +10,7 @@ import { NodeSelection } from "prosemirror-state";
 import { Trans } from "react-i18next";
 import type { Primitive } from "utility-types";
 import { bytesToHumanReadable, getEventFiles } from "../../utils/files";
-import { sanitizeUrl } from "../../utils/urls";
+import { sanitizeUrl, urlWithBasePath } from "../../utils/urls";
 import insertFiles from "../commands/insertFiles";
 import toggleWrap from "../commands/toggleWrap";
 import FileExtension from "../components/FileExtension";
@@ -77,7 +77,7 @@ export default class Attachment extends Node {
         {
           class: `attachment`,
           id: node.attrs.id,
-          href: sanitizeUrl(node.attrs.href),
+          href: sanitizeUrl(urlWithBasePath(node.attrs.href)),
           download: node.attrs.title,
           "data-size": node.attrs.size,
         },
@@ -140,7 +140,7 @@ export default class Attachment extends Node {
     ) : (
       <Widget
         icon={<FileExtension title={node.attrs.title} />}
-        href={node.attrs.href}
+        href={urlWithBasePath(node.attrs.href)}
         title={node.attrs.title}
         onMouseDown={this.handleSelect(props)}
         onDoubleClick={() => {
@@ -217,7 +217,7 @@ export default class Attachment extends Node {
 
         // create a temporary link node and click it
         const link = document.createElement("a");
-        link.href = node.attrs.href;
+        link.href = urlWithBasePath(node.attrs.href);
         link.target = "_blank";
         document.body.appendChild(link);
         link.click();
