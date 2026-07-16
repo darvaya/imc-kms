@@ -12,7 +12,7 @@
 - **Cache / realtime**: Redis (Bull queues, websockets, collaboration via Hocuspocus/Yjs)
 - **Auth**: **Better Auth** (`server/auth/`) — Microsoft Entra OIDC social provider; Better Auth tables are `ba_user` / `ba_session` / `ba_account` / `ba_verification`; mounted at `/api/better-auth`. Outline users are provisioned/linked via `accountProvisioner` in `afterSignInHook`.
 - **File storage**: local disk (`FILE_STORAGE=local`) or S3-compatible
-- **Process**: PM2 (`ecosystem.config.cjs`, app `kms`, port 3100) or systemd (`deploy/systemd/kms.service`)
+- **Process**: PM2 (`ecosystem.config.cjs`, app `kms`, port 4800) or systemd (`deploy/systemd/kms.service`)
 - **Package manager**: Yarn 4
 
 ## Commands
@@ -67,4 +67,4 @@
 - `URL` → `BASE_PATH` derived in `server/env.ts` (path component of `URL`). The inner Koa app is mounted under `BASE_PATH` via `koa-mount`; `/_health` stays at the origin root.
 - **Better Auth** initializes lazily (`getBetterAuth()`), Microsoft OIDC social provider, tables `ba_*`, base path `/api/better-auth`, `baseURL = env.URL`, session/CSRF/OAuth cookies scoped to `BASE_PATH`. `afterSignInHook` provisions/links the Outline user and stores `outlineUserId` on the ba_user + ba_session. `betterAuthSession.ts` bridges a ba_session back to an Outline `User` for Koa/websocket auth.
 - The login page fetches `auth.config` (`server/routes/api/auth/auth.ts`) for the provider list and renders each via `app/scenes/Login/components/AuthenticationProvider.tsx`.
-- Deploy: Apache reverse-proxies `/kms` → `127.0.0.1:3100/kms` (`deploy/apache/kms.conf`); WebSocket upgrade scoped to `/kms/`.
+- Deploy: Apache reverse-proxies `/kms` → `127.0.0.1:4800/kms` (`deploy/apache/kms.conf`); WebSocket upgrade scoped to `/kms/`.

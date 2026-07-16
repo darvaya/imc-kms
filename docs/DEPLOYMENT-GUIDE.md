@@ -40,11 +40,11 @@ This is the KMS analogue of clocka's `NEXT_PUBLIC_BASE_PATH` foot-gun.
    ┌───────────────┐   TLS termination, forwards /kms/* unchanged
    │   Apache 2.4  │   (+ WebSocket upgrade for /kms/realtime, /kms/collaboration)
    └───────┬───────┘
-           │  http://127.0.0.1:3100/kms/*
+           │  http://127.0.0.1:4800/kms/*
            ▼
    ┌───────────────┐   Node app (PM2 or systemd), owns the /kms prefix itself
    │   KMS server  │── PostgreSQL  (required)
-   │  (port 3100)  │── Redis       (required)
+   │  (port 4800)  │── Redis       (required)
    └───────────────┘── File storage (local dir or S3-compatible)
 ```
 
@@ -79,7 +79,7 @@ Edit `/opt/kms/.env`. The load-bearing values for a `/kms` sub-path deploy:
 |---|---|---|---|
 | `NODE_ENV` | ✅ | both | `production` |
 | `URL` | ✅ | **build + runtime (must match)** | `https://appstpcid.imcpelilog.co.id/kms` — the `/kms` path **is** the sub-path config |
-| `PORT` | ✅ | runtime | `3100` (must match the Apache `proxy_pass` target) |
+| `PORT` | ✅ | runtime | `4800` (must match the Apache `proxy_pass` target) |
 | `FORCE_HTTPS` | ✅ | runtime | `false` (Apache terminates TLS) |
 | `SECRET_KEY` | ✅ | runtime | `openssl rand -hex 32` |
 | `UTILS_SECRET` | ✅ | runtime | `openssl rand -hex 32` |
@@ -92,7 +92,7 @@ Edit `/opt/kms/.env`. The load-bearing values for a `/kms` sub-path deploy:
 | `MICROSOFT_TENANT_ID` | ✅ | runtime | IMC's Entra tenant ID |
 | `SMTP_*` | optional | runtime | email (invites, notifications) |
 
-> **Do NOT** put a real `URL` of `http://localhost:3100` into a production build.
+> **Do NOT** put a real `URL` of `http://localhost:4800` into a production build.
 > Whatever `URL` is set when you run `yarn build` is the sub-path that gets baked
 > in.
 
@@ -139,7 +139,7 @@ make start                    # pm2 start ecosystem.config.cjs (app name "kms")
 pm2 startup systemd && pm2 save   # survive reboots
 ```
 
-Either way the app binds `127.0.0.1:3100` and serves the whole app under `/kms`.
+Either way the app binds `127.0.0.1:4800` and serves the whole app under `/kms`.
 The health check is at the **origin root** `/_health` (DB + Redis ping) — it is
 NOT under `/kms`.
 
@@ -160,7 +160,7 @@ If the shared host is already served by an existing `<VirtualHost *:443>`, do
 **not** add the whole file — paste only the block between the
 `BEGIN/END kms proxy block` markers into that vhost.
 
-The config forwards `/kms` unchanged (`ProxyPass /kms http://127.0.0.1:3100/kms`,
+The config forwards `/kms` unchanged (`ProxyPass /kms http://127.0.0.1:4800/kms`,
 no trailing slash), upgrades WebSockets for `/kms/*`, 308-redirects bare `/kms`
 → `/kms/`, and sends `Cache-Control: no-cache` for `/kms/static/sw.js`.
 

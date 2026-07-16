@@ -42,7 +42,7 @@ describe("env.BASE_PATH", () => {
   });
 
   it("preserves a port + path combination", () => {
-    env.URL = "http://host:3100/kms";
+    env.URL = "http://host:4800/kms";
     expect(env.BASE_PATH).toBe("/kms");
   });
 
