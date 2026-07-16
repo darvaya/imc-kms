@@ -781,20 +781,36 @@ export class Environment {
   );
 
   /**
-   * Microsoft Entra ID (Azure AD) OAuth client ID for better-auth.
+   * Microsoft Entra ID (Azure AD) OAuth client ID for better-auth. Must be set
+   * together with MICROSOFT_CLIENT_SECRET — a partial config fails closed at
+   * boot rather than leaving the login in an ambiguous half-configured state.
    */
   @IsOptional()
+  @CannotUseWithout("MICROSOFT_CLIENT_SECRET")
   public MICROSOFT_CLIENT_ID = this.toOptionalString(
     environment.MICROSOFT_CLIENT_ID
   );
 
   /**
-   * Microsoft Entra ID (Azure AD) OAuth client secret for better-auth.
+   * Microsoft Entra ID (Azure AD) OAuth client secret for better-auth. Must be
+   * set together with MICROSOFT_CLIENT_ID.
    */
   @IsOptional()
+  @CannotUseWithout("MICROSOFT_CLIENT_ID")
   public MICROSOFT_CLIENT_SECRET = this.toOptionalString(
     environment.MICROSOFT_CLIENT_SECRET
   );
+
+  /**
+   * Whether Microsoft Entra SSO is fully configured (both client id and
+   * secret). SINGLE source of truth for the login mode: true → Microsoft-only
+   * (production); false → email/password credentials fallback. Every call site
+   * (better-auth config, auth.config provider list, seed script) must use this
+   * so the gate can never drift.
+   */
+  public get MICROSOFT_SSO_ENABLED(): boolean {
+    return !!(this.MICROSOFT_CLIENT_ID && this.MICROSOFT_CLIENT_SECRET);
+  }
 
   /**
    * Microsoft Entra ID tenant ID. Used to construct the OIDC discovery URL.

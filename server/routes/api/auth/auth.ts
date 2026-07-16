@@ -30,12 +30,21 @@ router.post("auth.config", async (ctx: APIContext<T.AuthConfigReq>) => {
     authType: string;
   }> = [];
 
-  if (env.MICROSOFT_CLIENT_ID) {
+  if (env.MICROSOFT_SSO_ENABLED) {
     betterAuthProviders.push({
       id: "microsoft-better-auth",
       name: "Microsoft",
       authUrl: "/api/better-auth/sign-in/social?provider=microsoft",
       authType: "betterAuth",
+    });
+  } else if (env.BETTER_AUTH_SECRET) {
+    // No Entra configured — offer the email/password credentials login box.
+    // Mutually exclusive with Microsoft (mirrors server/auth/betterAuth.ts).
+    betterAuthProviders.push({
+      id: "email-better-auth",
+      name: "Email",
+      authUrl: "/api/better-auth/sign-in/email",
+      authType: "credential",
     });
   }
 

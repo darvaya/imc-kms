@@ -27,19 +27,24 @@ export async function afterSignInHook(
       return;
     }
 
-    // Look up the account to get the provider info
+    // Look up the account to get the provider info. Support both the Microsoft
+    // SSO account and the email/password credential account (used when Entra is
+    // not configured — see server/auth/betterAuth.ts).
     const accounts = await ctx.internalAdapter.findAccounts(session.userId);
-    const microsoftAccount = accounts.find(
-      (a) => a.providerId === "microsoft"
-    );
+    const account =
+      accounts.find((a) => a.providerId === "microsoft") ??
+      accounts.find((a) => a.providerId === "credential") ??
+      accounts[0];
 
-    if (!microsoftAccount) {
-      Logger.warn("better-auth hook: no Microsoft account found for user");
+    if (!account) {
+      Logger.warn("better-auth hook: no account found for user");
       return;
     }
 
-    // If the user already has an outlineUserId, just update the session
-    const existingOutlineUserId = baUser.user.outlineUserId as
+    // If the user already has an outlineUserId, just update the session.
+    // NOTE: internalAdapter.findUserById returns the user record FLAT (better-
+    // auth 1.2.8) — read fields off `baUser` directly, not `baUser.user`.
+    const existingOutlineUserId = baUser.outlineUserId as
       | string
       | null
       | undefined;
@@ -49,7 +54,7 @@ export async function afterSignInHook(
       });
 
       // Track sign-in (replaces signIn() from authentication.ts)
-      await trackSignIn(existingOutlineUserId, session.ipAddress, microsoftAccount.providerId);
+      await trackSignIn(existingOutlineUserId, session.ipAddress, account.providerId);
       return;
     }
 
@@ -72,26 +77,28 @@ export async function afterSignInHook(
 
       const result = await accountProvisioner(apiCtx, {
         user: {
-          name: baUser.user.name,
-          email: baUser.user.email,
-          avatarUrl: baUser.user.image,
+          name: baUser.name,
+          email: baUser.email,
+          avatarUrl: baUser.image,
         },
         team: {
           name: env.APP_NAME,
-          domain: baUser.user.email.split("@")[1],
-          subdomain: baUser.user.email.split("@")[1].split(".")[0],
+          domain: baUser.email.split("@")[1],
+          subdomain: baUser.email.split("@")[1].split(".")[0],
         },
         authenticationProvider: {
-          name: "microsoft",
-          providerId: "microsoft",
+          name: account.providerId,
+          providerId: account.providerId,
         },
         authentication: {
-          providerId: microsoftAccount.accountId,
-          scopes: microsoftAccount.scope
-            ? microsoftAccount.scope.split(" ")
-            : ["openid", "profile", "email"],
-          accessToken: microsoftAccount.accessToken ?? undefined,
-          refreshToken: microsoftAccount.refreshToken ?? undefined,
+          providerId: account.accountId,
+          scopes: account.scope
+            ? account.scope.split(" ")
+            : account.providerId === "microsoft"
+              ? ["openid", "profile", "email"]
+              : ["email"],
+          accessToken: account.accessToken ?? undefined,
+          refreshToken: account.refreshToken ?? undefined,
         },
       });
 
@@ -112,11 +119,11 @@ export async function afterSignInHook(
     });
 
     // Track sign-in for newly provisioned user
-    await trackSignIn(outlineUserId, session.ipAddress, microsoftAccount.providerId);
+    await trackSignIn(outlineUserId, session.ipAddress, account.providerId);
 
     Logger.info(
       "lifecycle",
-      `better-auth: provisioned Outline user ${outlineUserId} for ${baUser.user.email}`
+      `better-auth: provisioned Outline user ${outlineUserId} for ${baUser.email}`
     );
   } catch (err) {
     Logger.error(

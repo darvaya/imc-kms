@@ -21,7 +21,10 @@ export async function validateBetterAuthSession(
   ctx: AppContext
 ): Promise<BetterAuthSessionResult | null> {
   // Skip if better-auth is not configured
-  if (!env.BETTER_AUTH_SECRET || !env.MICROSOFT_CLIENT_ID) {
+  // Better Auth is configured whenever the secret is present — this holds for
+  // both Microsoft Entra SSO and the email/password credentials fallback, so
+  // session resolution must NOT require MICROSOFT_CLIENT_ID.
+  if (!env.BETTER_AUTH_SECRET) {
     return null;
   }
 
@@ -74,7 +77,10 @@ export async function validateBetterAuthSession(
 export async function validateBetterAuthSessionFromHeaders(
   headers: IncomingHttpHeaders
 ): Promise<BetterAuthSessionResult | null> {
-  if (!env.BETTER_AUTH_SECRET || !env.MICROSOFT_CLIENT_ID) {
+  // Better Auth is configured whenever the secret is present — this holds for
+  // both Microsoft Entra SSO and the email/password credentials fallback, so
+  // session resolution must NOT require MICROSOFT_CLIENT_ID.
+  if (!env.BETTER_AUTH_SECRET) {
     return null;
   }
 

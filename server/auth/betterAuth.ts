@@ -24,16 +24,21 @@ interface BetterAuthInstance {
   };
   $context: Promise<{
     internalAdapter: {
+      // better-auth's internalAdapter.findUserById returns the user record
+      // FLAT (not wrapped in `{ user }`) — unlike findUserByEmail. Typing it
+      // correctly here makes TypeScript catch `baUser.user.x` mistakes.
       findUserById: (
         id: string
-      ) => Promise<{
-        user: {
-          id: string;
-          name: string;
-          email: string;
-          image?: string | null;
-        } & Record<string, unknown>;
-      } | null>;
+      ) => Promise<
+        | ({
+            id: string;
+            name: string;
+            email: string;
+            image?: string | null;
+            outlineUserId?: string | null;
+          } & Record<string, unknown>)
+        | null
+      >;
       findAccounts: (
         userId: string
       ) => Promise<
@@ -95,11 +100,12 @@ async function initBetterAuth(): Promise<BetterAuthInstance> {
     );
   }
 
-  if (!env.MICROSOFT_CLIENT_ID || !env.MICROSOFT_CLIENT_SECRET) {
-    throw new Error(
-      "MICROSOFT_CLIENT_ID and MICROSOFT_CLIENT_SECRET are required for Microsoft OIDC"
-    );
-  }
+  // Microsoft Entra SSO is optional. When both client id and secret are
+  // present we run Entra-only (production). When they are absent we fall back
+  // to email/password credentials so the app can be signed into for local
+  // testing without a live tenant. The two are mutually exclusive. The gate is
+  // env.MICROSOFT_SSO_ENABLED (single source of truth — see server/env.ts).
+  const microsoftSsoEnabled = env.MICROSOFT_SSO_ENABLED;
 
   const { Pool } = await import("pg");
 
@@ -120,13 +126,21 @@ async function initBetterAuth(): Promise<BetterAuthInstance> {
         path: env.BASE_PATH || "/",
       },
     },
-    socialProviders: {
-      microsoft: {
-        clientId: env.MICROSOFT_CLIENT_ID,
-        clientSecret: env.MICROSOFT_CLIENT_SECRET,
-        tenantId: env.MICROSOFT_TENANT_ID ?? "common",
-      },
-    },
+    socialProviders: microsoftSsoEnabled
+      ? {
+          microsoft: {
+            clientId: env.MICROSOFT_CLIENT_ID!,
+            clientSecret: env.MICROSOFT_CLIENT_SECRET!,
+            tenantId: env.MICROSOFT_TENANT_ID ?? "common",
+          },
+        }
+      : undefined,
+    // Credentials (email + password) are the fallback login, enabled ONLY when
+    // Entra SSO is not configured. Public self-sign-up stays off — accounts are
+    // minted server-side (see server/scripts/seed-test-admin.ts).
+    emailAndPassword: microsoftSsoEnabled
+      ? undefined
+      : { enabled: true, disableSignUp: true },
     user: {
       modelName: "ba_user",
       additionalFields: {
@@ -181,7 +195,9 @@ async function initBetterAuth(): Promise<BetterAuthInstance> {
 
   Logger.info(
     "lifecycle",
-    "better-auth initialized with Microsoft OIDC provider"
+    microsoftSsoEnabled
+      ? "better-auth initialized with Microsoft OIDC provider"
+      : "better-auth initialized with email/password credentials (Microsoft Entra not configured)"
   );
 
   return instance;
