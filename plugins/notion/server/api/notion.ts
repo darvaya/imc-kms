@@ -1,5 +1,6 @@
 import Router from "koa-router";
 import { IntegrationService, IntegrationType } from "@shared/types";
+import env from "@server/env";
 import apexAuthRedirect from "@server/middlewares/apexAuthRedirect";
 import auth from "@server/middlewares/authentication";
 import { transaction } from "@server/middlewares/transaction";
@@ -33,7 +34,7 @@ router.get(
 
     // Check error after any sub-domain redirection. Otherwise, the user will be redirected to the root domain.
     if (error) {
-      ctx.redirect(NotionUtils.errorUrl(error));
+      ctx.redirect(`${env.BASE_PATH}${NotionUtils.errorUrl(error)}`);
       return;
     }
 
@@ -69,7 +70,7 @@ router.get(
       { transaction }
     );
 
-    ctx.redirect(NotionUtils.successUrl(integration.id));
+    ctx.redirect(`${env.BASE_PATH}${NotionUtils.successUrl(integration.id)}`);
   }
 );
 

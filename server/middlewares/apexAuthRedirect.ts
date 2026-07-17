@@ -1,5 +1,6 @@
 import type { Next } from "koa";
 import { parseDomain } from "@shared/utils/domains";
+import env from "@server/env";
 import Logger from "@server/logging/Logger";
 import { Team } from "@server/models";
 import type { APIContext } from "@server/types";
@@ -43,14 +44,14 @@ export default function apexAuthRedirect<T>({
         });
 
         return parseDomain(ctx.host).teamSubdomain === team.subdomain
-          ? ctx.redirect("/")
+          ? ctx.redirect(`${env.BASE_PATH}/`)
           : ctx.redirectOnClient(getRedirectPath(ctx, team));
       } catch (err) {
         Logger.error("Error fetching team", err);
-        return ctx.redirect(getErrorPath(ctx));
+        return ctx.redirect(`${env.BASE_PATH}${getErrorPath(ctx)}`);
       }
     } else {
-      return ctx.redirect(getErrorPath(ctx));
+      return ctx.redirect(`${env.BASE_PATH}${getErrorPath(ctx)}`);
     }
   };
 }

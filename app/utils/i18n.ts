@@ -3,6 +3,7 @@ import backend from "i18next-http-backend";
 import { initReactI18next } from "react-i18next";
 import { languages } from "@shared/i18n";
 import { unicodeCLDRtoBCP47, unicodeBCP47toCLDR } from "@shared/utils/date";
+import { urlWithBasePath } from "@shared/utils/urls";
 import Logger from "./Logger";
 
 /**
@@ -23,9 +24,12 @@ export function initI18n(defaultLanguage = "en_US") {
       compatibilityJSON: "v3",
       backend: {
         // this must match the path defined in routes. It's the path that the
-        // frontend UI code will hit to load missing translations.
+        // frontend UI code will hit to load missing translations. Must carry
+        // BASE_PATH so it resolves under the `/kms` sub-path (Hard Rule #1) —
+        // the locale route is served by the inner Koa app mounted under
+        // BASE_PATH, not from the CDN, so urlWithBasePath (not assetUrl) is used.
         loadPath: (locale: string[]) =>
-          `/locales/${unicodeBCP47toCLDR(locale[0])}.json`,
+          urlWithBasePath(`/locales/${unicodeBCP47toCLDR(locale[0])}.json`),
       },
       interpolation: {
         escapeValue: false,

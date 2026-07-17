@@ -1,5 +1,6 @@
 import Router from "koa-router";
 import { IntegrationService, IntegrationType } from "@shared/types";
+import env from "@server/env";
 import Logger from "@server/logging/Logger";
 import apexAuthRedirect from "@server/middlewares/apexAuthRedirect";
 import auth from "@server/middlewares/authentication";
@@ -38,7 +39,7 @@ router.get(
 
     // Check error after any sub-domain redirection. Otherwise, the user will be redirected to the root domain.
     if (error) {
-      ctx.redirect(LinearUtils.errorUrl(error));
+      ctx.redirect(`${env.BASE_PATH}${LinearUtils.errorUrl(error)}`);
       return;
     }
 
@@ -93,10 +94,10 @@ router.get(
         }
       });
 
-      ctx.redirect(LinearUtils.successUrl());
+      ctx.redirect(`${env.BASE_PATH}${LinearUtils.successUrl()}`);
     } catch (err) {
       Logger.error("Encountered error during Linear OAuth callback", err);
-      ctx.redirect(LinearUtils.errorUrl("unknown"));
+      ctx.redirect(`${env.BASE_PATH}${LinearUtils.errorUrl("unknown")}`);
     }
   }
 );
