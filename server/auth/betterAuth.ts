@@ -58,6 +58,7 @@ interface BetterAuthInstance {
         token: string,
         data: Record<string, unknown>
       ) => Promise<unknown>;
+      deleteSession: (token: string) => Promise<unknown>;
     };
   }>;
 }

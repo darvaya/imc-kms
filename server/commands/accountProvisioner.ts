@@ -1,6 +1,7 @@
 import path from "path";
 import { readFile } from "fs-extra";
 import invariant from "invariant";
+import type { Transaction } from "sequelize";
 import { CollectionPermission, UserRole } from "@shared/types";
 import WelcomeEmail from "@server/emails/templates/WelcomeEmail";
 import env from "@server/env";
@@ -193,11 +194,19 @@ async function accountProvisioner(
 
   // TODO: Move to processor
   if (isNewUser) {
-    await new WelcomeEmail({
+    const welcomeEmail = new WelcomeEmail({
       to: user.email,
       role: user.role,
       teamUrl: team.url,
-    }).schedule();
+    });
+
+    // The queue is not transaction-aware — only enqueue once the user row is
+    // durably committed, otherwise a rollback still sends the email.
+    if (ctx.state.transaction) {
+      ctx.state.transaction.afterCommit(() => void welcomeEmail.schedule());
+    } else {
+      await welcomeEmail.schedule();
+    }
   }
 
   if (isNewUser || isNewTeam) {
@@ -233,7 +242,7 @@ async function provisionFirstCollection(
   team: Team,
   user: User
 ) {
-  await sequelize.transaction(async (transaction) => {
+  const create = async (transaction: Transaction) => {
     const context = createContext({
       ...ctx,
       transaction,
@@ -282,7 +291,17 @@ async function provisionFirstCollection(
         silent: true,
       });
     }
-  });
+  };
+
+  // A transaction on the context means the user row is not committed yet — an
+  // independent transaction could not see it, and inserts referencing the user
+  // (events.actorId, documents.createdById) would fail their FK checks.
+  if (ctx.state.transaction) {
+    await create(ctx.state.transaction);
+    return;
+  }
+
+  await sequelize.transaction(create);
 }
 
 export default traceFunction({

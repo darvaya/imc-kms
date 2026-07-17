@@ -6,12 +6,17 @@ import Collection from "@server/models/Collection";
 import UserAuthentication from "@server/models/UserAuthentication";
 import { buildUser, buildTeam, buildAdmin } from "@server/test/factories";
 import { setSelfHosted } from "@server/test/support";
+import { sequelize } from "@server/storage/database";
 import accountProvisioner from "./accountProvisioner";
 import { createContext } from "@server/context";
 
 describe("accountProvisioner", () => {
   const ip = faker.internet.ip();
   const ctx = createContext({ ip });
+
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
 
   describe("hosted", () => {
     it("should create a new user and team", async () => {
@@ -59,6 +64,61 @@ describe("accountProvisioner", () => {
       expect(collectionCount).toEqual(1);
 
       spy.mockRestore();
+    });
+
+    it("should provision user, team and collection inside a caller transaction", async () => {
+      const spy = jest.spyOn(WelcomeEmail.prototype, "schedule");
+      spy.mockClear();
+      const email = faker.internet.email();
+      const transaction = await sequelize.transaction();
+      let committed = false;
+
+      try {
+        const { user, team, isNewUser } = await accountProvisioner(
+          createContext({ ip, transaction }),
+          {
+            user: {
+              name: "Jenny Tester",
+              email,
+              avatarUrl: faker.image.avatar(),
+            },
+            team: {
+              name: "New workspace",
+              avatarUrl: faker.image.avatar(),
+              subdomain: faker.internet.domainWord(),
+            },
+            authenticationProvider: {
+              name: "google",
+              providerId: faker.internet.domainName(),
+            },
+            authentication: {
+              providerId: randomUUID(),
+              accessToken: "123",
+              scopes: ["read"],
+            },
+          }
+        );
+
+        // The welcome email must not be queued while the transaction can
+        // still roll back.
+        expect(spy).not.toHaveBeenCalled();
+        await transaction.commit();
+        committed = true;
+        expect(spy).toHaveBeenCalled();
+
+        expect(isNewUser).toEqual(true);
+        expect(user.email).toEqual(email);
+        const collectionCount = await Collection.count({
+          where: {
+            teamId: team.id,
+          },
+        });
+        expect(collectionCount).toEqual(1);
+      } finally {
+        if (!committed) {
+          await transaction.rollback().catch(() => undefined);
+        }
+      }
     });
 
     it("should update exising user and authentication", async () => {

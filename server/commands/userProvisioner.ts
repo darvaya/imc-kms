@@ -1,4 +1,4 @@
-import type { InferCreationAttributes } from "sequelize";
+import type { InferCreationAttributes, Transaction } from "sequelize";
 import { Op } from "sequelize";
 import type { UserRole } from "@shared/types";
 import InviteAcceptedEmail from "@server/emails/templates/InviteAcceptedEmail";
@@ -139,7 +139,7 @@ export default async function userProvisioner(
     // that's never been active before.
     const isInvite = existingUser.isInvited;
 
-    const userAuth = await sequelize.transaction(async (transaction) => {
+    const associate = async (transaction: Transaction) => {
       // Regardless, create a new authentication record
       // against the existing user (user can auth with multiple SSO providers)
       // Update user's name and avatar based on the most recently added provider
@@ -167,17 +167,35 @@ export default async function userProvisioner(
           transaction,
         }
       );
-    });
+    };
+
+    // Join the caller's transaction when present so a rollback also undoes
+    // the invite acceptance (lastActiveAt flips `isInvited`) — otherwise a
+    // failed sign-in would consume the invite while the emails deferred to
+    // that transaction's commit are dropped and can never be sent again.
+    const userAuth = ctx.state.transaction
+      ? await associate(ctx.state.transaction)
+      : await sequelize.transaction(associate);
 
     if (isInvite) {
       const inviter = await existingUser.$get("invitedBy");
       if (inviter) {
-        await new InviteAcceptedEmail({
+        const inviteAcceptedEmail = new InviteAcceptedEmail({
           to: inviter.email,
           inviterId: inviter.id,
           invitedName: existingUser.name,
           teamUrl: existingUser.team.url,
-        }).schedule();
+        });
+
+        // The queue is not transaction-aware — only enqueue once the sign-in
+        // is durably committed, otherwise a rollback still sends the email.
+        if (ctx.state.transaction) {
+          ctx.state.transaction.afterCommit(
+            () => void inviteAcceptedEmail.schedule()
+          );
+        } else {
+          await inviteAcceptedEmail.schedule();
+        }
       }
     }
 
@@ -198,51 +216,47 @@ export default async function userProvisioner(
   // No auth, no user – this is an entirely new sign in.
   //
 
-  const transaction = await User.sequelize!.transaction();
-
-  try {
-    // If the team settings are set to require invites, and there's no existing user record,
-    // throw an error and fail user creation.
-    if (team?.inviteRequired) {
-      Logger.info("authentication", "Sign in without invitation", {
-        teamId: team.id,
-        email,
-      });
-      throw InviteRequiredError();
-    }
-
-    // If the team settings do not allow this domain,
-    // throw an error and fail user creation.
-    if (team && !(await team.isDomainAllowed(email))) {
-      throw DomainNotAllowedError();
-    }
-
-    const user = await User.createWithCtx(
-      ctx,
-      {
-        name,
-        email,
-        language,
-        role: role ?? team?.defaultUserRole,
-        teamId,
-        avatarUrl,
-        authentications: authentication ? [authentication] : [],
-        lastActiveAt: new Date(),
-        lastActiveIp: ctx.ip,
-      } as Partial<InferCreationAttributes<User>>,
-      undefined,
-      {
-        include: "authentications",
-      }
-    );
-    await transaction.commit();
-    return {
-      user,
-      authentication: user.authentications[0],
-      isNewUser: true,
-    };
-  } catch (err) {
-    await transaction.rollback();
-    throw err;
+  // If the team settings are set to require invites, and there's no existing user record,
+  // throw an error and fail user creation.
+  if (team?.inviteRequired) {
+    Logger.info("authentication", "Sign in without invitation", {
+      teamId: team.id,
+      email,
+    });
+    throw InviteRequiredError();
   }
+
+  // If the team settings do not allow this domain,
+  // throw an error and fail user creation.
+  if (team && !(await team.isDomainAllowed(email))) {
+    throw DomainNotAllowedError();
+  }
+
+  // The create runs on the caller's transaction from ctx (createWithCtx reads
+  // ctx.context.transaction) — a transaction opened here would never be used
+  // by the insert and would only hold a second pool connection.
+  const user = await User.createWithCtx(
+    ctx,
+    {
+      name,
+      email,
+      language,
+      role: role ?? team?.defaultUserRole,
+      teamId,
+      avatarUrl,
+      authentications: authentication ? [authentication] : [],
+      lastActiveAt: new Date(),
+      lastActiveIp: ctx.ip,
+    } as Partial<InferCreationAttributes<User>>,
+    undefined,
+    {
+      include: "authentications",
+    }
+  );
+
+  return {
+    user,
+    authentication: user.authentications[0],
+    isNewUser: true,
+  };
 }

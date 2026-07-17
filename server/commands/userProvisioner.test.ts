@@ -1,7 +1,9 @@
 import { faker } from "@faker-js/faker";
 import { randomUUID } from "crypto";
 import { UserRole } from "@shared/types";
-import { TeamDomain } from "@server/models";
+import InviteAcceptedEmail from "@server/emails/templates/InviteAcceptedEmail";
+import { TeamDomain, User } from "@server/models";
+import { sequelize } from "@server/storage/database";
 import {
   buildUser,
   buildTeam,
@@ -14,6 +16,10 @@ import { createContext } from "@server/context";
 describe("userProvisioner", () => {
   const ip = faker.internet.ip();
   const ctx = createContext({ ip });
+
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
 
   it("should update existing user and authentication", async () => {
     const existing = await buildUser();
@@ -108,6 +114,55 @@ describe("userProvisioner", () => {
     const authentications = await user.$get("authentications");
     expect(authentications.length).toEqual(1);
     expect(isNewUser).toEqual(true);
+  });
+
+  it("should defer invite acceptance and email to the caller transaction", async () => {
+    const spy = jest.spyOn(InviteAcceptedEmail.prototype, "schedule");
+    spy.mockClear();
+    const team = await buildTeam({ inviteRequired: true });
+    const email = "invited@example.com";
+    const invite = await buildInvite({
+      teamId: team.id,
+      email,
+    });
+    const authenticationProviders = await team.$get("authenticationProviders");
+    const authenticationProvider = authenticationProviders[0];
+    const transaction = await sequelize.transaction();
+    let committed = false;
+
+    try {
+      const { isNewUser } = await userProvisioner(
+        createContext({ ip, transaction }),
+        {
+          name: invite.name,
+          email,
+          teamId: invite.teamId,
+          authentication: {
+            authenticationProviderId: authenticationProvider.id,
+            providerId: randomUUID(),
+            accessToken: "123",
+            scopes: ["read"],
+          },
+        }
+      );
+
+      // The invite acceptance must ride the caller's transaction (a read
+      // outside it must not see lastActiveAt yet) and the email must not be
+      // queued while the transaction can still roll back.
+      const invitee = await User.findByPk(invite.id);
+      expect(invitee?.lastActiveAt).toBeNull();
+      expect(spy).not.toHaveBeenCalled();
+
+      await transaction.commit();
+      committed = true;
+
+      expect(isNewUser).toEqual(true);
+      expect(spy).toHaveBeenCalled();
+    } finally {
+      if (!committed) {
+        await transaction.rollback().catch(() => undefined);
+      }
+    }
   });
 
   it("should create user with deleted user matching providerId", async () => {

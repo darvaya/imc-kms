@@ -130,6 +130,23 @@ export async function afterSignInHook(
       "better-auth hook: failed to provision Outline user after sign-in",
       err as Error
     );
+
+    // The ba_session row was inserted before this hook ran and the browser is
+    // about to receive its cookie. Without an outlineUserId the session can
+    // never authenticate (the session bridge treats it as signed-out), so
+    // revoke it — the user lands back on the login page instead of holding a
+    // cookie that 401s on every request.
+    try {
+      const { getBetterAuth } = await import("./betterAuth");
+      const auth = await getBetterAuth();
+      const ctx = await auth.$context;
+      await ctx.internalAdapter.deleteSession(session.token);
+    } catch (cleanupErr) {
+      Logger.error(
+        "better-auth hook: failed to revoke unprovisioned session",
+        cleanupErr as Error
+      );
+    }
   }
 }
 
