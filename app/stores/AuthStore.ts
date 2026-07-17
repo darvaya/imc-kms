@@ -6,6 +6,7 @@ import { getCookie, setCookie } from "tiny-cookie";
 import type { CustomTheme } from "@shared/types";
 import Storage from "@shared/utils/Storage";
 import { getCookieDomain, parseDomain } from "@shared/utils/domains";
+import { stripBasePath } from "@shared/utils/urls";
 import type RootStore from "~/stores/RootStore";
 import Team from "~/models/Team";
 import env from "~/env";
@@ -322,9 +323,15 @@ export default class AuthStore extends Store<Team> {
     userInitiated?: boolean;
   }) => {
     // if this logout was forced from an authenticated route then
-    // save the current path so we can go back there once signed in
+    // save the current path so we can go back there once signed in.
+    // window.location.pathname carries the deploy sub-path (BASE_PATH); the
+    // post-login <Redirect> runs through the basename-aware router history
+    // (app/utils/history.ts), which re-adds BASE_PATH. Strip it here so the
+    // round-trip lands on /kms/... once, not /kms/kms/... (a 404).
     if (savePath) {
-      setPostLoginPath(window.location.pathname + window.location.search);
+      setPostLoginPath(
+        stripBasePath(window.location.pathname) + window.location.search
+      );
     }
 
     if (revokeToken) {

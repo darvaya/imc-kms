@@ -4,6 +4,7 @@ import { isModKey } from "@shared/utils/keyboard";
 import {
   isDocumentUrl,
   isInternalUrl,
+  stripBasePath,
   urlWithBasePath,
 } from "@shared/utils/urls";
 import { sharedModelPath } from "~/utils/routeHelpers";
@@ -41,7 +42,13 @@ export default function useEditorClickHandlers({ shareId }: Params) {
         if (href[0] !== "/") {
           try {
             const url = new URL(href);
-            navigateTo = url.pathname + url.search + url.hash;
+            // `url.pathname` carries the deploy sub-path (BASE_PATH) when the
+            // link is an absolute in-app URL, e.g. one pasted from the address
+            // bar (`https://host/kms/doc/x`). Strip it so `navigateTo` stays
+            // router-relative: `history.push` re-adds the router basename and
+            // `urlWithBasePath` re-adds BASE_PATH, either of which would
+            // otherwise double-prefix to `/kms/kms/...` and 404.
+            navigateTo = stripBasePath(url.pathname) + url.search + url.hash;
           } catch (_err) {
             navigateTo = href;
           }

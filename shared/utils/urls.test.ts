@@ -261,6 +261,131 @@ describe("assetUrl", () => {
   });
 });
 
+describe("stripBasePath", () => {
+  let originalBasePath: string | undefined;
+
+  beforeEach(() => {
+    originalBasePath = env.BASE_PATH;
+    env.BASE_PATH = "";
+  });
+
+  afterEach(() => {
+    env.BASE_PATH = originalBasePath;
+  });
+
+  it("returns the path unchanged when BASE_PATH is empty", () => {
+    expect(urlsUtils.stripBasePath("/doc/foo")).toBe("/doc/foo");
+  });
+
+  it("strips a leading BASE_PATH segment", () => {
+    env.BASE_PATH = "/kms";
+    expect(urlsUtils.stripBasePath("/kms/doc/foo")).toBe("/doc/foo");
+  });
+
+  it("maps the bare BASE_PATH to root", () => {
+    env.BASE_PATH = "/kms";
+    expect(urlsUtils.stripBasePath("/kms")).toBe("/");
+  });
+
+  it("only strips a WHOLE leading segment (leaves /kmsx untouched)", () => {
+    env.BASE_PATH = "/kms";
+    expect(urlsUtils.stripBasePath("/kmsx/foo")).toBe("/kmsx/foo");
+  });
+
+  it("leaves a non-prefixed path untouched", () => {
+    env.BASE_PATH = "/kms";
+    expect(urlsUtils.stripBasePath("/other/foo")).toBe("/other/foo");
+  });
+
+  it("passes absolute and data URIs through unchanged", () => {
+    env.BASE_PATH = "/kms";
+    expect(urlsUtils.stripBasePath("https://x.example.com/kms/foo")).toBe(
+      "https://x.example.com/kms/foo"
+    );
+    expect(urlsUtils.stripBasePath("data:image/png;base64,AAAA")).toBe(
+      "data:image/png;base64,AAAA"
+    );
+  });
+
+  it("is the inverse of urlWithBasePath (strip ∘ add === identity)", () => {
+    env.BASE_PATH = "/kms";
+    for (const p of ["/doc/foo", "/home", "/api/auth.info"]) {
+      expect(urlsUtils.stripBasePath(urlsUtils.urlWithBasePath(p))).toBe(p);
+    }
+  });
+
+  it("keeps a post-login redirect from double-prefixing under /kms", () => {
+    // Regression guard for AuthStore: window.location.pathname on /kms/doc/x
+    // carries the mount prefix; persisting it verbatim and rendering
+    // <Redirect to={...}> through the basename-'/kms' router history yields
+    // /kms/kms/doc/x -> 404. stripBasePath restores the router-relative path.
+    env.BASE_PATH = "/kms";
+    expect(urlsUtils.stripBasePath("/kms/doc/onboarding-abc")).toBe(
+      "/doc/onboarding-abc"
+    );
+  });
+});
+
+describe("isDocumentUrl / isCollectionUrl under a sub-path deploy", () => {
+  let originalUrl: string | undefined;
+  let originalBasePath: string | undefined;
+
+  beforeEach(() => {
+    originalUrl = env.URL;
+    originalBasePath = env.BASE_PATH;
+    env.URL = "http://localhost/kms";
+    env.BASE_PATH = "/kms";
+  });
+
+  afterEach(() => {
+    env.URL = originalUrl;
+    env.BASE_PATH = originalBasePath;
+  });
+
+  it("recognises an absolute in-app document URL carrying BASE_PATH", () => {
+    // Regression guard: a URL copied from the address bar. Before BASE_PATH was
+    // stripped this returned false, so PasteHandler stored a raw absolute link
+    // and the editor click handler navigated to /kms/kms/doc/... (404).
+    expect(urlsUtils.isDocumentUrl("http://localhost/kms/doc/my-doc-x7y8")).toBe(
+      true
+    );
+  });
+
+  it("recognises a root-relative document path carrying BASE_PATH", () => {
+    expect(urlsUtils.isDocumentUrl("/kms/doc/my-doc-x7y8")).toBe(true);
+    expect(urlsUtils.isDocumentUrl("/kms/d/my-doc-x7y8")).toBe(true);
+  });
+
+  it("still recognises a router-relative document path", () => {
+    expect(urlsUtils.isDocumentUrl("/doc/my-doc-x7y8")).toBe(true);
+    expect(urlsUtils.isDocumentUrl("/d/my-doc-x7y8")).toBe(true);
+  });
+
+  it("does not treat a non-document sub-path URL as a document", () => {
+    expect(urlsUtils.isDocumentUrl("/kms/search")).toBe(false);
+  });
+
+  it("does not strip a look-alike prefix", () => {
+    expect(urlsUtils.isDocumentUrl("/kmsx/doc/my-doc-x7y8")).toBe(false);
+  });
+
+  it("recognises collection URLs carrying BASE_PATH", () => {
+    expect(
+      urlsUtils.isCollectionUrl("http://localhost/kms/collection/eng-abc")
+    ).toBe(true);
+    expect(urlsUtils.isCollectionUrl("/kms/collection/eng-abc")).toBe(true);
+    expect(urlsUtils.isCollectionUrl("/collection/eng-abc")).toBe(true);
+  });
+
+  it("is unchanged on a root deploy (empty BASE_PATH)", () => {
+    env.URL = "http://localhost";
+    env.BASE_PATH = "";
+    expect(urlsUtils.isDocumentUrl("/doc/my-doc-x7y8")).toBe(true);
+    expect(urlsUtils.isDocumentUrl("/kms/doc/my-doc-x7y8")).toBe(false);
+    expect(urlsUtils.isCollectionUrl("/collection/eng-abc")).toBe(true);
+  });
+});
+
 describe("#urlRegex", () => {
   it("should return undefined for invalid urls", () => {
     expect(urlRegex(undefined)).toBeUndefined();

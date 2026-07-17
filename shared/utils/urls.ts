@@ -60,6 +60,41 @@ export function urlWithBasePath(path: string): string {
 }
 
 /**
+ * Removes a leading deployment sub-path (`env.BASE_PATH`) from a root-relative
+ * app path, yielding the router-relative path that the basename-aware history
+ * (`app/utils/history.ts` — `createBrowserHistory({ basename: BASE_PATH })`)
+ * and `<Redirect>` / `history.push` expect.
+ *
+ * This is the inverse of {@link urlWithBasePath}. Use it on any value read from
+ * `window.location` (which always carries the mount prefix) before handing it
+ * back to the router — otherwise the router re-adds `BASE_PATH` and the URL
+ * double-prefixes to `/kms/kms/...` and 404s.
+ *
+ * Only a WHOLE leading path segment is stripped, so `/kmsx/foo` is left intact.
+ * Pass-through for absolute URLs and `data:` / `blob:` URIs (symmetric with
+ * {@link urlWithBasePath}); a no-op when `BASE_PATH` is empty.
+ *
+ * @param path A root-relative path that may carry `BASE_PATH`, e.g. `/kms/doc/x`.
+ * @returns The path with a leading `BASE_PATH` removed, e.g. `/doc/x`.
+ */
+export function stripBasePath(path: string): string {
+  if (path.match(/^(?:https?:|data:|blob:)/)) {
+    return path;
+  }
+  const base = env.BASE_PATH ?? "";
+  if (!base) {
+    return path;
+  }
+  if (path === base) {
+    return "/";
+  }
+  if (path.startsWith(`${base}/`)) {
+    return path.slice(base.length);
+  }
+  return path;
+}
+
+/**
  * Extracts the file name from a given url.
  *
  * @param url The url to extract the file name from.
@@ -113,9 +148,14 @@ export function isInternalUrl(href: string) {
 export function isDocumentUrl(url: string) {
   try {
     const parsed = new URL(url, env.URL);
+    // An absolute in-app URL (e.g. one pasted from the address bar) carries the
+    // deploy sub-path — `/kms/doc/x`. Strip it so the route check sees the
+    // router-relative `/doc/x`, otherwise document links are not recognised
+    // under a sub-path deploy.
+    const pathname = stripBasePath(parsed.pathname);
     return (
       isInternalUrl(url) &&
-      (parsed.pathname.startsWith("/doc/") || parsed.pathname.startsWith("/d/"))
+      (pathname.startsWith("/doc/") || pathname.startsWith("/d/"))
     );
   } catch (_err) {
     return false;
@@ -131,7 +171,12 @@ export function isDocumentUrl(url: string) {
 export function isCollectionUrl(url: string) {
   try {
     const parsed = new URL(url, env.URL);
-    return isInternalUrl(url) && parsed.pathname.startsWith("/collection/");
+    // Strip the deploy sub-path so an absolute `/kms/collection/x` URL is
+    // recognised — see {@link isDocumentUrl}.
+    return (
+      isInternalUrl(url) &&
+      stripBasePath(parsed.pathname).startsWith("/collection/")
+    );
   } catch (_err) {
     return false;
   }
