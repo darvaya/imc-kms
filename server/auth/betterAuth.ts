@@ -66,6 +66,31 @@ let authInstance: BetterAuthInstance | null = null;
 let authInitPromise: Promise<BetterAuthInstance> | null = null;
 
 /**
+ * Resolves the better-auth `baseURL` and `basePath` for a (possibly
+ * sub-path) deployment.
+ *
+ * better-auth's `withPath()` short-circuits and IGNORES `basePath` whenever
+ * `baseURL` already carries a path, so the deployment sub-path MUST be folded
+ * into `basePath` while `baseURL` is kept origin-only. The effective serving
+ * base becomes `${origin}${basePath}` — i.e. `${origin}${BASE_PATH}/api/better-auth` —
+ * which keeps every derived URL (the OAuth `redirect_uri` on both the authorize
+ * call and the token exchange, and the callback route) sub-path-aware.
+ *
+ * @param url The deployment `URL`, which may include a sub-path (e.g. `.../kms`).
+ * @param basePath The deployment sub-path (`env.BASE_PATH`); empty at the root.
+ * @returns The origin-only `baseURL` and the sub-path-inclusive `basePath`.
+ */
+export function resolveBetterAuthBase(
+  url: string,
+  basePath: string
+): { baseURL: string; basePath: string } {
+  return {
+    baseURL: new URL(url).origin,
+    basePath: `${basePath}/api/better-auth`,
+  };
+}
+
+/**
  * Returns the initialized better-auth instance. Lazily initializes on first
  * call using dynamic import() to handle the ESM-only better-auth package in
  * the CJS build pipeline.
@@ -114,11 +139,18 @@ async function initBetterAuth(): Promise<BetterAuthInstance> {
     max: 5,
   });
 
+  // Sub-path safety: keep `baseURL` origin-only and fold BASE_PATH into
+  // `basePath` (see resolveBetterAuthBase). Passing `baseURL: env.URL` (which
+  // ends in `/kms`) would make better-auth serve its whole API at `/kms/*` and
+  // silently 404 every `/kms/api/better-auth/*` request. betterAuthHandler
+  // re-adds the BASE_PATH that koa-mount strips so the paths line up.
+  const { baseURL, basePath } = resolveBetterAuthBase(env.URL, env.BASE_PATH);
+
   const auth = betterAuth({
     database: pool as Parameters<typeof betterAuth>[0]["database"],
     secret: env.BETTER_AUTH_SECRET,
-    basePath: "/api/better-auth",
-    baseURL: env.URL,
+    basePath,
+    baseURL,
     advanced: {
       // Scope session / OAuth-state cookies to the deploy sub-path so they are
       // not sent to co-tenant apps sharing the host. Empty BASE_PATH -> "/".
