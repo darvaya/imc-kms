@@ -114,7 +114,6 @@
     "async-sema": "^3.1.1",
     "autotrack": "^2.4.1",
     "babel-plugin-styled-components": "^2.1.4",
-    "babel-plugin-transform-class-properties": "^6.24.1",
     "better-auth": "1.6.33",
     "body-scroll-lock": "^4.0.0-beta.0",
     "bull": "^4.16.5",
@@ -171,7 +170,7 @@
     "lodash": "^4.18.1",
     "mailparser": "^3.9.37",
     "mammoth": "^1.11.0",
-    "markdown-it": "^14.3.2",
+    "markdown-it": "^14.3.3",
     "markdown-it-container": "^3.0.0",
     "markdown-it-emoji": "^3.0.0",
     "mermaid": "11.17.2",
@@ -390,7 +389,8 @@
     "ws@npm:~8.17.1": "^8.22.0",
     "tmp@npm:^0.0.33": "^0.2.7",
     "rollup@npm:^0.41.4": "^2.80.0",
-    "serialize-javascript@npm:^6.0.1": "^7.1.2"
+    "serialize-javascript@npm:^6.0.1": "^7.1.2",
+    "markdown-it@npm:^14.0.0": "^14.3.3"
   },
   "version": "1.2.0-0",
   "packageManager": "yarn@4.11.0"
