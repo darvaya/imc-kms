@@ -16,7 +16,14 @@
       ],
       "setupFilesAfterEnv": ["<rootDir>/server/test/setup.ts"],
       "globalTeardown": "<rootDir>/server/test/globalTeardown.js",
-      "testEnvironment": "node"
+      "testEnvironment": "node",
+      "transform": {
+        "\\.[jt]sx?$": "babel-jest",
+        "\\.mjs$": "babel-jest"
+      },
+      "transformIgnorePatterns": [
+        "node_modules/(?!(@faker-js/faker|better-auth|@better-auth|better-call|@better-fetch|@noble|nanostores|defu|rou3)/)"
+      ]
     },
     {
       "displayName": "app",

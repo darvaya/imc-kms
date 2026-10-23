@@ -56,7 +56,7 @@ rule is scoped to `/kms/`.
 
 ## 2. Prerequisites
 
-- **Node.js ≥ 20.12** (or 22) and **Yarn 4** (`corepack enable`).
+- **Node.js 22.23.4+ or 24.22.1+** (the patched release of each line — October 2026 security release, CVE-2026-111497 Brotli decoder RCE; Node 20 is end-of-life and unpatched) and **Yarn 4** (`corepack enable`). **Do not run Node 26 yet:** since Node 26.1 `yauzl` hangs while extracting larger zip entries (markdown import), and `sequelize-encrypted` writes undecryptable ciphertext (it reads `cipher.read()` right after `cipher.end()`, which returns a truncated final block); both pass on 22 and 24.
 - **PostgreSQL** and **Redis** reachable from the box.
 - **Apache 2.4** with modules: `proxy proxy_http proxy_wstunnel rewrite ssl headers deflate`.
 - A **Microsoft Entra ID app registration** (client ID, secret, tenant ID) for SSO.
