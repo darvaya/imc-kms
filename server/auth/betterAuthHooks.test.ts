@@ -1,4 +1,5 @@
 import { randomUUID } from "crypto";
+import accountProvisioner from "@server/commands/accountProvisioner";
 import { afterSignInHook } from "./betterAuthHooks";
 
 const mockFindUserById = jest.fn();
@@ -59,6 +60,27 @@ describe("afterSignInHook", () => {
     expect(mockDeleteSession).toHaveBeenCalledTimes(1);
     expect(mockDeleteSession).toHaveBeenCalledWith(session.token);
     expect(mockUpdateSession).not.toHaveBeenCalled();
+  });
+
+  it("should not pass an empty client address to the provisioner", async () => {
+    mockFindUserById.mockResolvedValue({
+      id: session.userId,
+      name: "Jenny Tester",
+      email: "jenny.tester@example.com",
+      outlineUserId: null,
+    });
+    mockFindAccounts.mockResolvedValue([
+      {
+        providerId: "microsoft",
+        accountId: "external-id",
+        scope: "openid profile email",
+      },
+    ]);
+
+    await afterSignInHook({ ...session, ipAddress: "" });
+
+    const [ctx] = (accountProvisioner as jest.Mock).mock.calls[0];
+    expect(ctx.context.ip).toBeUndefined();
   });
 
   it("should not revoke the session for an already provisioned user", async () => {

@@ -71,7 +71,9 @@ export async function afterSignInHook(
 
     try {
       const apiCtx = createContext({
-        ip: session.ipAddress ?? undefined,
+        // better-auth reports an unresolvable client address as an empty string,
+        // which the Event model's isIP validation rejects.
+        ip: session.ipAddress || undefined,
         transaction,
       });
 
@@ -169,9 +171,9 @@ async function trackSignIn(
 
     const now = new Date();
     user.lastActiveAt = now;
-    user.lastActiveIp = ipAddress ?? null;
+    user.lastActiveIp = ipAddress || null;
     user.lastSignedInAt = now;
-    user.lastSignedInIp = ipAddress ?? null;
+    user.lastSignedInIp = ipAddress || null;
     await user.save({ hooks: false });
 
     await Event.create({
@@ -179,7 +181,7 @@ async function trackSignIn(
       userId: outlineUserId,
       teamId: user.teamId,
       actorId: outlineUserId,
-      ip: ipAddress ?? null,
+      ip: ipAddress || null,
       data: {
         name: user.name,
         service: providerId,
