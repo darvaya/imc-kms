@@ -21,7 +21,7 @@ IMC Pelita Logistik KMS is your team's shared library – a place for important 
 
 ### Prerequisites
 
-- Node.js 20.12+ or 22
+- Node.js 22.23.4+ or 24.22.1+ (patched releases; Node 20 is end-of-life; Node 26 is not supported yet — see docs/DEPLOYMENT-GUIDE.md)
 - PostgreSQL
 - Redis
 - Yarn 4
